@@ -16,11 +16,11 @@ export interface Props {
   canonicalURL?: string;
 }
 
-const {
-  title = 'FreeFileTools — Free Browser-Side File Conversion',
-  description = 'Convert files instantly in your browser. No uploads, no servers, 100% private. Supports PNG, JPG, WebP, AVIF and batch compression.',
-  canonicalURL,
-} = Astro.props;
+const siteName = "FreeFileTools";
+const title = "FreeFileTools - Online File Utilities & Optimization Lab";
+const description = "Free online file tools: compress, convert, and optimize images directly in your browser. 100% private and fast.";
+const siteUrl = Astro.site?.toString() || "https://freefiletools.pages.dev";
+const ogImageUrl = `${siteUrl}/og-image.svg`;
 ---
 
 <!doctype html>
@@ -54,14 +54,29 @@ const {
 
     <!-- SEO -->
     <title>{title}</title>
+    <meta name="title" content={title} />
     <meta name="description" content={description} />
-    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
-    <meta name="robots" content="index, follow" />
-
-    <!-- Open Graph -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:url" content={siteUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={siteUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": siteName,
+      "alternateName": ["Free File Tools"],
+      "url": siteUrl
+    })} />
 
     <!-- Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
