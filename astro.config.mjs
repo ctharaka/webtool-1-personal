@@ -1,8 +1,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
-  site: 'https://freefiletools.com',
+  site: 'https://freefiletools.pages.dev',
   output: 'static',
   integrations: [sitemap()],
   devToolbar: {
