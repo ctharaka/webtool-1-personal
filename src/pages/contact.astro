@@ -1,0 +1,286 @@
+---
+/**
+ * contact.astro — Contact Us Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contact Us — FreeFileTools"
+  description="Get in touch with the FreeFileTools team for support, privacy inquiries, feature requests, or feedback."
+>
+  <article class="page-container">
+    <header class="page-header">
+      <h1 class="page-title">Contact Us</h1>
+      <p class="page-subtitle">Have questions, feedback, or feature requests? We'd love to hear from you.</p>
+    </header>
+
+    <div class="contact-grid">
+      <!-- Contact Info Card -->
+      <section class="contact-card info-card">
+        <h2>Direct Support</h2>
+        <p>
+          For general questions, bug reports, feature suggestions, or privacy inquiries, contact our official support email:
+        </p>
+
+        <div class="contact-details">
+          <div class="contact-detail-item">
+            <span class="detail-label">Support Email:</span>
+            <a href="mailto:sajeepriyangika81@gmail.com" class="detail-email-link">
+              sajeepriyangika81@gmail.com
+            </a>
+          </div>
+
+          <div class="contact-detail-item">
+            <span class="detail-label">Expected Response Time:</span>
+            <span class="detail-val">Within 24 to 48 hours</span>
+          </div>
+
+          <div class="contact-detail-item">
+            <span class="detail-label">Service Hours:</span>
+            <span class="detail-val">Monday – Friday (Global Support)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feedback Form Card -->
+      <section class="contact-card form-card">
+        <h2>Send Us a Message</h2>
+        <form
+          action="mailto:sajeepriyangika81@gmail.com"
+          method="POST"
+          enctype="text/plain"
+          class="feedback-form"
+          id="contact-feedback-form"
+        >
+          <div class="form-group">
+            <label for="contact-name" class="form-label">Your Name</label>
+            <input
+              type="text"
+              id="contact-name"
+              name="name"
+              class="form-input"
+              placeholder="e.g. Jane Doe"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="contact-email" class="form-label">Your Email Address</label>
+            <input
+              type="email"
+              id="contact-email"
+              name="email"
+              class="form-input"
+              placeholder="e.g. jane@example.com"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="contact-message" class="form-label">Message</label>
+            <textarea
+              id="contact-message"
+              name="message"
+              rows="5"
+              class="form-textarea"
+              placeholder="How can we help you today?"
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="form-submit-btn">
+            Send Message to sajeepriyangika81@gmail.com
+          </button>
+        </form>
+
+        <div id="contact-success-msg" class="contact-success-msg" aria-live="polite"></div>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contact-feedback-form');
+  const msgContainer = document.getElementById('contact-success-msg');
+
+  form?.addEventListener('submit', (e) => {
+    // Show user confirmation message
+    if (msgContainer) {
+      msgContainer.textContent = 'Opening your email client to send message to sajeepriyangika81@gmail.com... Thank you!';
+      msgContainer.style.display = 'block';
+    }
+  });
+</script>
+
+<style>
+  .page-container {
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .page-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-card h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .contact-card p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-6);
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: auto;
+  }
+
+  .contact-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .detail-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-muted);
+  }
+
+  .detail-email-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+  }
+
+  .detail-email-link:hover {
+    color: var(--color-brand-300);
+  }
+
+  .detail-val {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+
+  /* Form Styles */
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+
+  .form-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-secondary);
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+  }
+
+  .form-submit-btn {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-700));
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .form-submit-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+
+  .contact-success-msg {
+    display: none;
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--color-success-500) 15%, var(--surface-2));
+    border: 1px solid var(--color-success-500);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    color: var(--color-success-400);
+  }
+</style>

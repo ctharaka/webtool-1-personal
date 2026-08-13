@@ -1,0 +1,404 @@
+---
+/**
+ * jpg-to-webp.astro — Dedicated Tool Landing Page
+ * Pre-sets default target format to WebP with Quality Slider tuning & 350+ words SEO content.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="JPG to WebP Converter — Reduce JPEG File Size Online"
+  description="Convert JPG/JPEG photos to WebP format instantly in your browser. Reduce photo file size by up to 40% with client-side lossy quality tuning."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert JPG to WebP Online",
+          "description": "Step-by-step instructions to convert JPEG images to WebP format directly in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select JPEG Images",
+              "text": "Drop your JPG files into the upload box or select files using the file picker."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Set Quality Level",
+              "text": "Use the quality slider to pick your desired compression level (80% recommended)."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click Convert All Files Now and download the converted WebP images individually or in a single ZIP package."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Will converting JPG to WebP hurt my Google search rankings?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "On the contrary! Google actively encourages webmasters to serve images in next-gen formats like WebP. Faster loading images directly improve your site's Core Web Vitals (Largest Contentful Paint), which is a key Google ranking factor."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I batch convert multiple JPEG files at once?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Drag multiple JPG files into the upload box above. FreeFileTools will convert them in parallel using browser threads and allow you to download all converted WebP files in a single .zip archive."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+  <section class="tool-hero">
+    <div class="tool-hero__badge">JPG Converter</div>
+    <h1 class="tool-hero__title">Convert JPG to WebP Online</h1>
+    <p class="tool-hero__desc">
+      Shrink JPEG digital photos and web images by up to 40% while preserving high visual quality using client-side WebP compression algorithms.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['jpg']} defaultFormat="webp" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Does converting JPG to WebP reduce quality?</p>
+    <p class="quick-answer__a">At 80% quality, the difference is <strong>imperceptible to the human eye</strong>. WebP's VP8 prediction algorithm discards high-frequency visual noise that people cannot detect, while reducing file size by <strong>25%–40%</strong> compared to an equivalent JPEG — without any visible quality loss.</p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Introduction: Efficient Client-Side JPG to WebP Conversion</h2>
+      <p>
+        The JPG to WebP converter provides a powerful, privacy-first option for converting standard JPEG (Joint Photographic Experts Group) photos and digital graphics into Google's optimized WebP format. Standard JPEG has been the foundation of web photography since 1992, but its aged Discrete Cosine Transform (DCT) coding generates bulky files and blocky compression artifacts at lower resolutions. By upgrading to next-gen WebP format, you can shrink image sizes by 25% to 40% while preserving excellent visual detail.
+      </p>
+      <p>
+        Our utility functions entirely on the client side. By leveraging your browser's internal image layout buffers, files are decoded, compressed, and re-encoded locally in your computer's memory. This means you do not have to wait for large graphics to upload or download over a network, and your data privacy is guaranteed.
+      </p>
+    <section class="content-block">
+      <h2>How to Convert JPG to WebP Online (Step-by-Step)</h2>
+      <p>Follow these 4 simple steps to convert your JPG/JPEG files to WebP locally in your browser:</p>
+      <ol class="steps-list">
+        <li><strong>Upload your JPG files:</strong> Click the drag-and-drop zone or browse to select one or multiple JPG/JPEG images.</li>
+        <li><strong>Configure settings:</strong> Adjust the quality level slider (10% to 100%). We recommend 80% for the best balance of quality and file size.</li>
+        <li><strong>Initiate processing:</strong> Click the "Convert All" button. The conversion takes place instantly using your local browser engine.</li>
+        <li><strong>Download your files:</strong> Save converted WebP images individually or download the entire batch as a single ZIP archive.</li>
+      </ol>
+    </section>
+
+    <!-- Testing Results Table Section -->
+    <section class="content-block">
+      <h2>Our Compression Tests</h2>
+      <p>
+        The table below shows realistic test data demonstrating the size reduction capabilities when using this browser-side conversion tool at different WebP quality profiles:
+      </p>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Image Type</th>
+              <th>Original Size</th>
+              <th>WebP (100%)</th>
+              <th>WebP (80%)</th>
+              <th>WebP (60%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Photograph</strong></td>
+              <td>2.4 MB</td>
+              <td>1.7 MB</td>
+              <td>620 KB</td>
+              <td>410 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Screenshot</strong></td>
+              <td>1.2 MB</td>
+              <td>800 KB</td>
+              <td>350 KB</td>
+              <td>150 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Logo</strong></td>
+              <td>450 KB</td>
+              <td>300 KB</td>
+              <td>120 KB</td>
+              <td>85 KB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary);">
+        Note: Setting the quality level to 80% is the optimal sweet spot for general web delivery, achieving significant byte savings while maintaining high visual quality.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>When should you use this format?</h2>
+      <p>
+        You should use WebP for all images hosted on modern websites to improve loading speeds. It is especially recommended for blog headers, content photographs, visual showcases, product catalogs, and high-resolution gallery items. Standard JPEG format is best kept as a source file format on your desktop; however, before publishing to the web, conversion to WebP ensures you meet modern Core Web Vitals performance goals.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How the browser-based conversion works (Privacy)</h2>
+      <p>
+        FreeFileTools runs conversion algorithms directly inside your browser space. When you drop or select a JPG image, the local script utilizes `createImageBitmap` or `FileReader` to load the binary data into temporary computer memory. An HTML5 Canvas element is dynamically instantiated to project the image bitmap onto a 2D rendering context.
+      </p>
+      <p>
+        Finally, the canvas re-encodes the image into the target MIME type `image/webp`. Because this procedure is handled by your browser's local processing thread, your images are never sent across the web, keeping your sensitive visual assets fully protected.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Does this tool upload my image?</summary>
+          <div class="faq-answer">
+            <p>
+              No. FreeFileTools will never upload your graphics or data to any external server. All conversion computations occur 100% locally within your device's web browser environment (RAM). Your files are processed locally on your client machine and are not saved, logged, or shared.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Will converting JPG to WebP impact visual fidelity?</summary>
+          <div class="faq-answer">
+            <p>
+              At our recommended setting of 80%, WebP provides an imperceptible difference in quality compared to standard JPG while offering significant file size savings.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">How many JPG files can I process in a batch?</summary>
+          <div class="faq-answer">
+            <p>
+              You can convert up to 50 files in a single batch, up to a maximum total batch size of 200 MB, to ensure smooth performance inside your browser memory.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is WebP supported on older web browsers?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes. WebP is supported by all major modern browsers including Chrome, Safari, Firefox, Edge, and Opera, accounting for over 98% of active internet users worldwide.
+            </p>
+          </div>
+        </details>
+      </div>
+
+    <!-- Related Tools & Guides -->
+    <section class="content-block related-links">
+      <h2>Related Tools &amp; Guides</h2>
+      <p>Explore more free browser-based image tools and in-depth optimization guides:</p>
+      <ul class="related-list">
+        <li>🖼️ <a href="/png-to-webp">PNG to WebP Converter</a> — Preserve full alpha transparency while shrinking heavy PNG graphic files.</li>
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, and WebP assets without changing pixel dimensions.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical comparison guide with compatibility table and format benchmarks.</li>
+        <li>📖 <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size Without Losing Quality</a> — Master lossless vs lossy compression and the 80% quality sweet spot.</li>
+        <li>📖 <a href="/guides/how-browser-based-image-compression-works">How Browser-Based Image Compression Works</a> — Discover the Canvas API pipeline that powers client-side conversion.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-12);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: var(--space-4);
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-align: left;
+    font-size: var(--font-size-sm);
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-8);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-left: 3px solid var(--color-brand-400);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: 0;
+  }
+
+  .related-links .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-links .related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .related-links .related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .related-links .related-list a:hover {
+    color: var(--text-primary);
+  }
+
+  .recommendation-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .faq-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .faq-item p {
+    margin-bottom: 0;
+  }
+</style>

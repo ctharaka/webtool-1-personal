@@ -1,0 +1,1090 @@
+---
+/**
+ * UploadZone.astro
+ *
+ * Interactive 4-State Drag-and-Drop Batch File Converter UI.
+ * 
+ * STATE 1: Upload Dropzone (Multi-file Drag & Drop + File Picker)
+ * STATE 2: Batch Queue & Options (File Items Queue, Target Format Select, Quality Slider, Convert Button)
+ * STATE 3: Processing (Sleek Progress Spinner with live progress)
+ * STATE 4: Download View (Total Stats, Individual Download Rows, JSZip Download All Archive Button)
+ * 
+ * Fully client-side, JSZip CDN integration, magic-number binary validation, accessible.
+ */
+export interface Props {
+  /** Accepted type keys from FILE_TYPES (e.g. ['png','jpg','webp']) */
+  allowedTypes?: string[];
+  /** Optional per-type max-byte overrides */
+  maxSizeOverrides?: Record<string, number>;
+  /** Default target format (e.g. 'webp' | 'png' | 'jpg' | 'avif') */
+  defaultFormat?: string;
+  /** Element ID (for multiple zones on one page) */
+  id?: string;
+}
+
+const {
+  allowedTypes = ['png', 'jpg', 'webp'],
+  maxSizeOverrides = {},
+  defaultFormat = 'webp',
+  id = 'upload-zone',
+} = Astro.props;
+
+const accept = allowedTypes
+  .map((t) => {
+    const mimes: Record<string, string> = {
+      png: '.png,image/png',
+      jpg: '.jpg,.jpeg,image/jpeg',
+      jpeg: '.jpg,.jpeg,image/jpeg',
+      webp: '.webp,image/webp',
+    };
+    return mimes[t] ?? '';
+  })
+  .filter(Boolean)
+  .join(',');
+
+const labelList = allowedTypes.map((t) => t.toUpperCase()).join(', ');
+---
+
+<div
+  class="upload-zone"
+  id={id}
+  data-state="idle"
+  data-allowed-types={JSON.stringify(allowedTypes)}
+  data-max-overrides={JSON.stringify(maxSizeOverrides)}
+  data-default-format={defaultFormat}
+>
+  <!-- Hidden multi-file input -->
+  <input
+    type="file"
+    class="upload-zone__input"
+    id={`${id}-input`}
+    accept={accept}
+    multiple
+    aria-hidden="true"
+    tabindex="-1"
+  />
+
+  <!-- STATE 1: Upload Dropzone (idle / dragover) -->
+  <div
+    class="upload-zone__state upload-zone__idle"
+    role="button"
+    tabindex="0"
+    aria-label={`Upload one or more files to convert. Accepted formats: ${labelList}`}
+  >
+    <div class="upload-zone__icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="4" width="40" height="40" rx="12" stroke="var(--color-brand-400)" stroke-width="2" stroke-dasharray="6 4" opacity="0.6" />
+        <path d="M24 16v16M16 24h16" stroke="var(--color-brand-400)" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+    </div>
+    <p class="upload-zone__heading">Drop file(s) here to convert</p>
+    <p class="upload-zone__sub">
+      or <span class="upload-zone__browse">browse files</span> &middot; Multi-file batch conversion &middot; {labelList}
+    </p>
+  </div>
+
+  <div class="upload-zone__state upload-zone__dragover" aria-hidden="true">
+    <div class="upload-zone__icon">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <rect x="4" y="4" width="40" height="40" rx="12" stroke="var(--color-accent-400)" stroke-width="2.5" />
+        <path d="M24 14v20M17 21l7-7 7 7" stroke="var(--color-accent-400)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <p class="upload-zone__heading">Release to add files</p>
+  </div>
+
+  <!-- Validating Indicator (transient) -->
+  <div class="upload-zone__state upload-zone__validating">
+    <div class="upload-zone__spinner" aria-hidden="true"></div>
+    <p class="upload-zone__heading">Validating file header(s)&hellip;</p>
+  </div>
+
+  <!-- STATE 2: Conversion Options & Batch Queue -->
+  <div class="upload-zone__state upload-zone__options">
+    <div class="batch-header">
+      <h3 class="batch-title">Queued Files (<span class="upload-zone__file-count">0</span>)</h3>
+      <button type="button" class="upload-zone__add-more-btn" title="Add more files">
+        + Add Files
+      </button>
+    </div>
+
+    <!-- Batch Queue List -->
+    <div class="upload-zone__queue-list"></div>
+
+    <div class="options-grid">
+      <div class="option-field dropdown-field">
+        <label for={`${id}-format-select`} class="option-label">Target Format</label>
+        <select id={`${id}-format-select`} class="upload-zone__format-select">
+          <option value="webp" selected={defaultFormat === 'webp'}>WebP (Recommended)</option>
+          <option value="png" selected={defaultFormat === 'png'}>PNG (Lossless)</option>
+          <option value="jpg" selected={defaultFormat === 'jpg'}>JPG / JPEG</option>
+          <option value="avif" selected={defaultFormat === 'avif'}>AVIF (Next-Gen)</option>
+        </select>
+      </div>
+
+      <div class="option-field quality-field">
+        <div class="quality-label-row">
+          <label for={`${id}-quality-slider`} class="option-label">Quality</label>
+          <span class="upload-zone__quality-val">80%</span>
+        </div>
+        <input
+          type="range"
+          id={`${id}-quality-slider`}
+          class="upload-zone__quality-slider"
+          min="10"
+          max="100"
+          value="80"
+          step="5"
+        />
+      </div>
+    </div>
+
+    <button type="button" class="upload-zone__convert-btn primary-btn">
+      Convert All Files Now
+    </button>
+  </div>
+
+  <!-- STATE 3: Processing -->
+  <div class="upload-zone__state upload-zone__processing">
+    <div class="upload-zone__spinner" aria-hidden="true"></div>
+    <p class="upload-zone__heading">Converting files in browser...</p>
+    <p class="upload-zone__sub upload-zone__progress-text">Processing 1 of 1...</p>
+  </div>
+
+  <!-- STATE 4: Download View -->
+  <div class="upload-zone__state upload-zone__download">
+    <div class="success-badge" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="var(--color-success-500)" stroke-width="2.5" />
+        <path d="M16 24l6 6 10-12" stroke="var(--color-success-500)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <p class="upload-zone__heading">Batch Conversion Complete!</p>
+    
+    <div class="stats-box">
+      <span class="upload-zone__stats-text">Total Size Saved: -57%</span>
+    </div>
+
+    <!-- Converted Items List -->
+    <div class="upload-zone__converted-list"></div>
+
+    <div class="download-actions">
+      <button type="button" class="upload-zone__download-zip-btn primary-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Download All (.zip)
+      </button>
+
+      <button type="button" class="upload-zone__reset-btn secondary-btn">
+        Convert Another Batch
+      </button>
+    </div>
+  </div>
+
+  <!-- STATE ERROR -->
+  <div class="upload-zone__state upload-zone__error">
+    <div class="upload-zone__icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="var(--color-error-400)" stroke-width="2" />
+        <path d="M18 18l12 12M30 18L18 30" stroke="var(--color-error-400)" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+    </div>
+    <p class="upload-zone__heading upload-zone__error-title">Upload Failed</p>
+    <p class="upload-zone__sub upload-zone__error-message"></p>
+    <button type="button" class="upload-zone__retry-btn secondary-btn">Try Again</button>
+  </div>
+
+  <!-- Accessibility Announcer -->
+  <div class="sr-only" aria-live="polite" id={`${id}-announcer`}></div>
+
+  <!-- Toast notification for limit alerts -->
+  <div class="upload-zone__toast" id={`${id}-toast`} role="alert" aria-live="assertive"></div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+  import { validateFile, formatBytes } from '../lib/shared/validator.js';
+  import { convertImage, convertBatch, sanitizeFilename, triggerDownload } from '../lib/converter.js';
+
+  document.querySelectorAll('.upload-zone').forEach((zone) => {
+    const input          = /** @type {HTMLInputElement} */ (zone.querySelector('.upload-zone__input'));
+    const idleArea       = zone.querySelector('.upload-zone__idle');
+    const queueListEl    = zone.querySelector('.upload-zone__queue-list');
+    const convertedList  = zone.querySelector('.upload-zone__converted-list');
+    const fileCountEl    = zone.querySelector('.upload-zone__file-count');
+    const formatSelect   = /** @type {HTMLSelectElement} */ (zone.querySelector('.upload-zone__format-select'));
+    const qualitySlider  = /** @type {HTMLInputElement} */ (zone.querySelector('.upload-zone__quality-slider'));
+    const qualityVal     = zone.querySelector('.upload-zone__quality-val');
+    const convertBtn     = zone.querySelector('.upload-zone__convert-btn');
+    const downloadZipBtn = zone.querySelector('.upload-zone__download-zip-btn');
+    const resetBtn       = zone.querySelector('.upload-zone__reset-btn');
+    const addMoreBtn     = zone.querySelector('.upload-zone__add-more-btn');
+    const retryBtn       = zone.querySelector('.upload-zone__retry-btn');
+    const announcer      = document.getElementById(`${zone.id}-announcer`);
+    const progressText   = zone.querySelector('.upload-zone__progress-text');
+
+    const allowedTypes = JSON.parse(zone.getAttribute('data-allowed-types') || '[]');
+    const maxOverrides = JSON.parse(zone.getAttribute('data-max-overrides') || '{}');
+    const defaultFormat = zone.getAttribute('data-default-format') || 'webp';
+
+    /** @type {File[]} */
+    let queuedFiles = [];
+    let createdObjectUrls = [];
+    let lastBatchResults = null;
+    let dragCounter = 0;
+    const MAX_FILE_BYTES = 50 * 1024 * 1024;   // 50 MB per file
+    const MAX_BATCH_BYTES = 200 * 1024 * 1024; // 200 MB total batch
+    const toastEl = document.getElementById(`${zone.id}-toast`);
+
+    function setState(state) {
+      zone.setAttribute('data-state', state);
+    }
+
+    function announce(message) {
+      if (announcer) announcer.textContent = message;
+    }
+
+    function showToast(message, isError = true) {
+      if (!toastEl) return;
+      toastEl.textContent = message;
+      toastEl.className = `upload-zone__toast ${isError ? 'upload-zone__toast--error' : 'upload-zone__toast--info'} upload-zone__toast--visible`;
+      clearTimeout(toastEl._hideTimer);
+      toastEl._hideTimer = setTimeout(() => {
+        toastEl.className = 'upload-zone__toast';
+      }, 5000);
+    }
+
+    function revokeUrls() {
+      createdObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+      createdObjectUrls = [];
+    }
+
+    // ── Drag & Drop ─────────────────────────────────────────
+    zone.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      if (zone.getAttribute('data-state') === 'idle') {
+        dragCounter++;
+        setState('dragover');
+      }
+    });
+
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    zone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      if (zone.getAttribute('data-state') === 'dragover') {
+        dragCounter--;
+        if (dragCounter <= 0) {
+          dragCounter = 0;
+          setState('idle');
+        }
+      }
+    });
+
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      const files = Array.from(/** @type {DragEvent} */ (e).dataTransfer?.files || []);
+      if (files.length > 0) handleIncomingFiles(files);
+    });
+
+    // ── Idle Click / Keyboard Trigger File Input ────────────
+    idleArea?.addEventListener('click', () => {
+      input.click();
+    });
+
+    idleArea?.addEventListener('keydown', (e) => {
+      if (/** @type {KeyboardEvent} */ (e).key === 'Enter' || /** @type {KeyboardEvent} */ (e).key === ' ') {
+        e.preventDefault();
+        input.click();
+      }
+    });
+
+    addMoreBtn?.addEventListener('click', () => {
+      input.click();
+    });
+
+    input.addEventListener('change', () => {
+      const files = Array.from(input.files || []);
+      if (files.length > 0) handleIncomingFiles(files);
+    });
+
+    // ── Handle Incoming Files ──────────────────────────────
+    async function handleIncomingFiles(newFiles) {
+      setState('validating');
+      announce(`Validating ${newFiles.length} file(s)...`);
+
+      const validFiles = [];
+      let firstError = null;
+
+      for (const file of newFiles) {
+        try {
+          const res = await validateFile(file, { allowedTypes, maxSizeOverrides: maxOverrides });
+          if (res.valid) {
+            validFiles.push(file);
+          } else if (!firstError) {
+            firstError = `${file.name}: ${res.error}`;
+          }
+        } catch (e) {
+          if (!firstError) firstError = `Failed to validate ${file.name}`;
+        }
+      }
+
+      if (validFiles.length === 0) {
+        showError(firstError || 'No valid files selected.');
+        return;
+      }
+
+      // Add unique valid files to queue — enforce 50MB per file & 200MB total batch
+      const oversizedFiles = [];
+      validFiles.forEach((file) => {
+        if (file.size > MAX_FILE_BYTES) {
+          oversizedFiles.push(`${file.name} (${(file.size/1024/1024).toFixed(1)} MB exceeds 50 MB limit)`);
+          return;
+        }
+        if (!queuedFiles.some((f) => f.name === file.name && f.size === file.size)) {
+          queuedFiles.push(file);
+        }
+      });
+
+      // Enforce 200 MB total batch limit
+      const totalBytes = queuedFiles.reduce((sum, f) => sum + f.size, 0);
+      if (totalBytes > MAX_BATCH_BYTES) {
+        // Remove files from the end until we are under the limit
+        while (queuedFiles.reduce((sum, f) => sum + f.size, 0) > MAX_BATCH_BYTES) {
+          const removed = queuedFiles.pop();
+          if (removed) oversizedFiles.push(`${removed.name} removed — total batch would exceed 200 MB limit`);
+        }
+      }
+
+      if (oversizedFiles.length > 0) {
+        showToast(`⚠ ${oversizedFiles.length} file(s) skipped: ${oversizedFiles.slice(0,2).join('; ')}${oversizedFiles.length > 2 ? ` and ${oversizedFiles.length - 2} more` : ''}`, true);
+      }
+
+      renderQueueList();
+      setState('options');
+      announce(`${queuedFiles.length} file(s) queued for conversion.`);
+    }
+
+    function renderQueueList() {
+      if (!queueListEl) return;
+      if (fileCountEl) fileCountEl.textContent = String(queuedFiles.length);
+
+      // Clear using DOM API — no innerHTML
+      while (queueListEl.firstChild) queueListEl.removeChild(queueListEl.firstChild);
+
+      queuedFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'queue-item';
+
+        // ── Icon chip ──
+        const iconEl = document.createElement('div');
+        iconEl.className = 'queue-item__icon';
+        const ext = file.name.substring(file.name.lastIndexOf('.') + 1).toUpperCase();
+        iconEl.textContent = ext; // textContent — safe, no XSS
+
+        // ── Details ──
+        const detailsEl = document.createElement('div');
+        detailsEl.className = 'queue-item__details';
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'queue-item__name';
+        nameEl.textContent = file.name; // textContent — safe
+
+        const metaEl = document.createElement('span');
+        metaEl.className = 'queue-item__meta';
+        metaEl.textContent = formatBytes(file.size); // textContent — safe
+
+        detailsEl.appendChild(nameEl);
+        detailsEl.appendChild(metaEl);
+
+        // ── Remove button ──
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'queue-item__remove';
+        removeBtn.dataset.index = String(index);
+        removeBtn.title = 'Remove file';
+        removeBtn.textContent = '\u00D7';
+
+        item.appendChild(iconEl);
+        item.appendChild(detailsEl);
+        item.appendChild(removeBtn);
+        queueListEl.appendChild(item);
+      });
+
+      // Remove file handler
+      queueListEl.querySelectorAll('.queue-item__remove').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
+          queuedFiles.splice(idx, 1);
+          if (queuedFiles.length === 0) {
+            resetToIdle();
+          } else {
+            renderQueueList();
+          }
+        });
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function updateQualitySliderState() {
+      if (!formatSelect || !qualitySlider || !qualityVal) return;
+      const targetFormat = formatSelect.value;
+      if (targetFormat === 'png') {
+        qualitySlider.disabled = true;
+        qualityVal.textContent = 'Lossless';
+      } else {
+        qualitySlider.disabled = false;
+        qualityVal.textContent = `${qualitySlider.value}%`;
+      }
+    }
+
+    formatSelect?.addEventListener('change', updateQualitySliderState);
+
+    qualitySlider?.addEventListener('input', () => {
+      if (qualityVal && !qualitySlider.disabled) {
+        qualityVal.textContent = `${qualitySlider.value}%`;
+      }
+    });
+
+    retryBtn?.addEventListener('click', () => {
+      resetToIdle();
+    });
+
+    // ── Execute Batch Conversion ────────────────────────────
+    convertBtn?.addEventListener('click', async () => {
+      if (queuedFiles.length === 0) return;
+
+      setState('processing');
+      const targetFormat = formatSelect?.value || 'webp';
+      const qualityFloat = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.8;
+
+      try {
+        await new Promise((r) => setTimeout(r, 100));
+
+        const batchRes = await convertBatch(queuedFiles, targetFormat, qualityFloat, (index, itemRes) => {
+          if (progressText) {
+            progressText.textContent = `Processing ${index + 1} of ${queuedFiles.length}...`;
+          }
+        });
+
+        lastBatchResults = batchRes;
+
+        // Collect object URLs for cleanup
+        batchRes.results.forEach((item) => {
+          if (item.result?.url) createdObjectUrls.push(item.result.url);
+        });
+
+        showDownloadState(batchRes);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Batch conversion failed.';
+        showError(msg);
+      }
+    });
+
+    function showDownloadState(batchRes) {
+      if (convertedList) {
+        // Clear using DOM API — never innerHTML
+        while (convertedList.firstChild) convertedList.removeChild(convertedList.firstChild);
+
+        batchRes.results.forEach((item) => {
+          const row = document.createElement('div');
+          row.className = 'converted-item-row';
+
+          if (item.result) {
+            // ── Details column ──
+            const detailsEl = document.createElement('div');
+            detailsEl.className = 'converted-item__details';
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'converted-item__name';
+            nameEl.textContent = item.result.filename; // safe — sanitized in converter.js
+
+            const metaEl = document.createElement('span');
+            metaEl.className = 'converted-item__meta';
+            metaEl.textContent = `${item.result.originalSize} \u2192 ${item.result.convertedSize} (${item.result.savings})`;
+
+            detailsEl.appendChild(nameEl);
+            detailsEl.appendChild(metaEl);
+
+            // ── Download anchor — uses safe blob: URL + sanitized filename ──
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = item.result.url;
+            // Filename is already sanitized by sanitizeFilename() in converter.js
+            downloadAnchor.download = item.result.filename;
+            downloadAnchor.className = 'converted-item__download-link';
+            downloadAnchor.textContent = 'Download';
+
+            // Auto-revoke blob URL after click to prevent RAM accumulation
+            downloadAnchor.addEventListener('click', () => {
+              // Remove from tracked URLs since we're manually revoking
+              const urlIdx = createdObjectUrls.indexOf(item.result.url);
+              if (urlIdx !== -1) createdObjectUrls.splice(urlIdx, 1);
+              // Defer revoke 60 s to allow browser to start download
+              setTimeout(() => URL.revokeObjectURL(item.result.url), 60_000);
+            }, { once: true });
+
+            row.appendChild(detailsEl);
+            row.appendChild(downloadAnchor);
+          } else {
+            // ── Error row — display without HTML injection risk ──
+            const detailsEl = document.createElement('div');
+            detailsEl.className = 'converted-item__details';
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'converted-item__name';
+            nameEl.textContent = item.file.name; // textContent — safe
+
+            const errEl = document.createElement('span');
+            errEl.className = 'converted-item__meta error';
+            errEl.textContent = item.error || 'Failed'; // textContent — safe
+
+            detailsEl.appendChild(nameEl);
+            detailsEl.appendChild(errEl);
+            row.appendChild(detailsEl);
+          }
+
+          convertedList.appendChild(row);
+        });
+      }
+
+      const statsEl = zone.querySelector('.upload-zone__stats-text');
+      if (statsEl) {
+        statsEl.textContent = `${queuedFiles.length} file(s) converted \u00B7 Total: ${batchRes.totalOriginalSize} \u2192 ${batchRes.totalConvertedSize} (${batchRes.totalSavings})`;
+      }
+
+      setState('download');
+      announce(`Batch conversion complete. ${queuedFiles.length} file(s) converted.`);
+    }
+
+    // ── JSZip Export Handler ────────────────────────────────
+    downloadZipBtn?.addEventListener('click', async () => {
+      if (!lastBatchResults || !lastBatchResults.results.length) return;
+
+      const zip = new JSZip();
+      let addedCount = 0;
+
+      lastBatchResults.results.forEach((item) => {
+        if (item.result && item.result.blob) {
+          zip.file(item.result.filename, item.result.blob);
+          addedCount++;
+        }
+      });
+
+      if (addedCount === 0) return;
+
+      const zipBlob = await zip.generateAsync({ type: 'blob', mimeType: 'application/zip' });
+      const zipUrl = URL.createObjectURL(zipBlob);
+      createdObjectUrls.push(zipUrl);
+
+      const tempAnchor = document.createElement('a');
+      tempAnchor.href = zipUrl;
+      tempAnchor.download = 'converted-files.zip';
+      document.body.appendChild(tempAnchor);
+      tempAnchor.click();
+      document.body.removeChild(tempAnchor);
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      resetToIdle();
+    });
+
+    function showError(message) {
+      setState('error');
+      const msgEl = zone.querySelector('.upload-zone__error-message');
+      if (msgEl) msgEl.textContent = message;
+      announce(`Error: ${message}`);
+    }
+
+    function resetToIdle() {
+      revokeUrls();
+      queuedFiles = [];
+      lastBatchResults = null;
+      input.value = '';
+      dragCounter = 0;
+      if (queueListEl) queueListEl.innerHTML = '';
+      if (convertedList) convertedList.innerHTML = '';
+      setState('idle');
+      announce('Ready to upload files.');
+    }
+  });
+</script>
+
+<style>
+  /* ── Zone Container ────────────────────────────────────── */
+  .upload-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: var(--space-8);
+    border: 2px dashed var(--border-subtle);
+    border-radius: var(--radius-xl);
+    background: var(--surface-1);
+    transition:
+      border-color var(--transition-base),
+      background var(--transition-base),
+      box-shadow var(--transition-base);
+    text-align: center;
+  }
+
+  /* ── State Visibility ──────────────────────────────────── */
+  .upload-zone__state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 32rem;
+    gap: var(--space-4);
+    animation: fadeUp 0.25s ease-out;
+  }
+
+  .upload-zone[data-state='idle']       .upload-zone__idle,
+  .upload-zone[data-state='dragover']   .upload-zone__dragover,
+  .upload-zone[data-state='validating'] .upload-zone__validating,
+  .upload-zone[data-state='options']    .upload-zone__options,
+  .upload-zone[data-state='processing'] .upload-zone__processing,
+  .upload-zone[data-state='download']   .upload-zone__download,
+  .upload-zone[data-state='error']      .upload-zone__error {
+    display: flex;
+  }
+
+  /* ── STATE 1: Idle & Dragover ─────────────────────────── */
+  .upload-zone__idle {
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    outline: none;
+  }
+
+  .upload-zone__idle:hover,
+  .upload-zone__idle:focus-visible {
+    border-color: var(--color-brand-400);
+  }
+
+  .upload-zone[data-state='idle']:hover {
+    border-color: var(--color-brand-400);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .upload-zone[data-state='dragover'] {
+    border-color: var(--color-accent-400);
+    background: color-mix(in srgb, var(--color-accent-400) 8%, var(--surface-1));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-400) 20%, transparent);
+  }
+
+  .upload-zone[data-state='options'],
+  .upload-zone[data-state='download'] {
+    border-style: solid;
+    border-color: var(--border-default);
+  }
+
+  .upload-zone[data-state='error'] {
+    border-color: var(--color-error-400);
+  }
+
+  .upload-zone__input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Typography & Elements ────────────────────────────── */
+  .upload-zone__heading {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .upload-zone__sub {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .upload-zone__browse {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .upload-zone__error-title {
+    color: var(--color-error-400);
+  }
+
+  /* ── Batch Queue List (State 2) ───────────────────────── */
+  .batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .batch-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-secondary);
+  }
+
+  .upload-zone__add-more-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-brand-400);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+
+  .upload-zone__add-more-btn:hover {
+    text-decoration: underline;
+  }
+
+  .upload-zone__queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: var(--space-1);
+  }
+
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2-5) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+
+  .queue-item__icon {
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    background: var(--surface-3);
+    color: var(--color-brand-300);
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+  }
+
+  .queue-item__details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-item__name {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .queue-item__meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .queue-item__remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 var(--space-1);
+  }
+
+  .queue-item__remove:hover {
+    color: var(--color-error-400);
+  }
+
+  /* ── Form Controls (State 2) ──────────────────────────── */
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    text-align: left;
+  }
+
+  .option-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+
+  /* Dropdown Overlap Fix: Ensure margin-bottom is set */
+  .dropdown-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .option-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-secondary);
+  }
+
+  .upload-zone__format-select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    outline: none;
+    margin-bottom: var(--space-2);
+    transition: border-color var(--transition-fast);
+  }
+
+  .upload-zone__format-select:focus-visible {
+    border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+  }
+
+  .quality-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .upload-zone__quality-val {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-400);
+  }
+
+  .upload-zone__quality-slider {
+    width: 100%;
+    accent-color: var(--color-brand-500);
+    cursor: pointer;
+  }
+
+  .upload-zone__quality-slider:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* ── Buttons ───────────────────────────────────────────── */
+  .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-3) var(--space-6);
+    background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-700));
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .primary-btn:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: var(--space-2.5) var(--space-5);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .secondary-btn:hover {
+    background: var(--surface-3);
+    border-color: var(--color-brand-400);
+  }
+
+  /* ── Download View (State 4) ──────────────────────────── */
+  .stats-box {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--color-brand-500) 10%, var(--surface-2));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+  }
+
+  .upload-zone__converted-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .converted-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2.5) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+
+  .converted-item__details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    margin-right: var(--space-2);
+  }
+
+  .converted-item__name {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .converted-item__meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .converted-item__meta.error {
+    color: var(--color-error-400);
+  }
+
+  .converted-item__download-link {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-400);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .download-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+  }
+
+  /* ── Spinner ───────────────────────────────────────────── */
+  .upload-zone__spinner {
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--border-subtle);
+    border-top-color: var(--color-brand-400);
+    border-radius: var(--radius-full);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── Toast Alert ────────────────────────────────────────── */
+  .upload-zone__toast {
+    position: absolute;
+    top: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%) translateY(-120%);
+    min-width: 260px;
+    max-width: 90%;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    pointer-events: none;
+    z-index: 300;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .upload-zone__toast--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .upload-zone__toast--error {
+    background: color-mix(in srgb, var(--color-error-400, #f87171) 20%, #1a0a0a);
+    border: 1px solid var(--color-error-400, #f87171);
+    color: var(--color-error-400, #f87171);
+  }
+
+  .upload-zone__toast--info {
+    background: color-mix(in srgb, var(--color-brand-400) 20%, #0a0a1a);
+    border: 1px solid var(--color-brand-400);
+    color: var(--color-brand-300);
+  }
+</style>
+

@@ -1,0 +1,357 @@
+---
+/**
+ * guides/webp-vs-png-vs-jpeg-which-format-to-use.astro — In-Depth Format Comparison
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="WebP vs PNG vs JPEG: Which Format to Use? — FreeFileTools"
+  description="Comprehensive developer guide comparing WebP, PNG, JPEG, and AVIF formats. Discover which compression format is best for website speed, transparency, and SEO."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "WebP vs PNG vs JPEG: Which Format to Use?",
+          "description": "An in-depth guide comparing PNG, JPEG, WebP, and AVIF visual compression standards and browser performance tradeoffs.",
+          "author": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://freefiletools.com/favicon.svg"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is WebP completely supported by all browsers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, WebP is supported by all major modern web browsers including Chrome, Safari, Firefox, Edge, and Opera, covering over 98% of users globally."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I replace all PNG files with WebP?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In almost all web publishing cases, yes. WebP matches PNG transparency features while cutting file sizes by 30% or more, except when working with raw design masters."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <article class="guide-article">
+    <!-- AdSense Slot: Above article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="meta-category">Technical Format Comparison</span> &middot;
+        <span class="meta-readtime">7 min read</span>
+      </div>
+      <h1 class="article-title">WebP vs PNG vs JPEG: Which Format to Use?</h1>
+      <p class="article-lead">
+        Choosing the correct image format is one of the most critical decisions for web performance. Serving outdated formats can lead to slow pages, high bounce rates, and lower search rankings.
+      </p>
+    </header>
+
+    <div class="article-content">
+      <section>
+        <h2>Understanding Legacy Image Standards</h2>
+        <p>
+          To understand why next-generation formats are replacing traditional options, it is helpful to look at how legacy image formats function:
+        </p>
+        <h3>1. PNG (Portable Network Graphics)</h3>
+        <p>
+          Standardized in 1996 to replace the patented GIF format, PNG uses a lossless compression scheme based on the DEFLATE algorithm (combining LZ77 and Huffman coding). Its main benefit is supporting 8-bit alpha channel transparency, enabling smooth blending over complex page background elements.
+        </p>
+        <p>
+          Because it is lossless, PNG preserves sharp edges, lines, and text. However, this causes files to be relatively heavy, making them less suitable for dense, multi-color digital photography.
+        </p>
+
+        <h3>2. JPEG / JPG (Joint Photographic Experts Group)</h3>
+        <p>
+          Introduced in 1992, JPEG is a lossy format designed specifically for digital photography and continuous-tone scenes. It works by converting RGB pixels to YCbCr luminance/chrominance channels, performing a Discrete Cosine Transform (DCT), and quantizing frequency blocks.
+        </p>
+        <p>
+          JPEG works well for photographs because it discards high-frequency details that the human eye struggles to notice. However, it does not support alpha channel transparency, and excessive compression can create noticeable blocky artifacts.
+        </p>
+      </section>
+
+      <section>
+        <h2>The Rise of Modern Next-Generation Formats</h2>
+        <p>
+          Web performance requirements led to the development of modern formats that combine the best aspects of PNG and JPEG:
+        </p>
+        <h3>3. WebP (Google's Unified Format)</h3>
+        <p>
+          WebP was open-sourced by Google in 2010 to serve as a comprehensive replacement for both PNG and JPEG. It supports both lossy and lossless compression. Lossy WebP uses keyframe prediction algorithms derived from the VP8 video codec, while lossless WebP relies on spatial transformation and color mapping dictionary structures.
+        </p>
+        <p>
+          According to Google's performance benchmarks:
+        </p>
+        <ul>
+          <li>WebP lossless files are typically <strong>26% smaller</strong> than equivalent PNGs.</li>
+          <li>WebP lossy files are typically <strong>25% to 34% smaller</strong> than JPEGs at comparable visual quality levels.</li>
+          <li>WebP supports 8-bit alpha channel transparency in both lossy and lossless modes, which legacy JPEG cannot do.</li>
+        </ul>
+
+        <h3>4. AVIF (AV1 Image File Format)</h3>
+        <p>
+          AVIF is a newer format based on the open, royalty-free AV1 video codec. It uses advanced spatial prediction features to offer even greater file size reductions than WebP (often up to 50% smaller than JPEG). However, AVIF encoding requires more CPU processing power, and browser support is slightly more restricted.
+        </p>
+      </section>
+
+      <section>
+        <h2>Technical Specification Breakdown</h2>
+        <p>
+          The table below highlights the technical differences, compression methods, and compatibility levels of each format:
+        </p>
+        <div class="table-wrapper">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th>Feature / Metric</th>
+                <th>PNG</th>
+                <th>JPEG</th>
+                <th>WebP</th>
+                <th>AVIF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Primary Compression</strong></td>
+                <td>Lossless (DEFLATE)</td>
+                <td>Lossy (DCT)</td>
+                <td>Lossless &amp; Lossy (VP8)</td>
+                <td>Lossless &amp; Lossy (AV1)</td>
+              </tr>
+              <tr>
+                <td><strong>Alpha Transparency</strong></td>
+                <td>Yes (8-bit)</td>
+                <td>No</td>
+                <td>Yes (8-bit)</td>
+                <td>Yes (10-bit / 12-bit)</td>
+              </tr>
+              <tr>
+                <td><strong>Animation Support</strong></td>
+                <td>No (APNG exists but lacks support)</td>
+                <td>No</td>
+                <td>Yes</td>
+                <td>Yes</td>
+              </tr>
+              <tr>
+                <td><strong>Typical File Weight</strong></td>
+                <td>100% (Heavy Baseline)</td>
+                <td>50% – 60% of PNG</td>
+                <td>30% – 40% of PNG</td>
+                <td>20% – 30% of PNG</td>
+              </tr>
+              <tr>
+                <td><strong>Global Browser Support</strong></td>
+                <td>100% (Universal)</td>
+                <td>100% (Universal)</td>
+                <td>98.5% (Wide Adoption)</td>
+                <td>92.0% (Modern Only)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Practical Recommendations for Web Developers</h2>
+        <p>
+          To optimize your web page speed and user experience, follow these guidelines for selecting image formats:
+        </p>
+        <ul>
+          <li><strong>Use WebP as your main web format:</strong> It provides the best balance of browser compatibility and file size savings for general web graphics, logos, icons, and blog photographs. Use our free <a href="/png-to-webp">PNG to WebP Converter</a> or <a href="/jpg-to-webp">JPG to WebP Converter</a> to upgrade your images instantly.</li>
+          <li><strong>Use PNG for design source files:</strong> PNG is still ideal as an offline format for master assets that require repeated editing. However, convert them to <a href="/png-to-webp">WebP</a> before publishing them online.</li>
+          <li><strong>Use AVIF for highly optimized hero sections:</strong> For prominent landing page hero graphics where every kilobyte matters, AVIF is excellent if you use fallback elements for unsupported browsers.</li>
+          <li><strong>Avoid legacy JPEGs where possible:</strong> Standard JPEG should generally be <a href="/jpg-to-webp">converted to WebP</a> to reduce byte weight and improve Core Web Vitals.</li>
+        </ul>
+      </section>
+
+      <section class="guide-tool-links">
+        <h2>Try the Tools</h2>
+        <p>Ready to put this knowledge into practice? Start converting and compressing images immediately using our free browser-based tools:</p>
+        <ul class="guide-related-list">
+          <li>🖼️ <a href="/png-to-webp">PNG to WebP Converter</a> — Shrink PNG graphics by up to 80% while preserving full alpha transparency.</li>
+          <li>🔄 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Reduce JPEG photo sizes by 25%–40% with client-side WebP compression.</li>
+          <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, and WebP without changing pixel dimensions.</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- AdSense Slot: Below article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide-article {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-10);
+    text-align: center;
+  }
+
+  .article-meta {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .meta-category {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .article-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-lead {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .article-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .article-content h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  .article-content p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content ul {
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-4);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-6) 0;
+  }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-size: var(--font-size-sm);
+  }
+
+  .spec-table th,
+  .spec-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+    text-align: left;
+  }
+
+  .spec-table th {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .spec-table td {
+    color: var(--text-secondary);
+  }
+
+  .article-content a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .article-content a:hover {
+    color: var(--text-primary);
+  }
+
+  .guide-tool-links h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .guide-tool-links p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .guide-related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .guide-related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .guide-related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .guide-related-list a:hover {
+    color: var(--text-primary);
+  }
+</style>

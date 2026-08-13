@@ -1,0 +1,169 @@
+---
+/**
+ * guides/index.astro — Guides & Editorial Hub
+ * Authoritative learning center for image optimization, browser technology, and web performance.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Image Optimization & Web Performance Guides — FreeFileTools"
+  description="In-depth tutorials and technical guides on WebP compression, Core Web Vitals image optimization, and client-side browser privacy."
+>
+  <section class="hub-hero">
+    <div class="hub-hero__badge">Editorial &amp; Research</div>
+    <h1 class="hub-hero__title">Guides &amp; Technical Articles</h1>
+    <p class="hub-hero__desc">
+      Master modern web image formats, boost Google Core Web Vitals rankings, and understand client-side privacy architecture.
+    </p>
+  </section>
+
+  <section class="articles-grid">
+    <article class="article-card">
+      <div class="article-card__tag">Format Comparison</div>
+      <h2 class="article-card__title">
+        <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a>
+      </h2>
+      <p class="article-card__excerpt">
+        A deep-dive technical comparison of compression algorithms, alpha transparency, load speeds, and browser support rules.
+      </p>
+      <div class="article-card__footer">
+        <span class="read-time">7 min read</span>
+        <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use" class="read-link">Read Guide &rarr;</a>
+      </div>
+    </article>
+
+    <article class="article-card">
+      <div class="article-card__tag">Web Performance &amp; SEO</div>
+      <h2 class="article-card__title">
+        <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size Without Losing Quality</a>
+      </h2>
+      <p class="article-card__excerpt">
+        Learn how image byte weight, lossy compression levels, visual perception metrics, and the 80% compression sweet spot affect rankings.
+      </p>
+      <div class="article-card__footer">
+        <span class="read-time">6 min read</span>
+        <a href="/guides/how-to-reduce-image-size-without-losing-quality" class="read-link">Read Guide &rarr;</a>
+      </div>
+    </article>
+
+    <article class="article-card">
+      <div class="article-card__tag">Security &amp; Privacy</div>
+      <h2 class="article-card__title">
+        <a href="/guides/how-browser-based-image-compression-works">How Browser-Based Image Compression Works</a>
+      </h2>
+      <p class="article-card__excerpt">
+        Explore how HTML5 Canvas, off-screen buffers, and local memory execution eliminate security risks by keeping your files on your device.
+      </p>
+      <div class="article-card__footer">
+        <span class="read-time">5 min read</span>
+        <a href="/guides/how-browser-based-image-compression-works" class="read-link">Read Guide &rarr;</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- AdSense Slot: Below guide section -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .hub-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-8);
+  }
+
+  .hub-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .hub-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .hub-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-6);
+    padding-bottom: var(--space-16);
+  }
+
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    transition: border-color var(--transition-base), transform var(--transition-base);
+  }
+
+  .article-card:hover {
+    border-color: var(--color-brand-400);
+    transform: translateY(-2px);
+  }
+
+  .article-card__tag {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-3);
+  }
+
+  .article-card__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-3);
+  }
+
+  .article-card__title a:hover {
+    color: var(--color-brand-400);
+  }
+
+  .article-card__excerpt {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-6);
+    flex: 1;
+  }
+
+  .article-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-default);
+    font-size: var(--font-size-xs);
+  }
+
+  .read-time {
+    color: var(--text-muted);
+  }
+
+  .read-link {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+  }
+</style>

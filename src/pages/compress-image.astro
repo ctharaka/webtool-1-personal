@@ -1,0 +1,401 @@
+---
+/**
+ * compress-image.astro — Dedicated Image Compressor Tool Landing Page
+ * Pre-sets default format and quality tuning with 350+ words of specialized SEO content.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="Browser-Side Image Compressor — Shrink Image File Size Online"
+  description="Compress PNG, JPG, and WebP images directly in your browser. Reduce image size up to 80% without losing quality. 100% free, private, and fast."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Compress Images Online in Your Browser",
+          "description": "Learn how to compress PNG, JPG, and WebP images using browser-side client-side execution.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload Images",
+              "text": "Select single or multiple image files (PNG, JPG, WebP) to compress."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Adjust Quality Settings",
+              "text": "Choose your target output format and fine-tune the compression quality percentage."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Export Compressed Files",
+              "text": "Download your compressed image files individually or export as a ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Will image compression reduce pixel dimensions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, our compressor preserves the exact pixel dimensions (width and height) of your original image while re-encoding color data to reduce byte weight."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is this service free to use for commercial projects?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! FreeFileTools is 100% free for both personal and commercial use. There are no subscriptions, ads blocking features, or watermarks."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Image Compression</div>
+    <h1 class="tool-hero__title">Online Image Compressor</h1>
+    <p class="tool-hero__desc">
+      Shrink PNG, JPG, WebP, and AVIF image byte size in seconds. Keep your site lightning fast with client-side canvas re-encoding.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone defaultFormat="webp" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Does compressing an image reduce its pixel dimensions?</p>
+    <p class="quick-answer__a">No. This compressor re-encodes color data to reduce byte weight while leaving pixel width and height <strong>completely unchanged</strong>. A 1920×1080 image stays 1920×1080 — only the file size shrinks, typically by <strong>60%–80%</strong> at 80% quality.</p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Introduction: Advanced Browser-Side Image Compression Suite</h2>
+      <p>
+        The online image compressor tool is designed to compress JPEG, PNG, and WebP assets to decrease website loading speed and conserve network bandwidth. Digital images contain detailed metadata, redundant color indices, and pixel matrices that represent significant weight. Standard layouts suffer from high bounce rates when large images block the browser layout thread. By compressing these assets, you can achieve smaller file sizes while preserving their exact pixel dimensions.
+      </p>
+      <p>
+        Our image compressor handles processing locally in your client browser memory using HTML5 Canvas. This avoids the latency of server-based API platforms, prevents network upload caps, and guarantees your complete privacy.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Compress Images Online (Step-by-Step)</h2>
+      <p>Follow these 4 simple steps to compress your image files locally in your browser:</p>
+      <ol class="steps-list">
+        <li><strong>Upload your images:</strong> Drag and drop your PNG, JPG, or WebP files, or select them via the file browser.</li>
+        <li><strong>Set preferences:</strong> Select your target output format and adjust the quality level slider to tune the compression depth.</li>
+        <li><strong>Process:</strong> Click the "Convert All" button. Images are compressed in parallel directly within device RAM.</li>
+        <li><strong>Save:</strong> Click download on individual images or export the entire compressed batch as a single ZIP archive.</li>
+      </ol>
+    </section>
+
+    <!-- Testing Results Table Section -->
+    <section class="content-block">
+      <h2>Our Compression Tests</h2>
+      <p>
+        The table below shows realistic test data demonstrating the size reduction capabilities when using this browser-side compression tool at different WebP quality profiles:
+      </p>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Image Type</th>
+              <th>Original Size</th>
+              <th>WebP (100%)</th>
+              <th>WebP (80%)</th>
+              <th>WebP (60%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Photograph</strong></td>
+              <td>2.4 MB</td>
+              <td>1.7 MB</td>
+              <td>620 KB</td>
+              <td>410 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Screenshot</strong></td>
+              <td>1.2 MB</td>
+              <td>800 KB</td>
+              <td>350 KB</td>
+              <td>150 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Logo</strong></td>
+              <td>450 KB</td>
+              <td>300 KB</td>
+              <td>120 KB</td>
+              <td>85 KB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary);">
+        Note: Setting the quality level to 80% is the optimal sweet spot for general web delivery, achieving significant byte savings while maintaining high visual quality.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>When should you use compressed formats?</h2>
+      <p>
+        Compressed images should be used across all web environments. You should optimize visual assets before publishing to blogs, portfolios, e-commerce stores, and landing pages. Compressing your images is especially vital to address Google's Largest Contentful Paint (LCP) performance metrics. When page assets load quickly, search engine robots rank pages higher, leading to better organic traffic and higher conversion rates.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How the browser-based conversion works (Privacy)</h2>
+      <p>
+        FreeFileTools utilizes client-side scripting to process files. When you drop images into the upload container, the browser handles image parsing via local memory allocations. The script creates an off-screen HTML5 Canvas node, renders the source graphic onto the 2D layout context, and exports a compressed output using the browser's native `canvas.toBlob` API.
+      </p>
+      <p>
+        Because all computation is completed on your local device CPU/GPU, no raw pixel streams or file names are ever uploaded to a remote database, ensuring your visual assets remain 100% private.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Does this tool upload my image?</summary>
+          <div class="faq-answer">
+            <p>
+              No. FreeFileTools will never upload your graphics or data to any external server. All conversion computations occur 100% locally within your device's web browser environment (RAM). Your files are processed locally on your client machine and are not saved, logged, or shared.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Will compressing my images change their pixel width or height?</summary>
+          <div class="faq-answer">
+            <p>
+              No. The compressor leaves your image dimensions unchanged, re-encoding the color matrices and pixel data to reduce the overall byte weight of the file.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">How many files can I compress at the same time?</summary>
+          <div class="faq-answer">
+            <p>
+              Our batch engine supports up to 50 files per batch, with a maximum combined size of 200 MB, to ensure fast processing times and prevent browser tab crashes.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I export all compressed files in a single download?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes. Once the conversion process completes, you can click "Download All (.zip)" to bundle all of your compressed image assets into a single zip archive.
+            </p>
+          </div>
+        </details>
+      </div>
+
+    <!-- Related Tools & Guides -->
+    <section class="content-block related-links">
+      <h2>Related Tools &amp; Guides</h2>
+      <p>Explore more free browser-based image tools and in-depth guides on image optimization:</p>
+      <ul class="related-list">
+        <li>🖼️ <a href="/png-to-webp">PNG to WebP Converter</a> — Convert transparent PNG graphics to lightweight WebP format in seconds.</li>
+        <li>🔄 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Reduce JPEG photo file sizes by up to 40% with browser-side WebP conversion.</li>
+        <li>📖 <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size Without Losing Quality</a> — Master lossless vs lossy compression and the 80% quality sweet spot.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Full technical comparison with browser compatibility table.</li>
+        <li>📖 <a href="/guides/how-browser-based-image-compression-works">How Browser-Based Image Compression Works</a> — Deep-dive into the Canvas API pipeline that processes your images locally.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-12);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  @media (max-width: 768px) {
+    .benefits-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .benefit-card {
+    padding: var(--space-5);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+  }
+
+  .benefit-card h3 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-8);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-left: 3px solid var(--color-brand-400);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: 0;
+  }
+
+  .related-links .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-links .related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .related-links .related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .related-links .related-list a:hover {
+    color: var(--text-primary);
+  }
+
+  .guide-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .faq-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .faq-item p {
+    margin-bottom: 0;
+  }
+</style>

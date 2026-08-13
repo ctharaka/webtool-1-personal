@@ -1,0 +1,270 @@
+---
+/**
+ * guides/how-browser-based-image-compression-works.astro — Browser-Side Mechanics & Privacy Guide
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="How Browser-Based Image Compression Works — FreeFileTools"
+  description="Deep dive into browser-side image processing. Understand HTML5 Canvas encoding, local RAM execution, and why serverless tools are safer."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "How Browser-Based Image Compression Works",
+          "description": "A technical overview of browser-side image compression mechanics, Canvas rendering contexts, and local memory security.",
+          "author": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://freefiletools.com/favicon.svg"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does client-side conversion require an internet connection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Once the initial website page loads, the image conversion scripts run entirely within your local browser layout and do not require active network traffic."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How is my data protected on FreeFileTools?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No image data is transmitted to our servers. All files are loaded as local Blobs into your computer RAM and vanish when you close the browser tab."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <article class="guide-article">
+    <!-- AdSense Slot: Above article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="meta-category">Browser Architecture</span> &middot;
+        <span class="meta-readtime">5 min read</span>
+      </div>
+      <h1 class="article-title">How Browser-Based Image Compression Works</h1>
+      <p class="article-lead">
+        Discover the technology that powers FreeFileTools. Learn how browser APIs enable fast image compression directly on your device without server uploads.
+      </p>
+    </header>
+
+    <div class="article-content">
+      <section>
+        <h2>The Architecture of Serverless File Conversion</h2>
+        <p>
+          Traditional online file conversion websites require uploading your images to a remote web server. This introduces network latency and raises potential data privacy concerns.
+        </p>
+        <p>
+          FreeFileTools solves this by performing all image decoding and encoding operations locally within your browser context. This approach is made possible by modern browser standard APIs, including the HTML5 File Reader API and the Canvas API.
+        </p>
+      </section>
+
+      <section>
+        <h2>Step 1: Reading Binary File Streams Locally</h2>
+        <p>
+          When you drag and drop a file or click our upload button, the browser generates an internal file reference via the <code>FileReader</code> API or local Object URLs.
+        </p>
+        <p>
+          Instead of transferring file data over the network, JavaScript loads the binary data into a local <code>Uint8Array</code>. This buffer is then verified using magic-number checks. By inspecting the file's first few bytes directly in RAM, the utility confirms the actual format (e.g., verifying that a PNG file begins with the <code>0x89 50 4E 47</code> signature) before processing.
+        </p>
+      </section>
+
+      <section>
+        <h2>Step 2: Drawing Images to HTML5 Canvas</h2>
+        <p>
+          After validating the file, the browser loads the image binary data into an off-screen image element or a <code>ImageBitmap</code>. This prepares the pixel matrices for canvas rendering:
+        </p>
+        <p>
+          An off-screen <code>&lt;canvas&gt;</code> element is created in memory, with its dimensions matched to the source image. The canvas 2D rendering context (<code>getContext('2d')</code>) then draws the source image onto the layout buffer using the browser's native rendering engine.
+        </p>
+        <p>
+          This step provides direct access to the image's raw pixel data (RGBA coordinates) in local memory, allowing the browser to perform calculations locally.
+        </p>
+      </section>
+
+      <section>
+        <h2>Step 3: Exporting Compressed Output</h2>
+        <p>
+          Once drawn, the canvas pixel data is re-encoded into your chosen format using the <code>canvas.toBlob()</code> API:
+        </p>
+        <ul>
+          <li><strong>MIME Type Specification:</strong> The browser is instructed to export the data as a specific format, such as <code>image/webp</code> or <code>image/jpeg</code>.</li>
+          <li><strong>Quality Parameter:</strong> The quality slider value (e.g., 0.8) is passed to the encoder. The browser then applies lossy quantization tables during the export.</li>
+          <li><strong>Blob URL Creation:</strong> The resulting compressed binary file is mapped to a local <code>blob:</code> URL. This URL references the data in your device's RAM, enabling direct downloads without server interaction.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why Browser-Side Processing is Safer</h2>
+        <p>
+          Processing files directly in the browser offers key advantages for data privacy and speed:
+        </p>
+        <ul>
+          <li><strong>Zero Data Transmission:</strong> Because no files are uploaded to external servers, your data is safe from cloud security breaches or third-party profiling.</li>
+          <li><strong>Instant Performance:</strong> Operations run at your device's local memory speeds, avoiding the delays associated with uploading and downloading large files.</li>
+          <li><strong>Automated Clean Up:</strong> The browser automatically frees the allocated memory buffers as soon as you close or reload the website tab.</li>
+        </ul>
+      </section>
+
+      <section class="guide-tool-links">
+        <h2>Try It Now — No Upload Required</h2>
+        <p>Experience browser-based image processing yourself. Choose a tool below and convert or compress images instantly, entirely within your browser:</p>
+        <ul class="guide-related-list">
+          <li>🖼️ <a href="/png-to-webp">PNG to WebP Converter</a> — Compress PNG with full alpha transparency support, processed 100% locally.</li>
+          <li>🔄 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Reduce JPEG photo sizes using client-side Canvas API encoding.</li>
+          <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, and WebP without uploading a single byte to any server.</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- AdSense Slot: Below article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide-article {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .article-header {
+    margin-bottom: var(--space-10);
+    text-align: center;
+  }
+
+  .article-meta {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .meta-category {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .article-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-lead {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .article-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .article-content h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content code {
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    color: var(--color-accent-400);
+  }
+
+  .article-content ul {
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-4);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .article-content li {
+    margin-bottom: var(--space-2);
+  }
+
+  .article-content a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .article-content a:hover {
+    color: var(--text-primary);
+  }
+
+  .guide-tool-links h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .guide-tool-links p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .guide-related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .guide-related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .guide-related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .guide-related-list a:hover {
+    color: var(--text-primary);
+  }
+</style>

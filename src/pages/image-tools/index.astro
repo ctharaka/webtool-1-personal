@@ -1,0 +1,189 @@
+---
+/**
+ * image-tools/index.astro — Image Tools Index / Hub Page
+ * Scalable category index for image optimization tools.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Browser-Side Image Optimization Tools Hub — FreeFileTools"
+  description="Explore our suite of 100% private browser-side image conversion and compression tools. Process PNG, JPG, and WebP locally without cloud uploads."
+>
+  <header class="hub-hero">
+    <h1 class="hub-title">Online Image Optimization Tools</h1>
+    <p class="hub-desc">
+      All conversion, compression, and encoding processes occur locally inside your browser memory. Your files are never uploaded to any remote server.
+    </p>
+  </header>
+
+  <!-- AdSense Slot: Above tools list -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="tools-hub" aria-label="Available Image Tools">
+    <!-- Category: Convert -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">🔄</span> Convert Formats
+      </h2>
+      <p class="category-desc">Convert legacy raster file formats into highly optimized next-generation files with customized quality sliders.</p>
+      
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/png-to-webp">PNG to WebP Converter</a></h3>
+          <p class="tool-desc">
+            Transform Portable Network Graphics (PNG) to WebP format. Retains 8-bit alpha transparency while compressing file sizes by up to 35%.
+          </p>
+          <a href="/png-to-webp" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/jpg-to-webp">JPG to WebP Converter</a></h3>
+          <p class="tool-desc">
+            Convert Joint Photographic Experts Group (JPG/JPEG) photographs to WebP. Drastically reduce photo storage weight for mobile web optimization.
+          </p>
+          <a href="/jpg-to-webp" class="tool-link">Use Converter &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Compress -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📉</span> Compress &amp; Optimize
+      </h2>
+      <p class="category-desc">Shrink the raw byte weight of digital graphics and assets without altering their original visual dimensions.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/compress-image">Image Compressor</a></h3>
+          <p class="tool-desc">
+            Compress JPG, PNG, and WebP images. Select lossy or lossless compression standards to fit Web Vitals LCP scoring targets.
+          </p>
+          <a href="/compress-image" class="tool-link">Use Compressor &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AdSense Slot: Below tools list -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .hub-hero {
+    text-align: center;
+    padding: var(--space-10) 0 var(--space-8);
+  }
+
+  .hub-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .hub-desc {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 44ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose);
+  }
+
+  .tools-hub {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .category-block {
+    border-top: 1px solid var(--border-default);
+    padding-top: var(--space-8);
+  }
+
+  .category-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .category-icon {
+    font-size: 1.25em;
+    user-select: none;
+  }
+
+  .category-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 600px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform var(--transition-base), border-color var(--transition-base);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400);
+  }
+
+  .tool-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .tool-title a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .tool-title a:hover {
+    color: var(--color-brand-400);
+  }
+
+  .tool-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+    flex-grow: 1;
+  }
+
+  .tool-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    text-decoration: none;
+  }
+
+  .tool-link:hover {
+    text-decoration: underline;
+  }
+</style>

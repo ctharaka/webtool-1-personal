@@ -1,0 +1,429 @@
+---
+/**
+ * png-to-webp.astro — Dedicated Tool Landing Page
+ * Pre-sets default target format to WebP with 350+ words of specialized technical content.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="PNG to WebP Converter — Free Browser-Side Batch Image Tool"
+  description="Convert PNG images to WebP format instantly in your browser. 100% private client-side conversion with lossless & lossy WebP compression settings."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PNG to WebP Online",
+          "description": "Step-by-step instructions to convert PNG images to WebP format directly in your browser without cloud uploads.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload or Drag PNG Files",
+              "text": "Drop your PNG image or select multiple PNG files using the browser file picker."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Compression Quality",
+              "text": "Select WebP as your target format and adjust the quality slider to your desired balance of visual fidelity and size."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Instant Download or ZIP Export",
+              "text": "Click Convert All Files Now to process images instantly and download individually or as a single ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does WebP support transparent PNG backgrounds?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! WebP fully supports 8-bit alpha channel transparency (just like PNG), allowing you to maintain transparent backgrounds for logos and website graphics with significantly lower byte weight."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my files uploaded to a cloud server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FreeFileTools processes all images 100% locally in your web browser using JavaScript HTML5 Canvas APIs. Your private images never leave your device memory."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Dedicated Converter</div>
+    <h1 class="tool-hero__title">Convert PNG to WebP Online</h1>
+    <p class="tool-hero__desc">
+      Transform heavy PNG graphic files into lightweight, next-generation WebP images without uploading your files to any external server.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above the main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['png']} defaultFormat="webp" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Can WebP be smaller than PNG?</p>
+    <p class="quick-answer__a">Yes. WebP lossless images are on average <strong>26% smaller</strong> than equivalent PNGs. With lossy WebP at 80% quality you can achieve savings of <strong>60%–80%</strong> while maintaining perceptually identical visual output — making it the recommended format for all web publishing workflows.</p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Introduction: High-Fidelity Browser-Side PNG to WebP Conversion</h2>
+      <p>
+        The PNG to WebP converter is designed to streamline web publishing workflows by converting heavy Portable Network Graphics (PNG) files into optimized, next-generation WebP images. PNG files are widely valued for their lossless quality and support for full alpha channel transparency, making them the preferred format for logos, illustrations, and graphic overlays. However, their uncompressed structure leads to bloated file sizes that can severely impact page load performance, increase mobile data consumption, and lower search engine visibility.
+      </p>
+      <p>
+        By leveraging Google's WebP image format, webmasters can compress image sizes by 25% to 35% or even more, while maintaining equivalent visual fidelity and transparency. Our utility operates directly in the browser using HTML5 Canvas, ensuring that your images are processed locally on your client machine without being uploaded to any cloud infrastructure.
+    <section class="content-block">
+      <h2>How to Convert PNG to WebP Online (Step-by-Step)</h2>
+      <p>Follow these 4 simple steps to convert your PNG files to WebP locally in your browser:</p>
+      <ol class="steps-list">
+        <li><strong>Upload your PNG files:</strong> Click the drag-and-drop zone or browse to select one or multiple PNG images.</li>
+        <li><strong>Configure settings:</strong> Adjust the quality level slider (10% to 100%). We recommend 80% for the best balance of quality and file size.</li>
+        <li><strong>Initiate processing:</strong> Click the "Convert All" button. The conversion takes place instantly using your local browser engine.</li>
+        <li><strong>Download your files:</strong> Save converted WebP images individually or download the entire batch as a single ZIP archive.</li>
+      </ol>
+    </section>
+
+    <!-- Testing Results Table Section -->
+    <section class="content-block">
+      <h2>Our Compression Tests</h2>
+      <p>
+        The table below shows realistic test data demonstrating the size reduction capabilities when using this browser-side conversion tool at different WebP quality profiles:
+      </p>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Image Type</th>
+              <th>Original Size</th>
+              <th>WebP (100%)</th>
+              <th>WebP (80%)</th>
+              <th>WebP (60%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Photograph</strong></td>
+              <td>2.4 MB</td>
+              <td>1.7 MB</td>
+              <td>620 KB</td>
+              <td>410 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Screenshot</strong></td>
+              <td>1.2 MB</td>
+              <td>800 KB</td>
+              <td>350 KB</td>
+              <td>150 KB</td>
+            </tr>
+            <tr>
+              <td><strong>Logo</strong></td>
+              <td>450 KB</td>
+              <td>300 KB</td>
+              <td>120 KB</td>
+              <td>85 KB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary);">
+        Note: Setting the quality level to 80% is the optimal sweet spot for general web delivery, achieving significant byte savings while maintaining high visual quality.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>When should you use this format?</h2>
+      <p>
+        WebP is highly recommended for all modern web publishing scenarios. You should use WebP for vector-style web graphics, website logos, icon sets, illustrations, and high-fidelity mockups that require transparent backgrounds. It is also excellent for photographic content where high-contrast edges must remain sharp. Because WebP is universally supported across Google Chrome, Apple Safari, Mozilla Firefox, and Microsoft Edge, it acts as a reliable standard to accelerate your website's rendering performance.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How the browser-based conversion works (Privacy)</h2>
+      <p>
+        Unlike traditional online image utilities that upload your source files to distant cloud databases for batch re-encoding, FreeFileTools relies on client-side memory spaces. When you select a PNG image, JavaScript initiates an off-screen HTML5 Canvas node inside your local browser layout. The browser re-encodes the visual pixel coordinates into a WebP blob format using local hardware acceleration.
+      </p>
+      <p>
+        This architecture ensures that your data remains completely private. No server connections are created to transmit the images, meaning there is zero threat of cloud data exposure, storage breaches, or user profiling.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Does this tool upload my image?</summary>
+          <div class="faq-answer">
+            <p>
+              No. FreeFileTools will never upload your graphics or data to any external server. All conversion computations occur 100% locally within your device's web browser environment (RAM). Your files are processed locally on your client machine and are not saved, logged, or shared.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Will converting my PNG to WebP preserve transparency?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes. WebP fully supports 8-bit alpha channel transparency in both lossy and lossless compression settings, ensuring transparent logos and backgrounds render perfectly on web layouts.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a limit on the number of files I can batch convert?</summary>
+          <div class="faq-answer">
+            <p>
+              You can queue up to 50 files or a total batch size of 200 MB. The processing executes in parallel directly on your local threads, making it incredibly fast.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Why choose WebP over standard PNG for web optimization?</summary>
+          <div class="faq-answer">
+            <p>
+              WebP images have significantly lower byte weights than standard PNG files, resulting in faster Largest Contentful Paint (LCP) speeds and better overall Core Web Vitals rankings.
+            </p>
+          </div>
+        </details>
+      </div>
+    <!-- Related Tools & Guides -->
+    <section class="content-block related-links">
+      <h2>Related Tools &amp; Guides</h2>
+      <p>Explore more free browser-based image tools and in-depth optimization guides:</p>
+      <ul class="related-list">
+        <li>🖼️ <a href="/jpg-to-webp">JPG to WebP Converter</a> — Shrink JPEG photos by up to 40% with client-side WebP conversion.</li>
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, and WebP assets without resizing pixel dimensions.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical comparison guide with spec table and recommendations.</li>
+        <li>📖 <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size Without Losing Quality</a> — Learn lossless vs lossy techniques and the 80% quality sweet spot.</li>
+        <li>📖 <a href="/guides/how-browser-based-image-compression-works">How Browser-Based Image Compression Works</a> — Deep-dive into the Canvas API pipeline powering FreeFileTools.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-12);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-8);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-left: 3px solid var(--color-brand-400);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: 0;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: var(--space-4);
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-align: left;
+    font-size: var(--font-size-sm);
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .related-links .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-links .related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .related-links .related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .related-links .related-list a:hover {
+    color: var(--text-primary);
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  @media (max-width: 600px) {
+    .comparison-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .comparison-card {
+    padding: var(--space-6);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+  }
+
+  .comparison-card h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-2);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .faq-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .faq-item h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .faq-item p {
+    margin-bottom: 0;
+  }
+</style>

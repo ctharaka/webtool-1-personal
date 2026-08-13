@@ -1,0 +1,124 @@
+---
+/**
+ * about.astro — About Us Page
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About Us — FreeFileTools"
+  description="Learn about FreeFileTools, our mission to build fast, open-source, client-side web tools, and our commitment to absolute data privacy."
+>
+  <article class="page-container">
+    <header class="page-header">
+      <h1 class="page-title">About FreeFileTools</h1>
+      <p class="page-subtitle">Free, open-source, client-side web utility tools engineered for privacy and speed.</p>
+    </header>
+
+    <div class="page-body">
+      <section>
+        <h2>Our Mission</h2>
+        <p>
+          FreeFileTools was created with a fundamental mission: web file processing utilities should be completely free, lightning fast, and 100% private.
+        </p>
+        <p>
+          Unlike traditional web file converters that upload your sensitive documents, graphics, and photographs to remote cloud servers, FreeFileTools operates <strong>entirely inside your web browser</strong>. Your files are processed locally in your device memory and never leave your system.
+        </p>
+      </section>
+
+      <section>
+        <h2>Client-Side Technology &amp; Privacy Architecture</h2>
+        <p>
+          We leverage modern browser standards to deliver serverless file conversion:
+        </p>
+        <ul>
+          <li><strong>HTML5 Canvas API:</strong> Native 2D context image re-encoding for high-performance format conversion (PNG, JPG, WebP, AVIF).</li>
+          <li><strong>Magic Number Header Inspection:</strong> Binary byte verification to ensure file integrity directly in local RAM.</li>
+          <li><strong>Vanilla JavaScript &amp; WebAssembly:</strong> Lightweight execution pipelines with zero third-party framework overhead.</li>
+          <li><strong>JSZip Engine:</strong> Client-side ZIP archive compilation for multi-file batch downloads.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why Zero-Server-Upload Privacy Matters</h2>
+        <p>
+          Uploading private photos, personal graphics, or business documents to cloud servers poses inherent privacy risks, including data breaches, accidental cloud exposure, and third-party data tracking. By processing files locally:
+        </p>
+        <ul>
+          <li><strong>100% Private:</strong> Your files never touch a remote server disk or database.</li>
+          <li><strong>No Data Caps:</strong> Process unlimited batch files without artificial file size or daily upload quotas.</li>
+          <li><strong>Instant Speed:</strong> Conversions execute at your device's memory bus speed without network upload latency.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Contact &amp; Support</h2>
+        <p>
+          Have questions, technical inquiries, or feature suggestions? Reach out to our dedicated support team at <a href="mailto:sajeepriyangika81@gmail.com">sajeepriyangika81@gmail.com</a> or visit our <a href="/contact">Contact Page</a>.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page-container {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .page-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+  }
+
+  .page-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .page-body h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-body p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-body ul {
+    padding-left: var(--space-6);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-body a {
+    color: var(--color-brand-400);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .page-body a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

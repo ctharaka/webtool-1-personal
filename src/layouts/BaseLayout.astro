@@ -1,0 +1,540 @@
+---
+/**
+ * BaseLayout.astro
+ * Global shell — locked dark mode, SEO metadata, JSZip CDN integration,
+ * header navigation (Home, Tools, Guides, About, Contact), and AdSense-compliant footer navigation.
+ *
+ * Security hardening:
+ *  - CSP restricts scripts to 'self' + cdnjs.cloudflare.com (JSZip) + fonts.googleapis.com
+ *  - X-Frame-Options: DENY — prevents clickjacking
+ *  - X-Content-Type-Options: nosniff — prevents MIME-sniffing
+ *  - Referrer-Policy: strict-origin-when-cross-origin
+ */
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title = 'FreeFileTools — Free Browser-Side File Conversion',
+  description = 'Convert files instantly in your browser. No uploads, no servers, 100% private. Supports PNG, JPG, WebP, AVIF and batch compression.',
+  canonicalURL,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- ── Security Headers (via meta tags for static hosting) ── -->
+    <!--
+      Content-Security-Policy:
+        - default-src 'self'         : Only our own origin by default
+        - script-src 'self' cdnjs    : Allow our scripts + JSZip CDN
+        - style-src 'self' fonts.googleapis.com 'unsafe-inline' : Google Fonts + scoped Astro styles
+        - font-src fonts.gstatic.com : Google Fonts files
+        - img-src 'self' blob: data: : Local images + canvas blob URLs
+        - worker-src blob:            : Blob workers (Astro hoisted scripts)
+        - object-src 'none'           : Block plugins (Flash etc.)
+        - base-uri 'self'             : Prevent base-tag injection
+        - form-action 'self' mailto:  : Contact form mailto links
+        - frame-ancestors 'none'      : Deny embedding in iframes
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' blob: data:; worker-src blob:; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none';"
+    />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <!-- Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="site-header" role="banner">
+      <div class="header-inner">
+        <a href="/" class="logo" aria-label="FreeFileTools home">
+          <svg class="logo-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="24" height="24" rx="6" stroke="var(--color-brand-400)" stroke-width="2" />
+            <path d="M9 14h10M14 9v10" stroke="var(--color-accent-400)" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span class="logo-text">Free<strong>FileTools</strong></span>
+        </a>
+
+        <nav class="site-nav" aria-label="Main Navigation">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="/" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="/image-tools" class="nav-link">Image Tools</a>
+            </li>
+            <li class="nav-item">
+              <a href="/optimization-lab" class="nav-link nav-link--highlight">Optimization Lab</a>
+            </li>
+            <li class="nav-item">
+              <a href="/guides" class="nav-link">Guides</a>
+            </li>
+            <li class="nav-item">
+              <a href="/about" class="nav-link">About</a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact" class="nav-link">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="/" class="logo" aria-label="FreeFileTools home">
+            <svg class="logo-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <rect x="2" y="2" width="24" height="24" rx="6" stroke="var(--color-brand-400)" stroke-width="2" />
+              <path d="M9 14h10M14 9v10" stroke="var(--color-accent-400)" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <span class="logo-text">Free<strong>FileTools</strong></span>
+          </a>
+          <p class="footer-desc">
+            Your files are processed locally in your browser and aren't uploaded to our servers.
+          </p>
+          <p class="footer-contact-info">
+            Support: <a href="mailto:sajeepriyangika81@gmail.com" class="footer-email-link">sajeepriyangika81@gmail.com</a>
+          </p>
+        </div>
+
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3 class="footer-heading">Tools</h3>
+            <ul class="footer-links">
+              <li><a href="/png-to-webp">PNG to WebP Converter</a></li>
+              <li><a href="/jpg-to-webp">JPG to WebP Converter</a></li>
+              <li><a href="/compress-image">Image Compressor</a></li>
+              <li><a href="/optimization-lab">Optimization Lab</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-heading">Guides</h3>
+            <ul class="footer-links">
+              <li><a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG</a></li>
+              <li><a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size</a></li>
+              <li><a href="/guides/how-browser-based-image-compression-works">How Browser Compression Works</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-heading">Legal &amp; Info</h3>
+            <ul class="footer-links">
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/contact">Contact Us</a></li>
+              <li><a href="/privacy-policy">Privacy Policy</a></li>
+              <li><a href="/terms">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; {new Date().getFullYear()} FreeFileTools. All rights reserved. Support: <a href="mailto:sajeepriyangika81@gmail.com" class="footer-email-link">sajeepriyangika81@gmail.com</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/tokens.css';
+
+  /* ── Reset ─────────────────────────────────────────────── */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    background: var(--surface-0);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* ── Skip-link ─────────────────────────────────────────── */
+  .skip-link {
+    position: fixed;
+    top: -100%;
+    left: var(--space-4);
+    z-index: 9999;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-brand-600);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    transition: top var(--transition-fast);
+  }
+
+  .skip-link:focus {
+    top: var(--space-4);
+  }
+
+  /* ── Header ────────────────────────────────────────────── */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    background: color-mix(in srgb, var(--surface-1) 85%, transparent);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-6);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    transition: opacity var(--transition-fast);
+  }
+
+  .logo:hover {
+    opacity: 0.85;
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .logo-text strong {
+    font-weight: var(--font-weight-bold);
+    background: linear-gradient(135deg, var(--color-brand-400), var(--color-accent-400));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Navigation ────────────────────────────────────────── */
+  .site-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    list-style: none;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+    padding: var(--space-2) 0;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+  }
+
+  .nav-link--highlight {
+    color: var(--color-accent-400);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .nav-link--highlight:hover {
+    color: var(--color-accent-400);
+    opacity: 0.8;
+  }
+
+  /* Dropdown Menu */
+  .has-dropdown:hover .dropdown-menu,
+  .has-dropdown:focus-within .dropdown-menu {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    padding: var(--space-2);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 200;
+  }
+
+  .dropdown-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .dropdown-link:hover {
+    background: var(--surface-3);
+    color: var(--color-brand-300);
+  }
+
+  /* ── Main Content ──────────────────────────────────────── */
+  #main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-6);
+  }
+
+  /* ── Footer ────────────────────────────────────────────── */
+  .site-footer {
+    background: var(--surface-1);
+    border-top: 1px solid var(--border-default);
+    padding: var(--space-12) var(--space-6) var(--space-6);
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-10);
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    line-height: var(--line-height-loose);
+    max-width: 32ch;
+  }
+
+  .footer-contact-info {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+
+  .footer-email-link {
+    color: var(--color-brand-400);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .footer-email-link:hover {
+    color: var(--color-brand-300);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 600px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .footer-heading {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-links a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-brand-400);
+  }
+
+  .footer-bottom {
+    max-width: 72rem;
+    margin: var(--space-10) auto 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-default);
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+
+  /* ── AdSense Placeholder Slots ──────────────────────── */
+  .adsense-slot {
+    display: block;
+    width: 100%;
+    min-height: 90px;
+    margin: 2rem 0;
+  }
+
+  /* ── FAQ Accordion Semantic Details/Summary ────────── */
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .faq-details {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+  }
+
+  .faq-details[open] {
+    border-color: var(--color-brand-500);
+  }
+
+  .faq-summary {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    padding: var(--space-4) var(--space-5);
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: background var(--transition-fast);
+  }
+
+  .faq-summary:hover {
+    background: var(--surface-2);
+  }
+
+  .faq-details[open] .faq-summary {
+    border-bottom: 1px solid var(--border-default);
+    background: var(--surface-2);
+  }
+
+  .faq-answer {
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .faq-answer p {
+    margin-bottom: 0 !important;
+  }
+</style>

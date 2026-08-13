@@ -1,0 +1,363 @@
+---
+/**
+ * index.astro — FreeFileTools Home Page
+ * Authoritative software hub featuring browser-side conversion & rich SEO section.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout title="Free Online Image Tools — FreeFileTools">
+  <section class="hero">
+    <h1 class="hero__title">
+      Free Online <span class="hero__accent">Image Tools</span>
+    </h1>
+    <p class="hero__subtitle">
+      Convert, compress, resize, and optimize your images directly in your browser. Your files are processed locally on your device—no server uploads required.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above the main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section" aria-label="File upload zone">
+    <UploadZone defaultFormat="webp" />
+  </section>
+
+  <!-- Popular Tools Grid Section -->
+  <section class="hub-section" aria-label="Popular Tools">
+    <h2 class="section-title">Popular Image Optimization Tools</h2>
+    <p class="section-subtitle">Select one of our dedicated browser-side utilities to optimize your web assets.</p>
+    <div class="tools-grid">
+      <a href="/png-to-webp" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--png">PNG</div>
+        <h3 class="tool-card__title">PNG to WebP Converter</h3>
+        <p class="tool-card__desc">Convert transparent and high-resolution PNGs into modern WebP images to speed up page load speeds.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+
+      <a href="/jpg-to-webp" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--jpg">JPG</div>
+        <h3 class="tool-card__title">JPG to WebP Converter</h3>
+        <p class="tool-card__desc">Re-encode JPEG graphics and photos into lightweight WebP format to save up to 40% in page file size.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+
+      <a href="/compress-image" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--compress">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="tool-card__title">Image Compressor</h3>
+        <p class="tool-card__desc">Reduce file size of PNG, JPG, and WebP files with precision lossy and lossless quality tuning options.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Why FreeFileTools? Section -->
+  <section class="hub-section features-section" aria-label="Features">
+    <h2 class="section-title">Why Optimize with FreeFileTools?</h2>
+    <p class="section-subtitle">Unlike cloud utilities, all operations execute locally inside your browser memory.</p>
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-item__icon" aria-hidden="true">🔒</div>
+        <div class="feature-item__content">
+          <h3 class="feature-item__title">Browser-Based Processing</h3>
+          <p class="feature-item__desc">Your graphics and private photos never leave your device. File validation, re-encoding, and bundling happen locally in your web browser.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-item__icon" aria-hidden="true">⚡</div>
+        <div class="feature-item__content">
+          <h3 class="feature-item__title">Fast Processing</h3>
+          <p class="feature-item__desc">Conversions are powered by your device's native CPU and GPU capability, eliminating upload/download network delays entirely.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-item__icon" aria-hidden="true">📦</div>
+        <div class="feature-item__content">
+          <h3 class="feature-item__title">Batch Conversion</h3>
+          <p class="feature-item__desc">Add up to 50 files in a single batch. Queue files in parallel and convert them into your choice of next-generation file format.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-item__icon" aria-hidden="true">🎚️</div>
+        <div class="feature-item__content">
+          <h3 class="feature-item__title">Quality Control</h3>
+          <p class="feature-item__desc">Adjust lossy quality sliders from 10% to 100% to find the exact target compression balance for your specific application requirements.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-item__icon" aria-hidden="true">📥</div>
+        <div class="feature-item__content">
+          <h3 class="feature-item__title">ZIP Downloads</h3>
+          <p class="feature-item__desc">Once your batch conversion is complete, download individual optimized files or export all of them together in a single zip archive.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Guides Section -->
+  <section class="hub-section guides-section" aria-label="Recent Guides">
+    <h2 class="section-title">Educational Guides &amp; Insights</h2>
+    <p class="section-subtitle">Deep dives on browser mechanics, image formats, and search engine optimization.</p>
+    <div class="guides-grid">
+      <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use" class="guide-card">
+        <span class="guide-card__tag">Web Standards</span>
+        <h3 class="guide-card__title">WebP vs PNG vs JPEG: Which Format to Use?</h3>
+        <p class="guide-card__desc">A detailed comparison of alpha transparency, compression algorithms, load speeds, and browser support rules.</p>
+        <span class="guide-card__read">Read Article &rarr;</span>
+      </a>
+
+      <a href="/guides/how-to-reduce-image-size-without-losing-quality" class="guide-card">
+        <span class="guide-card__tag">Optimization</span>
+        <h3 class="guide-card__title">How to Reduce Image Size Without Losing Quality</h3>
+        <p class="guide-card__desc">Master lossy quantization levels, visual perception metrics, and find the perfect 80% compression sweet spot.</p>
+        <span class="guide-card__read">Read Article &rarr;</span>
+      </a>
+
+      <a href="/guides/how-browser-based-image-compression-works" class="guide-card">
+        <span class="guide-card__tag">Architecture</span>
+        <h3 class="guide-card__title">How Browser-Based Image Compression Works</h3>
+        <p class="guide-card__desc">A detailed look at HTML5 Canvas buffer mechanics, local object memory, and why client-side processing keeps data safe.</p>
+        <span class="guide-card__read">Read Article &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- AdSense Slot: Below the layout -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  /* ── Hero ───────────────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: var(--space-12) 0 var(--space-8);
+  }
+
+  .hero__title {
+    font-size: clamp(var(--font-size-3xl), 6vw, var(--font-size-5xl));
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--text-primary);
+  }
+
+  .hero__accent {
+    background: linear-gradient(135deg, var(--color-brand-400), var(--color-accent-400));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero__subtitle {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose);
+  }
+
+  /* ── Upload Section ────────────────────────────────────── */
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-16);
+  }
+
+  /* ── Hub Sections ───────────────────────────────────────── */
+  .hub-section {
+    padding: var(--space-12) 0;
+    border-top: 1px solid var(--border-default);
+  }
+
+  .section-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: var(--space-2);
+  }
+
+  .section-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--space-8);
+    max-width: 60ch;
+    margin-inline: auto;
+  }
+
+  /* ── Tools Grid ─────────────────────────────────────────── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform var(--transition-base), border-color var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-brand-400);
+  }
+
+  .tool-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: grid;
+    place-items: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .tool-card__icon--png {
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    color: var(--color-brand-300);
+    border: 1px solid var(--color-brand-400);
+  }
+
+  .tool-card__icon--jpg {
+    background: color-mix(in srgb, var(--color-accent-500) 15%, transparent);
+    color: var(--color-accent-300);
+    border: 1px solid var(--color-accent-400);
+  }
+
+  .tool-card__icon--compress {
+    background: color-mix(in srgb, var(--color-success-500) 15%, transparent);
+    color: var(--color-success-300);
+    border: 1px solid var(--color-success-400);
+  }
+
+  .tool-card__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .tool-card__desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .tool-card__link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+  }
+
+  /* ── Features List ──────────────────────────────────────── */
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .feature-item {
+    display: flex;
+    gap: var(--space-4);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+  }
+
+  .feature-item__icon {
+    font-size: var(--font-size-2xl);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .feature-item__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .feature-item__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    line-height: var(--line-height-loose);
+  }
+
+  /* ── Guides Grid ────────────────────────────────────────── */
+  .guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .guide-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform var(--transition-base), border-color var(--transition-base);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .guide-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-accent-400);
+  }
+
+  .guide-card__tag {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-3);
+  }
+
+  .guide-card__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+    line-height: var(--line-height-tight);
+  }
+
+  .guide-card__desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+    flex-grow: 1;
+  }
+
+  .guide-card__read {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-400);
+  }
+</style>

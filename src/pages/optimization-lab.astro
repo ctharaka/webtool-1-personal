@@ -1,0 +1,1422 @@
+---
+/**
+ * optimization-lab.astro — Image Optimization Lab: Visual Quality Compare
+ *
+ * A standalone single-image analysis and before/after comparison tool.
+ * Generates 4 optimized versions (WebP 90%, WebP 80%, WebP 60%, JPEG 80%)
+ * using the existing converter.js canvas engine — WITHOUT touching batch tool pages.
+ *
+ * Memory safety:
+ *  - 20 MB upload limit enforced before canvas processing
+ *  - All ObjectURLs tracked and revoked on new upload / lab clear
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Image Optimization Lab — Visual Quality Comparison Tool | FreeFileTools"
+  description="Upload one image and instantly compare WebP 90%, WebP 80%, WebP 60%, and JPEG 80% side-by-side. Use the before/after slider to see the visual difference before you download."
+  canonicalURL="https://freefiletools.com/optimization-lab"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Image Optimization Lab",
+      "description": "A browser-based image optimization analysis tool that generates multiple compressed versions of an image and provides a visual before/after comparison slider.",
+      "url": "https://freefiletools.com/optimization-lab",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
+
+  <!-- Page Header -->
+  <section class="lab-hero">
+    <div class="lab-hero__badge">🔬 Analysis Tool</div>
+    <h1 class="lab-hero__title">Image Optimization Lab</h1>
+    <p class="lab-hero__subtitle">Visual Quality Compare</p>
+    <p class="lab-hero__desc">
+      Upload one image. Instantly generate 4 optimized versions, compare them visually
+      with a drag slider, then download the best fit for your use case.
+    </p>
+    <p class="lab-hero__limit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Maximum upload: 20 MB per image
+    </p>
+  </section>
+
+  <!-- AdSense Slot -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <!-- ─── STATE A: Upload Zone ─────────────────────────────── -->
+  <div id="lab-upload-state" class="lab-upload-state">
+    <div
+      id="lab-drop-zone"
+      class="lab-drop-zone"
+      role="button"
+      tabindex="0"
+      aria-label="Click or drag and drop a single image file to upload"
+    >
+      <div class="lab-drop-zone__icon" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </div>
+      <p class="lab-drop-zone__title">Drop your image here</p>
+      <p class="lab-drop-zone__sub">or click to browse — PNG, JPG, WebP, AVIF supported</p>
+      <button class="lab-browse-btn" type="button" aria-label="Open file picker">Choose Image</button>
+      <p class="lab-drop-zone__limit">Single image only · Max 20 MB</p>
+    </div>
+    <input id="lab-file-input" type="file" accept="image/png,image/jpeg,image/webp,image/avif" class="sr-only" aria-label="File input for image upload" />
+    <p id="lab-upload-error" class="lab-error" role="alert" aria-live="polite"></p>
+  </div>
+
+  <!-- ─── STATE B: Analysis Dashboard ─────────────────────── -->
+  <div id="lab-analysis-state" class="lab-analysis-state" hidden>
+
+    <!-- Original Metadata -->
+    <div class="lab-meta-bar">
+      <div class="lab-meta-item">
+        <span class="lab-meta-label">Original File</span>
+        <span id="lab-meta-name" class="lab-meta-value">—</span>
+      </div>
+      <div class="lab-meta-item">
+        <span class="lab-meta-label">Dimensions</span>
+        <span id="lab-meta-dims" class="lab-meta-value">—</span>
+      </div>
+      <div class="lab-meta-item">
+        <span class="lab-meta-label">Original Size</span>
+        <span id="lab-meta-size" class="lab-meta-value">—</span>
+      </div>
+      <div class="lab-meta-item">
+        <span class="lab-meta-label">Format</span>
+        <span id="lab-meta-format" class="lab-meta-value">—</span>
+      </div>
+      <button id="lab-clear-btn" class="lab-clear-btn" type="button" aria-label="Upload a different image">
+        ✕ New Image
+      </button>
+    </div>
+
+    <!-- Processing spinner -->
+    <div id="lab-processing" class="lab-processing" aria-live="polite" aria-label="Generating optimized versions">
+      <div class="lab-spinner" aria-hidden="true"></div>
+      <p id="lab-processing-text">Generating optimized versions…</p>
+    </div>
+
+    <!-- ─── Comparison Table ─── -->
+    <div id="lab-results" class="lab-results" hidden>
+      <h2 class="lab-section-title">Optimized Versions</h2>
+      <p class="lab-section-desc">Click any row to load it in the visual comparison slider below.</p>
+      <div class="lab-table-wrapper">
+        <table class="lab-table" aria-label="Comparison of optimized image versions">
+          <thead>
+            <tr>
+              <th scope="col">Format & Quality</th>
+              <th scope="col">Output Size</th>
+              <th scope="col">Savings</th>
+              <th scope="col">Quality Rating</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="lab-table-body">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ─── Smart Presets ─── -->
+      <div class="lab-presets">
+        <p class="lab-presets__label">Quick Optimize For:</p>
+        <div class="lab-presets__buttons">
+          <button class="lab-preset-btn" data-preset="website" type="button">
+            🌐 <span>Website</span>
+            <small>WebP at 80%</small>
+          </button>
+          <button class="lab-preset-btn" data-preset="social" type="button">
+            📱 <span>Social Media</span>
+            <small>JPEG at 80%</small>
+          </button>
+          <button class="lab-preset-btn" data-preset="smallest" type="button">
+            📦 <span>Smallest Possible</span>
+            <small>WebP at 60%</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── Before / After Slider ─── -->
+      <div class="lab-slider-section">
+        <h2 class="lab-section-title">Visual Before / After</h2>
+        <p class="lab-section-desc">
+          Drag the handle to compare the original against the selected optimized version.
+          <span id="lab-slider-version-label" class="lab-slider-version-label"></span>
+        </p>
+
+        <div id="lab-slider" class="lab-slider" role="img" aria-label="Before and after image comparison slider">
+          <!-- Original (left/under) -->
+          <img id="lab-slider-original" class="lab-slider__original" src="" alt="Original image" draggable="false" />
+          <!-- Optimized clip (right/over) -->
+          <div id="lab-slider-clip" class="lab-slider__clip">
+            <img id="lab-slider-optimized" class="lab-slider__optimized" src="" alt="Optimized image" draggable="false" />
+          </div>
+          <!-- Labels -->
+          <div class="lab-slider__label lab-slider__label--left" aria-hidden="true">Original</div>
+          <div class="lab-slider__label lab-slider__label--right" aria-hidden="true">Optimized</div>
+          <!-- Scrubber handle -->
+          <div id="lab-slider-handle" class="lab-slider__handle" role="slider" aria-label="Comparison slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
+            <div class="lab-slider__handle-line"></div>
+            <div class="lab-slider__handle-knob" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8 5l-5 7 5 7M16 5l5 7-5 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download recommendation -->
+        <div id="lab-download-bar" class="lab-download-bar" hidden>
+          <div class="lab-download-bar__info">
+            <span id="lab-download-label">Ready to download</span>
+          </div>
+          <button id="lab-download-btn" class="lab-download-btn" type="button">
+            ⬇ Download Recommended
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AdSense Slot: Below Tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <!-- ─── SEO Content Below Tool ─────────────────────────── -->
+  <article class="lab-content">
+    <section class="content-block">
+      <h2>What is the Image Optimization Lab?</h2>
+      <p>
+        The Image Optimization Lab is a single-image analysis tool that automatically generates multiple
+        compressed versions of your uploaded file — WebP at 90%, 80%, and 60% quality, plus JPEG at 80% —
+        all processed locally in your browser using HTML5 Canvas. No image data ever leaves your device.
+      </p>
+      <p>
+        Unlike batch conversion tools that process many files at once, the Lab focuses on giving you
+        fine-grained insight: exact byte sizes, percentage savings, visual star ratings, and a live
+        before/after drag slider so you can make an informed decision before downloading.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>When should you use the Lab vs. batch tools?</h2>
+      <div class="lab-compare-grid">
+        <div class="lab-compare-card">
+          <h3>🔬 Optimization Lab</h3>
+          <ul>
+            <li>Evaluating a hero image for your website</li>
+            <li>Comparing quality trade-offs before committing</li>
+            <li>Learning how different formats affect a specific image</li>
+            <li>Finding the optimal preset for a single critical asset</li>
+          </ul>
+        </div>
+        <div class="lab-compare-card">
+          <h3>⚡ Batch Tools</h3>
+          <ul>
+            <li>Converting dozens of product photos at once</li>
+            <li>Processing a full image directory with one click</li>
+            <li>You already know your target format and quality setting</li>
+            <li>Exporting a ZIP archive of all converted files</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Understanding the Quality Ratings</h2>
+      <p>Star ratings in the comparison table reflect the typical visual impact of each preset:</p>
+      <ul class="lab-rating-list">
+        <li><strong>★★★★★ WebP 90%</strong> — Near-lossless. Virtually indistinguishable from original. Ideal for print-quality web assets.</li>
+        <li><strong>★★★★☆ WebP 80%</strong> — The sweet spot. Perceptually identical to most viewers while delivering 40%–60% size reduction. Best for general web use.</li>
+        <li><strong>★★★☆☆ WebP 60%</strong> — Aggressive compression. Some softness on high-detail areas. Best for thumbnails and social previews where download speed is critical.</li>
+        <li><strong>★★★★☆ JPEG 80%</strong> — Excellent compatibility fallback. Larger than WebP equivalent but universally supported including legacy browsers and email clients.</li>
+      </ul>
+    </section>
+
+    <section class="content-block related-links">
+      <h2>Related Tools & Guides</h2>
+      <ul class="related-list">
+        <li>🖼️ <a href="/png-to-webp">PNG to WebP Converter</a> — Batch convert PNG files to WebP with lossless or lossy settings.</li>
+        <li>📷 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Shrink JPEG photos by up to 40% with browser-side WebP encoding.</li>
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, or WebP without resizing pixel dimensions.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Complete technical comparison.</li>
+        <li>📖 <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size Without Losing Quality</a> — Lossless vs lossy techniques explained.</li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<!-- ─────────────────────────────────────────────────────────
+     Optimization Lab Script (Vanilla JS — ES Module)
+     Imports converter.js canvas engine without touching
+     any of the batch tool pages or their components.
+     ───────────────────────────────────────────────────────── -->
+<script>
+  import { convertImage, triggerDownload } from '../lib/converter.js';
+
+  // ── Constants ──────────────────────────────────────────────
+  const MAX_BYTES = 20 * 1024 * 1024; // 20 MB
+
+  /**
+   * Ordered list of variants the Lab generates.
+   * id must be unique and stable — used as data attributes.
+   */
+  const VARIANTS = [
+    { id: 'webp-90', label: 'WebP 90%', format: 'webp', quality: 0.90, stars: 5,  starLabel: '★★★★★' },
+    { id: 'webp-80', label: 'WebP 80%', format: 'webp', quality: 0.80, stars: 4,  starLabel: '★★★★☆' },
+    { id: 'webp-60', label: 'WebP 60%', format: 'webp', quality: 0.60, stars: 3,  starLabel: '★★★☆☆' },
+    { id: 'jpeg-80', label: 'JPEG 80%', format: 'jpg',  quality: 0.80, stars: 4,  starLabel: '★★★★☆' },
+  ];
+
+  /** Preset → variant id mapping */
+  const PRESET_MAP = {
+    website:  'webp-80',
+    social:   'jpeg-80',
+    smallest: 'webp-60',
+  };
+
+  // ── State ──────────────────────────────────────────────────
+  let currentFile = null;       // The uploaded File object
+  let originalUrl = null;       // Object URL for the original image (for slider)
+  let variantResults = {};      // { [variantId]: { blob, url, filename, ...result } }
+  let selectedVariantId = null; // Currently highlighted row / slider comparison
+  let sliderPercent = 50;       // 0–100 percent position of the scrubber
+
+  // ── DOM References ─────────────────────────────────────────
+  const uploadState   = document.getElementById('lab-upload-state');
+  const analysisState = document.getElementById('lab-analysis-state');
+  const dropZone      = document.getElementById('lab-drop-zone');
+  const fileInput     = document.getElementById('lab-file-input');
+  const browseBtn     = document.querySelector('.lab-browse-btn');
+  const uploadError   = document.getElementById('lab-upload-error');
+
+  const metaName      = document.getElementById('lab-meta-name');
+  const metaDims      = document.getElementById('lab-meta-dims');
+  const metaSize      = document.getElementById('lab-meta-size');
+  const metaFormat    = document.getElementById('lab-meta-format');
+  const clearBtn      = document.getElementById('lab-clear-btn');
+
+  const processing    = document.getElementById('lab-processing');
+  const processingText= document.getElementById('lab-processing-text');
+  const results       = document.getElementById('lab-results');
+  const tableBody     = document.getElementById('lab-table-body');
+
+  const sliderEl      = document.getElementById('lab-slider');
+  const sliderOrigImg = document.getElementById('lab-slider-original');
+  const sliderOptImg  = document.getElementById('lab-slider-optimized');
+  const sliderClip    = document.getElementById('lab-slider-clip');
+  const sliderHandle  = document.getElementById('lab-slider-handle');
+  const sliderVersionLabel = document.getElementById('lab-slider-version-label');
+
+  const downloadBar   = document.getElementById('lab-download-bar');
+  const downloadLabel = document.getElementById('lab-download-label');
+  const downloadBtn   = document.getElementById('lab-download-btn');
+
+  const presetBtns    = document.querySelectorAll('.lab-preset-btn');
+
+  // ── Utility ────────────────────────────────────────────────
+  function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+  }
+
+  function getExt(filename) {
+    return filename.split('.').pop().toUpperCase();
+  }
+
+  function revokeAll() {
+    if (originalUrl) { URL.revokeObjectURL(originalUrl); originalUrl = null; }
+    for (const v of Object.values(variantResults)) {
+      if (v && v.url) URL.revokeObjectURL(v.url);
+    }
+    variantResults = {};
+  }
+
+  // ── Slider Logic ───────────────────────────────────────────
+  function setSliderPosition(percent) {
+    sliderPercent = Math.min(100, Math.max(0, percent));
+    sliderClip.style.width = `${sliderPercent}%`;
+    sliderHandle.style.left = `${sliderPercent}%`;
+    sliderHandle.setAttribute('aria-valuenow', Math.round(sliderPercent));
+  }
+
+  function getSliderPercentFromEvent(e) {
+    const rect = sliderEl.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return ((clientX - rect.left) / rect.width) * 100;
+  }
+
+  let isDragging = false;
+
+  function onSliderPointerDown(e) {
+    isDragging = true;
+    sliderHandle.classList.add('is-dragging');
+    e.preventDefault();
+  }
+  function onSliderPointerMove(e) {
+    if (!isDragging) return;
+    setSliderPosition(getSliderPercentFromEvent(e));
+  }
+  function onSliderPointerUp() {
+    isDragging = false;
+    sliderHandle.classList.remove('is-dragging');
+  }
+
+  sliderHandle.addEventListener('mousedown',  onSliderPointerDown);
+  sliderHandle.addEventListener('touchstart', onSliderPointerDown, { passive: false });
+  document.addEventListener('mousemove',  onSliderPointerMove);
+  document.addEventListener('touchmove',  onSliderPointerMove, { passive: false });
+  document.addEventListener('mouseup',    onSliderPointerUp);
+  document.addEventListener('touchend',   onSliderPointerUp);
+
+  // Keyboard support for slider
+  sliderHandle.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 10 : 2;
+    if (e.key === 'ArrowLeft')  { setSliderPosition(sliderPercent - step); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { setSliderPosition(sliderPercent + step); e.preventDefault(); }
+  });
+
+  // Click anywhere on slider to jump
+  sliderEl.addEventListener('click', (e) => {
+    if (e.target === sliderHandle || sliderHandle.contains(e.target)) return;
+    setSliderPosition(getSliderPercentFromEvent(e));
+  });
+
+  // ── Select Variant ─────────────────────────────────────────
+  function selectVariant(variantId) {
+    const variant = VARIANTS.find(v => v.id === variantId);
+    const result  = variantResults[variantId];
+    if (!variant || !result) return;
+
+    selectedVariantId = variantId;
+
+    // Update table row highlight
+    tableBody.querySelectorAll('tr').forEach(row => {
+      row.classList.toggle('is-selected', row.dataset.variantId === variantId);
+    });
+
+    // Update slider optimized image
+    sliderOptImg.src = result.url;
+    sliderOptImg.alt = `Optimized: ${variant.label}`;
+    sliderVersionLabel.textContent = `— comparing against ${variant.label}`;
+    setSliderPosition(50);
+
+    // Update download bar
+    downloadLabel.textContent = `${variant.label} · ${formatBytes(result.blob.size)} · Ready to download`;
+    downloadBar.hidden = false;
+
+    // Update preset button active state
+    presetBtns.forEach(btn => {
+      btn.classList.toggle('is-active', PRESET_MAP[btn.dataset.preset] === variantId);
+    });
+  }
+
+  // ── Download ───────────────────────────────────────────────
+  downloadBtn.addEventListener('click', () => {
+    if (!selectedVariantId) return;
+    const result = variantResults[selectedVariantId];
+    if (!result) return;
+    const url = URL.createObjectURL(result.blob);
+    triggerDownload(url, result.filename);
+  });
+
+  // ── Presets ────────────────────────────────────────────────
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const variantId = PRESET_MAP[btn.dataset.preset];
+      if (variantId) selectVariant(variantId);
+    });
+  });
+
+  // ── Render Table ───────────────────────────────────────────
+  function renderTable(origBytes) {
+    tableBody.innerHTML = '';
+    for (const variant of VARIANTS) {
+      const result = variantResults[variant.id];
+      const tr = document.createElement('tr');
+      tr.dataset.variantId = variant.id;
+      tr.setAttribute('role', 'button');
+      tr.setAttribute('tabindex', '0');
+      tr.setAttribute('aria-label', `Select ${variant.label} for comparison`);
+
+      if (result) {
+        const savingsPct = ((result.blob.size - origBytes) / origBytes * 100).toFixed(1);
+        const savingsStr = savingsPct < 0
+          ? `<span class="lab-savings savings-good">${savingsPct}%</span>`
+          : `<span class="lab-savings savings-bad">+${savingsPct}%</span>`;
+
+        tr.innerHTML = `
+          <td class="lab-td-format">
+            <span class="lab-format-badge ${variant.format === 'webp' ? 'badge-webp' : 'badge-jpeg'}">${variant.format.toUpperCase()}</span>
+            ${variant.label}
+          </td>
+          <td>${formatBytes(result.blob.size)}</td>
+          <td>${savingsStr}</td>
+          <td class="lab-stars" aria-label="${variant.stars} out of 5 stars">${variant.starLabel}</td>
+          <td>
+            <button class="lab-select-btn" type="button" data-variant-id="${variant.id}">
+              Compare ↕
+            </button>
+          </td>
+        `;
+      } else {
+        tr.innerHTML = `
+          <td colspan="5" class="lab-td-error">
+            <span class="lab-error-inline">⚠ ${variant.label} — Generation failed</span>
+          </td>
+        `;
+      }
+
+      // Row click / keyboard selection
+      tr.addEventListener('click', () => {
+        if (variantResults[variant.id]) selectVariant(variant.id);
+      });
+      tr.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && variantResults[variant.id]) {
+          selectVariant(variant.id);
+          e.preventDefault();
+        }
+      });
+
+      tableBody.appendChild(tr);
+    }
+
+    // Wire "Compare" buttons (stop propagation so no double-fire with row click)
+    tableBody.querySelectorAll('.lab-select-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectVariant(btn.dataset.variantId);
+      });
+    });
+  }
+
+  // ── Main Processing ────────────────────────────────────────
+  async function processFile(file) {
+    // Validation
+    if (file.size > MAX_BYTES) {
+      showUploadError(`File is ${formatBytes(file.size)}. Please upload an image under 20 MB.`);
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      showUploadError('Please upload a valid image file (PNG, JPG, WebP, or AVIF).');
+      return;
+    }
+
+    clearUploadError();
+    revokeAll();
+    currentFile = file;
+
+    // Switch to analysis state
+    uploadState.hidden = true;
+    analysisState.hidden = false;
+    results.hidden = true;
+    processing.hidden = false;
+    downloadBar.hidden = true;
+
+    // Read original dimensions
+    const imgEl = new Image();
+    originalUrl = URL.createObjectURL(file);
+    imgEl.src = originalUrl;
+    await new Promise(resolve => { imgEl.onload = resolve; imgEl.onerror = resolve; });
+    const w = imgEl.naturalWidth;
+    const h = imgEl.naturalHeight;
+
+    // Populate metadata bar
+    metaName.textContent   = file.name.length > 28 ? file.name.slice(0, 25) + '…' : file.name;
+    metaDims.textContent   = (w && h) ? `${w} × ${h} px` : 'Unknown';
+    metaSize.textContent   = formatBytes(file.size);
+    metaFormat.textContent = getExt(file.name);
+
+    // Set original in slider
+    sliderOrigImg.src = originalUrl;
+    sliderOrigImg.alt = `Original: ${file.name}`;
+
+    // Generate all variants in sequence (memory safe — one at a time)
+    for (let i = 0; i < VARIANTS.length; i++) {
+      const variant = VARIANTS[i];
+      processingText.textContent = `Generating ${variant.label}… (${i + 1} / ${VARIANTS.length})`;
+      try {
+        const result = await convertImage(file, variant.format, variant.quality);
+        variantResults[variant.id] = result;
+      } catch (err) {
+        console.warn(`[OptimizationLab] Failed to generate ${variant.id}:`, err.message);
+        variantResults[variant.id] = null;
+      }
+    }
+
+    // Render table
+    renderTable(file.size);
+    processing.hidden = true;
+    results.hidden = false;
+
+    // Auto-select Website preset (WebP 80%) as default comparison
+    selectVariant('webp-80');
+  }
+
+  // ── Error Helpers ──────────────────────────────────────────
+  function showUploadError(msg) {
+    uploadError.textContent = msg;
+  }
+  function clearUploadError() {
+    uploadError.textContent = '';
+  }
+
+  // ── Clear / Reset ──────────────────────────────────────────
+  function resetLab() {
+    revokeAll();
+    currentFile = null;
+    selectedVariantId = null;
+    sliderPercent = 50;
+
+    sliderOrigImg.src = '';
+    sliderOptImg.src  = '';
+    sliderVersionLabel.textContent = '';
+    downloadBar.hidden = true;
+    results.hidden = true;
+    processing.hidden = true;
+    tableBody.innerHTML = '';
+    presetBtns.forEach(btn => btn.classList.remove('is-active'));
+
+    analysisState.hidden = true;
+    uploadState.hidden   = false;
+    fileInput.value      = '';
+    clearUploadError();
+  }
+
+  clearBtn.addEventListener('click', resetLab);
+
+  // ── Upload / Drop Wiring ────────────────────────────────────
+  browseBtn.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('click', (e) => {
+    if (e.target !== browseBtn) fileInput.click();
+  });
+
+  dropZone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { fileInput.click(); e.preventDefault(); }
+  });
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0];
+    if (file) processFile(file);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('is-drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('is-drag-over');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) processFile(file);
+    else showUploadError('Only a single image file is accepted.');
+  });
+</script>
+
+<style>
+  /* ── Page Layout ────────────────────────────────────────── */
+  .lab-hero {
+    text-align: center;
+    padding: var(--space-8) var(--space-6) var(--space-6);
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+
+  .lab-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-accent-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-400);
+    margin-bottom: var(--space-3);
+    letter-spacing: 0.06em;
+  }
+
+  .lab-hero__title {
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-tight);
+  }
+
+  .lab-hero__subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-brand-300);
+    font-weight: var(--font-weight-medium);
+    margin-top: var(--space-1);
+  }
+
+  .lab-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 50ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose);
+  }
+
+  .lab-hero__limit {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin-top: var(--space-3);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    padding: var(--space-1-5) var(--space-3);
+    border-radius: var(--radius-full);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+
+  /* ── Upload State ───────────────────────────────────────── */
+  .lab-upload-state {
+    max-width: 44rem;
+    margin: 0 auto var(--space-12);
+    padding: 0 var(--space-6);
+  }
+
+  .lab-drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    border: 2px dashed var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-12) var(--space-6);
+    background: var(--surface-1);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-base),
+      background var(--transition-base),
+      box-shadow var(--transition-base);
+    text-align: center;
+  }
+
+  .lab-drop-zone:hover,
+  .lab-drop-zone:focus-within {
+    border-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 5%, var(--surface-1));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    outline: none;
+  }
+
+  .lab-drop-zone.is-drag-over {
+    border-color: var(--color-accent-400);
+    background: color-mix(in srgb, var(--color-accent-500) 8%, var(--surface-1));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-400) 20%, transparent);
+  }
+
+  .lab-drop-zone__icon {
+    color: var(--color-brand-400);
+    opacity: 0.7;
+  }
+
+  .lab-drop-zone__title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .lab-drop-zone__sub {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+
+  .lab-browse-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2-5) var(--space-6);
+    background: var(--color-brand-600);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+    margin-top: var(--space-2);
+  }
+
+  .lab-browse-btn:hover {
+    background: var(--color-brand-500);
+    transform: translateY(-1px);
+  }
+
+  .lab-browse-btn:active {
+    transform: translateY(0);
+  }
+
+  .lab-drop-zone__limit {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+
+  .lab-error {
+    margin-top: var(--space-4);
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-error-400);
+    min-height: 1.25rem;
+  }
+
+  /* ── Analysis State ─────────────────────────────────────── */
+  .lab-analysis-state {
+    max-width: 56rem;
+    margin: 0 auto var(--space-12);
+    padding: 0 var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  /* Metadata bar */
+  .lab-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .lab-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .lab-meta-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+  }
+
+  .lab-meta-value {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .lab-clear-btn {
+    margin-left: auto;
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .lab-clear-btn:hover {
+    color: var(--color-error-400);
+    border-color: var(--color-error-400);
+  }
+
+  /* Processing spinner */
+  .lab-processing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-12) 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+  }
+
+  .lab-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border-default);
+    border-top-color: var(--color-brand-400);
+    border-radius: 50%;
+    animation: lab-spin 0.7s linear infinite;
+  }
+
+  @keyframes lab-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Results Section ────────────────────────────────────── */
+  .lab-results {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .lab-section-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .lab-section-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  /* Comparison Table */
+  .lab-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-default);
+  }
+
+  .lab-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    background: var(--surface-1);
+    text-align: left;
+  }
+
+  .lab-table th {
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.06em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+    white-space: nowrap;
+  }
+
+  .lab-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+
+  .lab-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .lab-table tr[data-variant-id] {
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+
+  .lab-table tr[data-variant-id]:hover {
+    background: var(--surface-2);
+  }
+
+  .lab-table tr[data-variant-id].is-selected {
+    background: color-mix(in srgb, var(--color-brand-500) 10%, var(--surface-1));
+  }
+
+  .lab-table tr[data-variant-id].is-selected td {
+    color: var(--text-primary);
+  }
+
+  .lab-td-format {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+    font-weight: var(--font-weight-medium);
+  }
+
+  .lab-format-badge {
+    display: inline-block;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+  }
+
+  .badge-webp {
+    background: color-mix(in srgb, var(--color-brand-500) 20%, transparent);
+    color: var(--color-brand-300);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+  }
+
+  .badge-jpeg {
+    background: color-mix(in srgb, var(--color-accent-500) 20%, transparent);
+    color: var(--color-accent-400);
+    border: 1px solid color-mix(in srgb, var(--color-accent-400) 30%, transparent);
+  }
+
+  .lab-savings {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+  }
+
+  .savings-good { color: var(--color-success-400); }
+  .savings-bad  { color: var(--color-error-400); }
+
+  .lab-stars {
+    color: var(--color-warning-500);
+    letter-spacing: 1px;
+    font-size: var(--font-size-base);
+  }
+
+  .lab-select-btn {
+    padding: var(--space-1-5) var(--space-3);
+    background: transparent;
+    color: var(--color-brand-300);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 40%, transparent);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition:
+      background var(--transition-fast),
+      color var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .lab-select-btn:hover {
+    background: color-mix(in srgb, var(--color-brand-500) 20%, transparent);
+    color: var(--text-primary);
+  }
+
+  .lab-td-error {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .lab-error-inline {
+    color: var(--color-error-400);
+    font-size: var(--font-size-xs);
+  }
+
+  /* ── Presets ────────────────────────────────────────────── */
+  .lab-presets {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .lab-presets__label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .lab-presets__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .lab-preset-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast),
+      transform var(--transition-fast);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    text-align: left;
+    min-width: 130px;
+  }
+
+  .lab-preset-btn span {
+    display: block;
+  }
+
+  .lab-preset-btn small {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-muted);
+  }
+
+  .lab-preset-btn:hover {
+    border-color: var(--color-brand-400);
+    background: color-mix(in srgb, var(--color-brand-500) 10%, var(--surface-2));
+    transform: translateY(-1px);
+  }
+
+  .lab-preset-btn.is-active {
+    border-color: var(--color-brand-400);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, var(--surface-1));
+    color: var(--color-brand-300);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-500) 25%, transparent);
+  }
+
+  .lab-preset-btn.is-active small {
+    color: var(--color-brand-400);
+  }
+
+  /* ── Before / After Slider ──────────────────────────────── */
+  .lab-slider-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .lab-slider-version-label {
+    font-style: italic;
+    color: var(--color-brand-300);
+  }
+
+  .lab-slider {
+    position: relative;
+    width: 100%;
+    max-height: 520px;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-default);
+    background: var(--surface-2);
+    cursor: col-resize;
+    user-select: none;
+    /* Establish containing block for clip */
+    isolation: isolate;
+  }
+
+  /* Both images are absolutely positioned and fill the container */
+  .lab-slider__original,
+  .lab-slider__optimized {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* prevent the img from having intrinsic height issues */
+    max-height: 520px;
+  }
+
+  .lab-slider__original {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The clipping container sits on top of the original */
+  .lab-slider__clip {
+    position: absolute;
+    inset: 0;
+    width: 50%; /* controlled by JS */
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .lab-slider__optimized {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* fill the full slider width, clipped by parent */
+    /* We set height matching original so images align */
+    min-height: 100%;
+    object-fit: contain;
+    object-position: top left;
+  }
+
+  /* Labels */
+  .lab-slider__label {
+    position: absolute;
+    top: var(--space-3);
+    z-index: 4;
+    padding: var(--space-1-5) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+  }
+
+  .lab-slider__label--left {
+    left: var(--space-3);
+    background: rgba(11, 13, 23, 0.75);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+  }
+
+  .lab-slider__label--right {
+    right: var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 30%, rgba(11,13,23,0.75));
+    color: var(--color-brand-200);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 40%, transparent);
+  }
+
+  /* Scrubber handle */
+  .lab-slider__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%; /* controlled by JS */
+    z-index: 5;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: col-resize;
+    transition: left 0s; /* Prevent CSS transition fighting JS updates */
+  }
+
+  .lab-slider__handle-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--color-brand-400);
+    transform: translateX(-50%);
+  }
+
+  .lab-slider__handle-knob {
+    width: 44px;
+    height: 44px;
+    background: var(--color-brand-500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+    transition: transform var(--transition-fast), background var(--transition-fast);
+    z-index: 1;
+    position: relative;
+  }
+
+  .lab-slider__handle:hover .lab-slider__handle-knob,
+  .lab-slider__handle.is-dragging .lab-slider__handle-knob {
+    transform: scale(1.12);
+    background: var(--color-brand-400);
+  }
+
+  .lab-slider__handle:focus-visible {
+    outline: none;
+  }
+
+  .lab-slider__handle:focus-visible .lab-slider__handle-knob {
+    box-shadow: 0 0 0 3px var(--border-focus), var(--shadow-lg);
+  }
+
+  /* ── Download Bar ───────────────────────────────────────── */
+  .lab-download-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .lab-download-bar__info {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .lab-download-btn {
+    padding: var(--space-2-5) var(--space-6);
+    background: var(--color-brand-600);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .lab-download-btn:hover {
+    background: var(--color-brand-500);
+    transform: translateY(-1px);
+  }
+
+  /* ── SEO Article Content ────────────────────────────────── */
+  .lab-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6) var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+  }
+
+  .lab-content .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .lab-content .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .lab-content .content-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .lab-compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  @media (max-width: 600px) {
+    .lab-compare-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .lab-compare-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .lab-compare-card h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .lab-compare-card ul {
+    list-style: disc;
+    padding-left: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-loose);
+  }
+
+  .lab-rating-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .lab-rating-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-1);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-brand-500);
+  }
+
+  .lab-rating-list strong {
+    color: var(--color-warning-500);
+  }
+
+  .related-links .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-links .related-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .related-links .related-list a {
+    color: var(--color-brand-300);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .related-links .related-list a:hover {
+    color: var(--text-primary);
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .lab-meta-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .lab-clear-btn {
+      margin-left: 0;
+      align-self: flex-start;
+    }
+    .lab-presets {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .lab-presets__buttons {
+      width: 100%;
+    }
+    .lab-preset-btn {
+      flex: 1;
+      min-width: 0;
+    }
+    .lab-download-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .lab-download-btn {
+      width: 100%;
+      text-align: center;
+    }
+    .lab-hero__title {
+      font-size: 1.6rem;
+    }
+  }
+</style>

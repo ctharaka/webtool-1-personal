@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://freefiletools.com/sitemap-index.xml
