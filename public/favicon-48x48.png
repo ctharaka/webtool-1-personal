@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Rounded Blue Background -->
+  <rect width="512" height="512" rx="120" fill="#3B82F6"/>
+  
+  <!-- Centered White Plus Sign -->
+  <path d="M256 128 C268 128 276 136 276 148 V236 H364 C376 236 384 244 384 256 C384 268 376 276 364 276 H276 V364 C276 376 268 384 256 384 C244 384 236 376 236 364 V276 H148 C136 276 128 268 128 256 C128 244 136 236 148 236 H236 V148 C236 136 244 128 256 128 Z" fill="#FFFFFF"/>
+</svg>
