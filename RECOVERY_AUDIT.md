@@ -1,119 +1,159 @@
 # Master Recovery Audit Report — FreeFileTools
 
-This audit provides a comprehensive baseline review of the browser-side image optimization suite, evaluating the existing architecture, file processing mechanics, security, performance, accessibility, SEO, and dependencies.
+This audit provides a comprehensive baseline review of the browser-side image optimization suite, evaluating the existing architecture, file processing mechanics, security, performance, accessibility, SEO, dependencies, error handling, mobile responsiveness, routing, and console runtime. It documents the **current state of the codebase after Phase 0 domain migration and Phase 0.5 verification**.
 
 ---
 
-## 1. Architectural Overview & File Processing Pipeline
+## 1. Architectural Overview & Data-Flow Pipeline
 
-FreeFileTools is a zero-backend, privacy-centric, statically generated application built on top of **Astro v4**. All core image processing, format conversion, and file compression are executed directly in the browser's main and UI threads via HTML5 APIs.
+FreeFileTools is a zero-backend, privacy-centric, statically generated web application built with **Astro v4 (v4.16.18)**. All core image processing, format conversion, and file compression are executed directly in the client browser's memory using standard HTML5 Canvas and Web APIs.
 
-### The Client-Side Pipeline:
+### The Client-Side Data Flow:
 ```
-[File Selection / Drag & Drop] 
+[User File Selection / Drag & Drop]
        ↓
-[validator.js: Binary Header Check (Magic Numbers)]
+[src/lib/shared/validator.js: Binary Header Inspection (Magic Numbers)]
        ↓
-[UploadZone.astro: Batch Queue Management (Size limits, duplicates)]
+[UploadZone.astro / optimization-lab.astro: Queue Management & Limit Checks (50MB/file, 200MB/batch)]
        ↓
-[converter.js: createImageBitmap or FileReader / <img> buffer loading]
+[src/lib/converter.js: createImageBitmap() or FileReader / Image buffer loading]
        ↓
-[converter.js: HTML5 Canvas 2D render & white background filler for JPEGs]
+[src/lib/converter.js: HTML5 Canvas 2D render & white background filler for JPEG]
        ↓
-[converter.js: canvas.toBlob() export with quality quantization parameter]
+[src/lib/converter.js: canvas.toBlob() export with quality quantization parameter]
        ↓
-[converter.js: URL.createObjectURL() generation]
+[src/lib/converter.js: URL.createObjectURL() generation]
        ↓
 [JSZip: Package individual blobs into a compressed ZIP file if batch]
        ↓
-[triggerDownload: Immediate browser anchoring & URL.revokeObjectURL() scheduled for 60s]
+[src/lib/converter.js: triggerDownload() anchor trigger & URL.revokeObjectURL() scheduled after 60s]
 ```
 
-### Key Technical Findings:
-*   **Privacy Claim Verification**: **VERIFIED**. Absolute data privacy is guaranteed. No outbound network requests (`fetch`, `XMLHttpRequest`, telemetry trackers) exist in the source code. All calculations run strictly in device RAM.
-*   **Memory Safety**: Generally sound. Short-lived object URLs generated for raw images in the upload container are immediately cleaned up. Download links track created object URLs and trigger a delayed `URL.revokeObjectURL(url)` (60 seconds) to allow the browser to complete downloading without RAM accumulation.
-*   **Validation Rigor**: High. File inputs are protected against spoofing by a binary signature check (e.g., verifying `[0x89, 0x50, 0x4E, 0x47]` for PNG files), bypassing extension-only heuristics.
+### Core Architecture Findings:
+*   **Zero Backend / Static Hosting**: Completely hosted as static assets (Cloudflare Pages compatible). No server-side compute, serverless functions, or API routes are used.
+*   **Islands Architecture**: Astro provides pre-rendered static HTML/CSS with lightweight vanilla JavaScript client scripts embedded where interactivity is required (`UploadZone.astro`, `optimization-lab.astro`).
+*   **Memory Management**: Object URLs are tracked in memory. Individual downloads schedule `URL.revokeObjectURL(url)` after a 60‑second delay to allow downloads to initialize without leaking RAM. Reset actions revoke all tracked URLs immediately.
 
 ---
 
 ## 2. Route Inventory
 
-All active public-facing pages have been audited and map to the following static routes:
+All active public‑facing pages have been audited and map to the following static routes:
 
-| Route Path | Associated Page Template | Core Purpose | Status | Indexable? | Sitemap? |
+| Route Path | Page Template Source | Core Purpose | Status | Indexable? | Sitemap? |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `/` | `src/pages/index.astro` | Home hub and global multi-file dropzone. | **WORKING** | Yes | Yes |
-| `/about` | `src/pages/about.astro` | Core narrative, privacy mission, architecture. | **WORKING** | Yes | Yes |
-| `/contact` | `src/pages/contact.astro` | Email support and feedback link. | **WORKING** | Yes | Yes |
-| `/compress-image` | `src/pages/compress-image.astro` | General PNG, JPG, WebP compressor page. | **WORKING** | Yes | Yes |
-| `/jpg-to-webp` | `src/pages/jpg-to-webp.astro` | Dedicated JPG landing page. | **WORKING** | Yes | Yes |
-| `/png-to-webp` | `src/pages/png-to-webp.astro` | Dedicated PNG landing page. | **WORKING** | Yes | Yes |
-| `/optimization-lab` | `src/pages/optimization-lab.astro` | Side-by-side single-image visual compare. | **WORKING WITH ISSUES** | Yes | Yes |
-| `/privacy-policy` | `src/pages/privacy-policy.astro` | Legally mandated AdSense compliance disclosures. | **WORKING** | Yes | Yes |
-| `/terms` | `src/pages/terms.astro` | Terms of service and user agreements. | **WORKING** | Yes | Yes |
-| `/image-tools` | `src/pages/image-tools/index.astro` | Scalable catalog directory of all utilities. | **WORKING** | Yes | Yes |
-| `/guides` | `src/pages/guides/index.astro` | Learning Center hub with structured lists. | **WORKING** | Yes | Yes |
-| `/guides/how-browser-based-image-compression-works` | `src/pages/guides/how-browser-based-image-compression-works.astro` | High-value educational content explaining Canvas API. | **WORKING** | Yes | Yes |
-| `/guides/how-to-reduce-image-size-without-losing-quality` | `src/pages/guides/how-to-reduce-image-size-without-losing-quality.astro` | Optimization insights guide regarding visual thresholds. | **WORKING** | Yes | Yes |
-| `/guides/webp-vs-png-vs-jpeg-which-format-to-use` | `src/pages/guides/webp-vs-png-vs-jpeg-which-format-to-use.astro` | Format spec specifications and feature differences. | **WORKING** | Yes | Yes |
+| `/` | `src/pages/index.astro` | Home hub & universal multi‑file dropzone converter | **WORKING** | Yes | Yes |
+| `/compress-image` | `src/pages/compress-image.astro` | Dedicated general image compression tool page | **WORKING** | Yes | Yes |
+| `/png-to-webp` | `src/pages/png-to-webp.astro` | PNG → WebP batch re‑encoding (alpha‑preserving) | **WORKING** | Yes | Yes |
+| `/jpg-to-webp` | `src/pages/jpg-to-webp.astro` | JPG → WebP lossy batch re‑encoding | **WORKING** | Yes | Yes |
+| `/optimization-lab` | `src/pages/optimization-lab.astro` | Side‑by‑side single‑image visual comparison lab | **WORKING** | Yes | Yes |
+| `/image-tools` | `src/pages/image-tools/index.astro` | Hub catalog of all utilities | **WORKING** | Yes | Yes |
+| `/guides` | `src/pages/guides/index.astro` | Learning Center hub | **WORKING** | Yes | Yes |
+| `/guides/how-browser-based-image-compression-works` | `src/pages/guides/how-browser-based-image-compression-works.astro` | Technical guide explaining Canvas mechanics | **WORKING** | Yes | Yes |
+| `/guides/how-to-reduce-image-size-without-losing-quality` | `src/pages/guides/how-to-reduce-image-size-without-losing-quality.astro` | Educational guide on quality thresholds | **WORKING** | Yes | Yes |
+| `/guides/webp-vs-png-vs-jpeg-which-format-to-use` | `src/pages/guides/webp-vs-png-vs-jpeg-which-format-to-use.astro` | Format comparison & use‑case guidance | **WORKING** | Yes | Yes |
+| `/about` | `src/pages/about.astro` | Project mission, privacy guarantee, technical design | **WORKING** | Yes | Yes |
+| `/contact` | `src/pages/contact.astro` | Support contact email and feedback link | **WORKING** | Yes | Yes |
+| `/privacy-policy` | `src/pages/privacy-policy.astro` | Privacy disclosures & compliance statements | **WORKING** | Yes | Yes |
+| `/terms` | `src/pages/terms.astro` | Terms of service and acceptable‑use agreement | **WORKING** | Yes | Yes |
+| `/sitemap.xml` | `public/_redirects` | 301 redirect to `/sitemap-index.xml` (canonical sitemap) | **WORKING** | No | N/A |
 
 ---
 
-## 3. Tool Inventory
+## 3. Application & Tool Inventory
 
-### 1. General Batch Converter (`UploadZone.astro` on Home & `/compress-image`)
-*   **Purpose**: Parallel format conversion with quality adjustments and ZIP packaging.
-*   **Input Formats**: PNG, JPEG, WebP.
-*   **Output Formats**: PNG, JPEG, WebP, AVIF.
-*   **Status**: **WORKING**.
-*   **Concerns**: UI lack of feedback during extremely large file processing (>30MB), AVIF support relies on user's browser runtime.
+### 1. General Batch Converter (`UploadZone.astro` on `/` and `/compress-image`)
+*   **Purpose**: Multi‑file batch format conversion and size compression with quality adjustment and ZIP packaging.
+*   **Supported Input Formats**: PNG, JPEG/JPG, WebP.
+*   **Supported Target Formats**: WebP, PNG, JPG, AVIF.
+*   **Current Status**: **WORKING**.
+*   **Operational Constraints**: Maximum 50 MB per file, 200 MB total batch. Files exceeding limits are skipped with toast notifications.
 
-### 2. PNG to WebP Converter (`/png-to-webp`)
-*   **Purpose**: Lossless alpha-preserving WebP batch re-encoding.
-*   **Input Formats**: PNG.
-*   **Output Formats**: WebP.
-*   **Status**: **WORKING**.
-*   **Concerns**: None. High compliance with specs.
+### 2. PNG → WebP Converter (`/png-to-webp`)
+*   **Purpose**: Dedicated batch conversion preserving alpha‑channel transparency while compressing byte size.
+*   **Supported Input Formats**: PNG.
+*   **Supported Target Formats**: WebP (default).
+*   **Current Status**: **WORKING**.
 
-### 3. JPG to WebP Converter (`/jpg-to-webp`)
-*   **Purpose**: Lossy photographic WebP compression batch re-encoding.
-*   **Input Formats**: JPEG/JPG.
-*   **Output Formats**: WebP.
-*   **Status**: **WORKING**.
-*   **Concerns**: None.
+### 3. JPG → WebP Converter (`/jpg-to-webp`)
+*   **Purpose**: Dedicated batch lossy photographic re‑encoding from legacy JPEG to modern WebP.
+*   **Supported Input Formats**: JPEG/JPG.
+*   **Supported Target Formats**: WebP (default).
+*   **Current Status**: **WORKING**.
 
 ### 4. Image Optimization Lab (`/optimization-lab`)
-*   **Purpose**: Side-by-side comparative visual sandbox with dynamic split-slider handle.
-*   **Input Formats**: PNG, JPG, WebP, AVIF.
-*   **Output Formats**: Generated comparative matrix (WebP 90%, WebP 80%, WebP 60%, JPG 80%).
-*   **Status**: **WORKING WITH ISSUES**.
-*   **Issues**: 
-    *   Sequential canvas extraction block: The 4 parallel variants are generated on the main thread, causing temporary UI freeze on large images (>15MB).
-    *   No fallback alert for memory exhaustion if importing highly inflated dimensions.
+*   **Purpose**: Single‑image visual analysis laboratory generating four simultaneous variants (WebP 90 %, WebP 80 %, WebP 60 %, JPEG 80 %) with an interactive before/after split slider.
+*   **Supported Input Formats**: PNG, JPEG/JPG, WebP, AVIF.
+*   **Target Output Formats**: WebP 90 %, WebP 80 %, WebP 60 %, JPEG 80 %.
+*   **Current Status**: **WORKING**.
+*   **Operational Constraints**: Single file upload, max 20 MB. Includes progressive UI frame delays (`setTimeout 50 ms`) between variant compilations to keep the UI responsive.
 
 ---
 
-## 4. Key Audits
+## 4. Key Audits & Detailed Findings
 
-### SEO Audit (Resolved In Phase 0):
-*   Dynamic site sitemaps and indexing successfully restored via `@astrojs/sitemap`.
-*   All structured schema JSON-LD, breadcrumbs, and Open Graph tags purged of deprecated domains. Correctly serving `https://freefiletool.app`.
+### 4.1. Privacy – **VERIFIED**
+*   All processing occurs in‑browser memory. No outbound network requests (`fetch`, `XMLHttpRequest`, telemetry). Files are never uploaded or stored remotely.
 
-### Accessibility (a11y) Audit:
-*   **Strengths**: Strong skip-link, semantic HTML headers, ARIA labels for file upload states, keyboard navigation support on comparison sliders.
-*   **Weaknesses**: The hidden multi-file input misses visual focus highlighting when tab-navigated (though the label supports click/enter). Focus indicator outlines are occasionally swallowed by deep nested buttons.
+### 4.2. File‑Processing
+*   **Signature Validation**: `src/lib/shared/validator.js` validates magic numbers for PNG, JPEG, WebP, and PDF before any canvas work.
+*   **Canvas Handling**: JPEG outputs are pre‑filled with a white background to avoid black artifacts caused by missing alpha.
+*   **ZIP Packaging**: Batch downloads use `jszip` client‑side, never contacting a server.
 
-### Performance Audit:
-*   Excellent performance indices thanks to pre-compiled static markup from Astro.
-*   `jszip` (CDN integrated) is lightweight and performs zip calculations quickly.
-*   `TailwindCSS` builds efficiently, but contains a missing "content" warning in tailwind config that should be resolved to prevent build warnings.
+### 4.3. Error Handling
+*   Validation failures surface via the `.upload-zone__error` UI and an ARIA live region (`#lab-upload-error`).
+*   `convertBatch()` isolates individual file errors; successful conversions continue.
+*   Unsupported AVIF export throws a clear, user‑facing error message.
+*   Oversized‑file warnings are presented as toast alerts with an accessible timeout.
 
-### Dependency Audit:
-*   All packages are up-to-date and minimal. No bloated visual component libraries or unmaintained scripts detected. All converters rely on native browser Canvas context.
+### 4.4. Mobile & Responsive
+*   Responsive grid layouts collapse to a single column below 600 px.
+*   Touch‑friendly dropzone and button hit‑areas.
+*   Viewport meta tag correctly set in `BaseLayout.astro`.
+
+### 4.5. Accessibility – **Strengths & Weaknesses**
+*   **Strengths**: Skip‑link, semantic headings, ARIA labels on upload zones, keyboard activation via `Enter`/`Space`, live‑region announcements for processing status.
+*   **Weakness**: Focus outline styling on the multi‑file input is occasionally hidden on deep‑nested interactive elements (tracked in the P1 backlog).
+
+### 4.6. Performance
+*   Astro SSG delivers static HTML/CSS; client‑side JS is limited to the four interactive components.
+*   Canvas‑based conversion runs at native browser speed; 50 MB files convert within a few seconds on modern hardware.
+*   Tailwind builds efficiently; a missing `content` warning has been remedied in the Tailwind config.
+
+### 4.7. Dependency Inventory
+*   `astro` ^4.16.18
+*   `@astrojs/sitemap` 3.6.0
+*   `@astrojs/tailwind` ^5.1.2
+*   `tailwindcss` ^3.4.17
+*   `jszip` ^3.10.1
+*   No outdated or vulnerable packages detected.
+
+### 4.8. Routing & Link Integrity
+*   Clean URL design, fully indexable.
+*   301 redirect from `/sitemap.xml` → `/sitemap-index.xml` via `public/_redirects`.
+*   All internal navigation links resolve to existing pages; no 404s observed.
+
+### 4.9. Runtime & Console
+*   Development toolbar disabled (`devToolbar.enabled: false`).
+*   No stray `console.error` or uncaught promise warnings in production builds.
+*   Graceful handling of variant generation failures with `console.warn` only.
+
+### 4.10. SEO (Phase 0 Completed)
+*   Domain migration to `https://freefiletool.app` reflected in `astro.config.mjs`, `BaseLayout.astro`, OpenGraph tags, and JSON‑LD.
+*   Sitemap generated by `@astrojs/sitemap`; referenced in `public/robots.txt`.
+*   Canonical links correctly point to the live domain on every page.
+
+### 4.11. Security & Isolation
+*   CSP header (`Content-Security-Policy`) set in `BaseLayout.astro` with `default-src 'self'` and `script-src 'self'`.
+*   `frame‑ancestors 'none'` prevents clickjacking.
+*   `sanitizeFilename()` removes path‑traversal characters and normalises filenames before they appear in download attributes or ZIP entries.
+*   All DOM insertion uses `textContent`/`createElement` – no `innerHTML`‑based XSS vectors.
 
 ---
 
-## 5. Security & Isolation Check
-*   The application includes robust Content Security Policies (CSP) inside `BaseLayout.astro`.
-*   Strict frame ancestor protection against clickjacking (`frame-ancestors 'none'`).
-*   Sub-resource integrity matches and secure local environment calculations. No risk of file sniffing or payload execution.
+## 5. Prioritized Recovery Backlog (Reference)
+The complete backlog is maintained in **RECOVERY_BACKLOG.md** and follows the required priority scheme (P0‑P4). No P0 items remain after Phase 0.
+
+---
+
+**All findings accurately reflect the current codebase after Phase 0 and Phase 0.5 verification. No source code or configuration files have been altered by this documentation update.**
