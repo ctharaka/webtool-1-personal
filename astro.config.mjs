@@ -3,7 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
-  site: 'https://freefiletools.pages.dev',
+  site: 'https://freefiletool.app',
   output: 'static',
   integrations: [
     sitemap(),

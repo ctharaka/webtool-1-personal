@@ -668,9 +668,12 @@ const labelList = allowedTypes.map((t) => t.toUpperCase()).join(', ');
     outline: none;
   }
 
-  .upload-zone__idle:hover,
+  .upload-zone__idle:hover {
+    border-color: var(--color-brand-400);
+  }
   .upload-zone__idle:focus-visible {
     border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-400) 40%, transparent);
   }
 
   .upload-zone[data-state='idle']:hover {

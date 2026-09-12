@@ -16,7 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout
   title="Image Optimization Lab — Visual Quality Comparison Tool | FreeFileTools"
   description="Upload one image and instantly compare WebP 90%, WebP 80%, WebP 60%, and JPEG 80% side-by-side. Use the before/after slider to see the visual difference before you download."
-  canonicalURL="https://freefiletools.com/optimization-lab"
+  canonicalURL="https://freefiletool.app/optimization-lab"
 >
   <script type="application/ld+json" is:inline>
     {
@@ -24,7 +24,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       "@type": "WebApplication",
       "name": "Image Optimization Lab",
       "description": "A browser-based image optimization analysis tool that generates multiple compressed versions of an image and provides a visual before/after comparison slider.",
-      "url": "https://freefiletools.com/optimization-lab",
+      "url": "https://freefiletool.app/optimization-lab",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -722,11 +722,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     text-align: center;
   }
 
-  .lab-drop-zone:hover,
-  .lab-drop-zone:focus-within {
+  .lab-drop-zone:hover {
     border-color: var(--color-brand-500);
     background: color-mix(in srgb, var(--color-brand-500) 5%, var(--surface-1));
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+  }
+  .lab-drop-zone:focus-within {
+    border-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 5%, var(--surface-1));
+    box-shadow: 0 0 0 4px var(--color-brand-500);
     outline: none;
   }
 
