@@ -550,6 +550,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     // Generate all variants in sequence (memory safe — one at a time)
     for (let i = 0; i < VARIANTS.length; i++) {
       const variant = VARIANTS[i];
+      // Allow UI thread to refresh between variant generation
+      await new Promise(r => setTimeout(r, 50));
       processingText.textContent = `Generating ${variant.label}… (${i + 1} / ${VARIANTS.length})`;
       try {
         const result = await convertImage(file, variant.format, variant.quality);
