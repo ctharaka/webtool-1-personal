@@ -1,0 +1,366 @@
+---
+/**
+ * pdf/pdf-to-jpg.astro — Dedicated PDF to JPG Converter Tool Page
+ * Full client-side PDF rasterization to high-resolution JPEG images with ZIP packaging.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="PDF to JPG Converter — Convert PDF Pages to JPG Online | FreeFileTools"
+  description="Convert PDF document pages into high-resolution JPG images directly in your browser. Download single pages or all pages as a ZIP archive. 100% private."
+  canonicalURL="https://freefiletool.app/pdf/pdf-to-jpg"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PDF Pages to JPG Images Online",
+          "description": "Step-by-step instructions to render and extract PDF document pages into high-resolution JPG images in your browser without cloud uploads.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload PDF Document",
+              "text": "Select your PDF file from your device or drag and drop into the upload box."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Configure Quality & Resolution",
+              "text": "Choose your preferred rendering resolution (Standard 108 DPI or High-Res 144 DPI) and adjust the JPG quality percentage."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Click Convert to JPG",
+              "text": "Your browser renders each page onto an off-screen HTML5 Canvas node."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download Images or ZIP Archive",
+              "text": "Download pages individually or export the entire set as a single ZIP package."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I convert all pages of a multi-page PDF at once?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! The tool automatically renders all pages and generates a 'Download All (.zip)' button so you can download all extracted JPG images in a single package."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my confidential PDF pages uploaded to an external server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Rendering occurs entirely in your browser using HTML5 Canvas and PDF.js. Your document never leaves your device memory."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert just a single page?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Choose 'Single Page' under Pages to Export and enter the exact page number you wish to render."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PDF to Image</div>
+    <h1 class="tool-hero__title">PDF to JPG Converter</h1>
+    <p class="tool-hero__desc">
+      Convert PDF document pages into crisp JPG photographs in seconds. Download individual pages or the entire document as a ZIP file. 100% private in-browser rendering.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="pdf-to-images" outputFormat="jpg" id="pdf-to-jpg-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">How does browser-side PDF to JPG conversion work?</p>
+    <p class="quick-answer__a">
+      FreeFileTools uses Mozilla's <code>pdf.js</code> engine running client-side to render vector PDF pages directly onto an off-screen HTML5 Canvas. The canvas is then exported as high-fidelity JPEG image blobs using native browser APIs. No document bytes are ever uploaded to any server.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>High-Resolution In-Browser PDF Page Rasterization</h2>
+      <p>
+        Extracting graphics, slides, or scanned pages from a PDF is often necessary when sharing slides on social media, embedding documents into web presentations, or editing pages in graphic software. Standard web converters require uploading entire documents to unknown cloud infrastructure, posing privacy risks for proprietary business presentations and personal records.
+      </p>
+      <p>
+        FreeFileTools rasterizes each page locally on your device. The rendering pipeline uses your local GPU and CPU via HTML5 Canvas, filling a pure white background behind transparent page elements and producing clean, high-contrast JPEG files ready for immediate use.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert PDF to JPG (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Select your PDF:</strong> Drag and drop your document into the container, or click to browse files.</li>
+        <li><strong>Choose resolution &amp; quality:</strong> Select standard resolution (108 DPI) for web viewing or high resolution (144 DPI) for print quality. Adjust the quality slider (85% recommended).</li>
+        <li><strong>Select page range:</strong> Choose whether to render all pages or specify a single page number.</li>
+        <li><strong>Convert &amp; Download:</strong> Click "Convert to JPG". Download images individually or click "Download All (.zip)" to save all pages in one archive.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Rendering Quality &amp; Resolution Guide</h2>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Resolution Profile</th>
+              <th>Scale Factor</th>
+              <th>Ideal For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Standard (108 DPI)</strong></td>
+              <td>1.5x Viewport</td>
+              <td>Fastest rendering, website embeds, social media, mobile viewing.</td>
+            </tr>
+            <tr>
+              <td><strong>High-Res (144 DPI)</strong></td>
+              <td>2.0x Viewport</td>
+              <td>Detailed schematics, small print, presentation slides, zoomable graphics.</td>
+            </tr>
+            <tr>
+              <td><strong>Compact (72 DPI)</strong></td>
+              <td>1.0x Viewport</td>
+              <td>Low-memory devices, quick thumbnails, minimal storage weight.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Are my PDF files uploaded to an external server?</summary>
+          <div class="faq-answer">
+            <p>
+              No. All rasterization is completed in your device's browser memory. Your documents and exported images are never transmitted over the internet.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I convert a PDF with transparent backgrounds to JPG?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes! Because JPEG format does not support transparency, our engine automatically applies a clean, opaque white background behind transparent PDF elements to prevent black artifacting. For transparency preservation, use our <a href="/pdf/pdf-to-png">PDF to PNG Converter</a>.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a maximum page limit for multi-page export?</summary>
+          <div class="faq-answer">
+            <p>
+              You can render documents with dozens of pages. Because each page image is held in temporary browser memory before ZIP bundling, we recommend documents under 50 pages on mobile devices for smooth performance.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; Image Tools</h2>
+      <p>Explore other client-side conversion and compression utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>📷 <a href="/pdf/pdf-to-png">PDF to PNG</a> — Convert PDF document pages into lossless PNG images.</li>
+        <li>🖼️ <a href="/pdf/jpg-to-pdf">JPG to PDF</a> — Convert photos and images back into a consolidated PDF document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce document byte weight with in-browser stream optimization.</li>
+        <li>📑 <a href="/pdf/merge">Merge PDF</a> — Combine multiple PDF files into one clean document.</li>
+        <li>📑 <a href="/pdf">All PDF Tools</a> — Return to the complete catalog of client-side PDF utilities.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-4) 0;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

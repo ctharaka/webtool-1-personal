@@ -1,0 +1,309 @@
+---
+/**
+ * pdf/png-to-pdf.astro — Dedicated PNG to PDF Converter Tool Page
+ * Multi-image PNG to PDF conversion with transparency support, reordering, and layout sizing.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="PNG to PDF Converter — Convert PNG to PDF Document | FreeFileTools"
+  description="Convert PNG images to high-quality PDF documents directly in your browser. Preserves image clarity, supports transparency, 100% private."
+  canonicalURL="https://freefiletool.app/pdf/png-to-pdf"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PNG Images to a PDF Document Online",
+          "description": "Step-by-step instructions to convert PNG graphics and transparent images into a multi-page PDF document locally in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select or Drop PNG Files",
+              "text": "Choose one or multiple PNG graphics from your device."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Arrange Page Order",
+              "text": "Reorder your images with arrow controls to set the document sequence."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Page Layout",
+              "text": "Select Fit to Image Dimensions or Standard A4 Document layout."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Export PDF Document",
+              "text": "Click Generate PDF Document to create and download your PDF instantly."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does converting PNG to PDF preserve transparent backgrounds?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! When embedding PNGs, our client-side engine retains the alpha transparency channel, ensuring clean edges for logos and digital artwork."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I combine multiple PNG files into one PDF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can select multiple PNG files. Each image is compiled sequentially as its own page in the generated PDF file."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my PNG graphics uploaded to an external server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The entire conversion is executed locally in your browser memory. Your images never leave your machine."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Image to PDF</div>
+    <h1 class="tool-hero__title">PNG to PDF Converter</h1>
+    <p class="tool-hero__desc">
+      Convert PNG illustrations, screenshots, and graphics into a high-quality PDF. Retains transparency and crisp vector-like edges with 100% private in-browser compilation.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="images-to-pdf" imageFormat="png" id="pdf-png-to-pdf-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Does this tool support transparent PNG backgrounds?</p>
+    <p class="quick-answer__a">
+      Yes! The engine embeds PNG files with their native 8-bit alpha transparency mask. Transparent areas appear cleanly on the PDF page without ugly black rectangular backgrounds.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Convert Transparent &amp; High-Resolution PNGs to PDF</h2>
+      <p>
+        PNG is the standard format for logos, charts, screenshots, and vector exports because of its lossless compression and alpha-channel transparency. However, sharing loose PNG graphics can cause layout issues across devices and email clients.
+      </p>
+      <p>
+        FreeFileTools embeds your PNG assets into a standard PDF document directly within your web browser. The tool creates a compliant PDF container, maps the image dimensions, and embeds the lossless PNG stream without altering pixel values or compressing color matrices.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert PNG to PDF (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Add your PNG images:</strong> Drag and drop single or multiple PNG files into the upload area.</li>
+        <li><strong>Set page sequence:</strong> Use the &#9650; and &#9660; buttons to arrange your graphics into your desired order.</li>
+        <li><strong>Choose layout sizing:</strong> Select "Fit to Image Dimensions" or "Standard A4 Document".</li>
+        <li><strong>Generate &amp; Download:</strong> Click "Generate PDF Document" to instantly download your combined file.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Why Use Local Browser Compilation?</h2>
+      <p>
+        Most web utilities send your uploaded files to cloud-hosted rendering servers, which introduces network latency and potential data leakage. FreeFileTools executes all PDF construction inside client memory using <code>pdf-lib</code> and browser Web APIs. Whether you are packaging brand guidelines, UI mockups, or sensitive receipts, your files remain completely private.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Will my text and screenshots stay sharp in the PDF?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes. Because PNG is a lossless format, the embedded image retains 100% of its original pixel clarity with no compression artifacts.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I convert a mix of PNG and JPG images?</summary>
+          <div class="faq-answer">
+            <p>
+              For best results, convert PNGs using this tool and JPGs using our <a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a>. You can then easily combine them using our <a href="/pdf/merge">Merge PDF</a> tool!
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Does this service cost anything?</summary>
+          <div class="faq-answer">
+            <p>
+              No, FreeFileTools is 100% free with no registration, no subscriptions, and no watermarks.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; Image Tools</h2>
+      <p>Explore other client-side conversion and compression utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>🖼️ <a href="/pdf/jpg-to-pdf">JPG to PDF</a> — Convert JPG photographs and scanned documents to PDF.</li>
+        <li>📷 <a href="/pdf/pdf-to-png">PDF to PNG</a> — Convert PDF document pages into lossless PNG images.</li>
+        <li>📑 <a href="/pdf/merge">Merge PDF</a> — Combine multiple PDF files into one clean document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce document byte weight with in-browser stream optimization.</li>
+        <li>🔄 <a href="/png-to-webp">PNG to WebP Converter</a> — Convert PNG graphics to WebP for modern website speed.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

@@ -65,6 +65,48 @@ import UploadZone from '../components/UploadZone.astro';
     </div>
   </section>
 
+  <!-- Popular PDF Tools Grid Section -->
+  <section class="hub-section" aria-label="PDF Tools">
+    <h2 class="section-title">Browser-Side PDF Tools</h2>
+    <p class="section-subtitle">Merge, compress, and convert documents locally in your browser with zero server uploads.</p>
+    <div class="tools-grid">
+      <a href="/pdf/merge" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--pdf">PDF</div>
+        <h3 class="tool-card__title">Merge PDF</h3>
+        <p class="tool-card__desc">Combine multiple PDF documents into a single organized file with easy page reordering.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+
+      <a href="/pdf/compress" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--compress">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="tool-card__title">Compress PDF</h3>
+        <p class="tool-card__desc">Reduce PDF file size for email sharing using client-side object stream optimization.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+
+      <a href="/pdf/jpg-to-pdf" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--jpg">JPG</div>
+        <h3 class="tool-card__title">JPG to PDF</h3>
+        <p class="tool-card__desc">Convert JPEG photos and scans into a clean multi-page PDF document with A4 layout options.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+
+      <a href="/pdf/pdf-to-jpg" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--pdf">IMG</div>
+        <h3 class="tool-card__title">PDF to JPG</h3>
+        <p class="tool-card__desc">Extract PDF pages as high-resolution JPEG images with one-click multi-page ZIP export.</p>
+        <span class="tool-card__link">Launch Tool &rarr;</span>
+      </a>
+    </div>
+    <div style="text-align: center; margin-top: var(--space-6);">
+      <a href="/pdf" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore All 7 PDF Tools &rarr;</a>
+    </div>
+  </section>
+
   <!-- Why FreeFileTools? Section -->
   <section class="hub-section features-section" aria-label="Features">
     <h2 class="section-title">Why Optimize with FreeFileTools?</h2>
@@ -256,6 +298,12 @@ import UploadZone from '../components/UploadZone.astro';
     background: color-mix(in srgb, var(--color-success-500) 15%, transparent);
     color: var(--color-success-300);
     border: 1px solid var(--color-success-400);
+  }
+
+  .tool-card__icon--pdf {
+    background: color-mix(in srgb, var(--color-error-500) 15%, transparent);
+    color: var(--color-error-400);
+    border: 1px solid var(--color-error-400);
   }
 
   .tool-card__title {

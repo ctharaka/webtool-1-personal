@@ -1,0 +1,1449 @@
+---
+/**
+ * PdfZone.astro
+ *
+ * Interactive Drag-and-Drop PDF Processing UI component for FreeFileTools.
+ * Mirrors UploadZone.astro's architecture, design tokens, accessibility, and 4-state lifecycle:
+ * 
+ * STATE 1: Dropzone (Drag & Drop + File Picker)
+ * STATE 2: Queue & Options (File Items, Reordering, Configuration controls, Action Button)
+ * STATE 3: Processing (Progress Spinner with live progress announcements)
+ * STATE 4: Download View (Stats, Download Button / JSZip Archive, Reset)
+ * STATE ERROR: Accessible contextual error messaging
+ */
+
+export interface Props {
+  mode: 'merge' | 'split' | 'compress' | 'images-to-pdf' | 'pdf-to-images';
+  imageFormat?: 'jpg' | 'png';
+  outputFormat?: 'jpg' | 'png';
+  id?: string;
+}
+
+const {
+  mode = 'merge',
+  imageFormat = 'jpg',
+  outputFormat = 'jpg',
+  id = `pdf-zone-${mode}`,
+} = Astro.props;
+
+// Determine accept attribute and dropzone instructions
+let accept = '.pdf,application/pdf';
+let multiple = true;
+let defaultHeading = 'Drop PDF files here';
+let defaultSub = 'or browse files \u00B7 Client-side processing \u00B7 100% private';
+
+if (mode === 'split') {
+  multiple = false;
+  defaultHeading = 'Drop a PDF file here to split';
+  defaultSub = 'or browse files \u00B7 Extract pages or page ranges';
+} else if (mode === 'compress') {
+  multiple = false;
+  defaultHeading = 'Drop a PDF file here to compress';
+  defaultSub = 'or browse files \u00B7 In-browser stream & structure optimization';
+} else if (mode === 'images-to-pdf') {
+  multiple = true;
+  accept = imageFormat === 'png' ? '.png,image/png' : '.jpg,.jpeg,image/jpeg';
+  defaultHeading = `Drop ${imageFormat.toUpperCase()} images here to convert to PDF`;
+  defaultSub = `or browse files \u00B7 Reorder images \u00B7 Multi-page PDF export`;
+} else if (mode === 'pdf-to-images') {
+  multiple = false;
+  accept = '.pdf,application/pdf';
+  defaultHeading = `Drop a PDF file here to convert to ${outputFormat.toUpperCase()}`;
+  defaultSub = `or browse files \u00B7 Render high-resolution ${outputFormat.toUpperCase()} pages`;
+}
+---
+
+<div
+  class="upload-zone pdf-zone"
+  id={id}
+  data-mode={mode}
+  data-state="idle"
+  data-image-format={imageFormat}
+  data-output-format={outputFormat}
+>
+  <!-- Hidden file input -->
+  <input
+    type="file"
+    class="upload-zone__input pdf-zone__input"
+    id={`${id}-input`}
+    accept={accept}
+    multiple={multiple}
+    aria-hidden="true"
+    tabindex="-1"
+  />
+
+  <!-- STATE 1: Upload Dropzone (idle / dragover) -->
+  <div
+    class="upload-zone__state upload-zone__idle"
+    role="button"
+    tabindex="0"
+    aria-label={`${defaultHeading}. ${defaultSub}`}
+  >
+    <div class="upload-zone__icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <rect x="6" y="4" width="36" height="40" rx="8" stroke="var(--color-brand-400)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" />
+        {mode.includes('images-to-pdf') ? (
+          <path d="M16 28l6-6 8 8 6-6 6 6" stroke="var(--color-accent-400)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        ) : (
+          <path d="M24 16v16M16 24h16" stroke="var(--color-brand-400)" stroke-width="2.5" stroke-linecap="round" />
+        )}
+      </svg>
+    </div>
+    <p class="upload-zone__heading">{defaultHeading}</p>
+    <p class="upload-zone__sub">
+      or <span class="upload-zone__browse">browse files</span> &middot; {defaultSub}
+    </p>
+  </div>
+
+  <div class="upload-zone__state upload-zone__dragover" aria-hidden="true">
+    <div class="upload-zone__icon">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <rect x="6" y="4" width="36" height="40" rx="8" stroke="var(--color-accent-400)" stroke-width="2.5" />
+        <path d="M24 14v20M17 21l7-7 7 7" stroke="var(--color-accent-400)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <p class="upload-zone__heading">Release to process file(s)</p>
+  </div>
+
+  <!-- Validating Indicator -->
+  <div class="upload-zone__state upload-zone__validating">
+    <div class="upload-zone__spinner" aria-hidden="true"></div>
+    <p class="upload-zone__heading">Reading and validating file&hellip;</p>
+  </div>
+
+  <!-- STATE 2: Options & Queue -->
+  <div class="upload-zone__state upload-zone__options pdf-zone__options">
+    <div class="batch-header">
+      <h3 class="batch-title">
+        {mode === 'merge' || mode === 'images-to-pdf' ? (
+          <>Queued Files (<span class="pdf-zone__file-count">0</span>)</>
+        ) : (
+          <>Selected Document</>
+        )}
+      </h3>
+      {(mode === 'merge' || mode === 'images-to-pdf') && (
+        <button type="button" class="pdf-zone__add-more-btn" title="Add more files to the queue">
+          + Add More Files
+        </button>
+      )}
+    </div>
+
+    <!-- Queue List (for multi-file modes) -->
+    <div class="pdf-zone__queue-list"></div>
+
+    <!-- Single file info card (for single-file modes) -->
+    <div class="pdf-zone__single-info" style="display: none;">
+      <div class="pdf-zone__doc-badge">PDF</div>
+      <div class="pdf-zone__doc-details">
+        <span class="pdf-zone__doc-name">document.pdf</span>
+        <span class="pdf-zone__doc-meta">0 KB &middot; 0 pages</span>
+      </div>
+      <button type="button" class="pdf-zone__replace-btn" title="Choose a different file">Change</button>
+    </div>
+
+    <!-- Mode-specific option controls -->
+    {mode === 'split' && (
+      <div class="options-container">
+        <div class="option-field">
+          <label class="option-label">Split Mode</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name={`${id}-split-mode`} value="range" checked />
+              <span>Extract Page Range</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name={`${id}-split-mode`} value="all" />
+              <span>Extract All Pages (Individual PDFs)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="option-field" id={`${id}-range-container`}>
+          <label for={`${id}-range-input`} class="option-label">
+            Page Range <span class="option-sublabel">(e.g. 1-3, 5, 8-10)</span>
+          </label>
+          <input
+            type="text"
+            id={`${id}-range-input`}
+            class="text-input"
+            placeholder="e.g. 1-3, 5"
+            value="1"
+          />
+          <p class="field-hint">Specify comma-separated pages or page intervals.</p>
+        </div>
+      </div>
+    )}
+
+    {mode === 'compress' && (
+      <div class="options-container">
+        <div class="info-notice">
+          <p class="notice-title">In-Browser Stream Optimization</p>
+          <p class="notice-desc">
+            Re-encodes internal document structures with compressed object streams and strips non-essential metadata while keeping vector graphics and embedded text intact.
+          </p>
+        </div>
+      </div>
+    )}
+
+    {mode === 'images-to-pdf' && (
+      <div class="options-grid">
+        <div class="option-field">
+          <label for={`${id}-page-size`} class="option-label">Page Sizing</label>
+          <select id={`${id}-page-size`} class="upload-zone__format-select">
+            <option value="fit" selected>Fit to Image Dimensions</option>
+            <option value="a4">Standard A4 Document</option>
+          </select>
+        </div>
+
+        <div class="option-field" id={`${id}-orientation-field`} style="display: none;">
+          <label for={`${id}-orientation`} class="option-label">A4 Orientation</label>
+          <select id={`${id}-orientation`} class="upload-zone__format-select">
+            <option value="portrait" selected>Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+      </div>
+    )}
+
+    {mode === 'pdf-to-images' && (
+      <div class="options-container">
+        <div class="options-grid">
+          <div class="option-field">
+            <label for={`${id}-scale`} class="option-label">Rendering Resolution</label>
+            <select id={`${id}-scale`} class="upload-zone__format-select">
+              <option value="1.5" selected>Standard (108 DPI)</option>
+              <option value="2.0">High-Res (144 DPI)</option>
+              <option value="1.0">Compact (72 DPI)</option>
+            </select>
+          </div>
+
+          {outputFormat === 'jpg' && (
+            <div class="option-field">
+              <div class="quality-label-row">
+                <label for={`${id}-quality`} class="option-label">JPG Quality</label>
+                <span class="pdf-zone__quality-val">85%</span>
+              </div>
+              <input
+                type="range"
+                id={`${id}-quality`}
+                class="upload-zone__quality-slider"
+                min="30"
+                max="100"
+                value="85"
+                step="5"
+              />
+            </div>
+          )}
+        </div>
+
+        <div class="option-field">
+          <label class="option-label">Pages to Export</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name={`${id}-export-pages`} value="all" checked />
+              <span>All Pages (ZIP archive if multiple)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name={`${id}-export-pages`} value="single" />
+              <span>Single Page</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="option-field" id={`${id}-single-page-container`} style="display: none;">
+          <label for={`${id}-single-page-num`} class="option-label">Page Number</label>
+          <input
+            type="number"
+            id={`${id}-single-page-num`}
+            class="text-input"
+            min="1"
+            value="1"
+          />
+        </div>
+      </div>
+    )}
+
+    <!-- Primary Action Button -->
+    <button type="button" class="pdf-zone__action-btn primary-btn">
+      {mode === 'merge' && 'Merge PDF Files Now'}
+      {mode === 'split' && 'Split PDF Now'}
+      {mode === 'compress' && 'Compress PDF Now'}
+      {mode === 'images-to-pdf' && 'Generate PDF Document'}
+      {mode === 'pdf-to-images' && `Convert to ${outputFormat.toUpperCase()}`}
+    </button>
+  </div>
+
+  <!-- STATE 3: Processing -->
+  <div class="upload-zone__state upload-zone__processing">
+    <div class="upload-zone__spinner" aria-hidden="true"></div>
+    <p class="upload-zone__heading pdf-zone__processing-title">Processing in browser...</p>
+    <p class="upload-zone__sub pdf-zone__progress-text">Executing client-side computation...</p>
+  </div>
+
+  <!-- STATE 4: Download View -->
+  <div class="upload-zone__state upload-zone__download pdf-zone__download">
+    <div class="success-badge" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="var(--color-success-500)" stroke-width="2.5" />
+        <path d="M16 24l6 6 10-12" stroke="var(--color-success-500)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <p class="upload-zone__heading pdf-zone__success-title">Process Complete!</p>
+    
+    <div class="stats-box">
+      <span class="pdf-zone__stats-text">File ready for download</span>
+    </div>
+
+    <!-- Converted / Generated Items List (when multi-file output) -->
+    <div class="pdf-zone__results-list"></div>
+
+    <div class="download-actions">
+      <!-- Main single download button -->
+      <a href="#" class="pdf-zone__single-download-btn primary-btn" download style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        <span>Download File</span>
+      </a>
+
+      <!-- ZIP Download button (when multiple images/split files) -->
+      <button type="button" class="pdf-zone__download-zip-btn primary-btn" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        <span>Download All (.zip)</span>
+      </button>
+
+      <button type="button" class="pdf-zone__reset-btn secondary-btn">
+        Process Another
+      </button>
+    </div>
+  </div>
+
+  <!-- STATE ERROR -->
+  <div class="upload-zone__state upload-zone__error">
+    <div class="upload-zone__icon" aria-hidden="true">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="var(--color-error-400)" stroke-width="2" />
+        <path d="M18 18l12 12M30 18L18 30" stroke="var(--color-error-400)" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+    </div>
+    <p class="upload-zone__heading upload-zone__error-title">Operation Failed</p>
+    <p class="upload-zone__sub upload-zone__error-message"></p>
+    <button type="button" class="pdf-zone__retry-btn secondary-btn">Try Again</button>
+  </div>
+
+  <!-- Live Announcer -->
+  <div class="sr-only" aria-live="polite" id={`${id}-announcer`}></div>
+
+  <!-- Toast alert -->
+  <div class="upload-zone__toast" id={`${id}-toast`} role="alert" aria-live="assertive"></div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+  import { validateFile, formatBytes } from '../lib/shared/validator.js';
+  import {
+    getPdfInfo,
+    mergePdfFiles,
+    splitPdfFile,
+    compressPdfFile,
+    imagesToPdf,
+    pdfToImages
+  } from '../lib/pdf/pdfEngine.js';
+
+  document.querySelectorAll('.pdf-zone').forEach((zone) => {
+    const mode           = zone.getAttribute('data-mode') || 'merge';
+    const imageFormat    = zone.getAttribute('data-image-format') || 'jpg';
+    const outputFormat   = zone.getAttribute('data-output-format') || 'jpg';
+
+    const input          = /** @type {HTMLInputElement} */ (zone.querySelector('.pdf-zone__input'));
+    const idleArea       = zone.querySelector('.upload-zone__idle');
+    const queueListEl    = zone.querySelector('.pdf-zone__queue-list');
+    const singleInfoEl   = zone.querySelector('.pdf-zone__single-info');
+    const docNameEl      = zone.querySelector('.pdf-zone__doc-name');
+    const docMetaEl      = zone.querySelector('.pdf-zone__doc-meta');
+    const replaceBtn     = zone.querySelector('.pdf-zone__replace-btn');
+    const fileCountEl    = zone.querySelector('.pdf-zone__file-count');
+    const addMoreBtn     = zone.querySelector('.pdf-zone__add-more-btn');
+    const actionBtn      = zone.querySelector('.pdf-zone__action-btn');
+    const resetBtn       = zone.querySelector('.pdf-zone__reset-btn');
+    const retryBtn       = zone.querySelector('.pdf-zone__retry-btn');
+    const announcer      = document.getElementById(`${zone.id}-announcer`);
+    const toastEl        = document.getElementById(`${zone.id}-toast`);
+    const progressText   = zone.querySelector('.pdf-zone__progress-text');
+    const processingTitle = zone.querySelector('.pdf-zone__processing-title');
+    const resultsListEl  = zone.querySelector('.pdf-zone__results-list');
+    const singleDownBtn  = /** @type {HTMLAnchorElement} */ (zone.querySelector('.pdf-zone__single-download-btn'));
+    const zipDownBtn     = /** @type {HTMLButtonElement} */ (zone.querySelector('.pdf-zone__download-zip-btn'));
+    const statsTextEl    = zone.querySelector('.pdf-zone__stats-text');
+
+    /** @type {File[]} */
+    let queuedFiles = [];
+    let trackedUrls = [];
+    let dragCounter = 0;
+    let singleDocInfo = null;
+    let lastResults = null;
+
+    function setState(state) {
+      zone.setAttribute('data-state', state);
+    }
+
+    function announce(msg) {
+      if (announcer) announcer.textContent = msg;
+    }
+
+    function showToast(msg, isError = true) {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.className = `upload-zone__toast ${isError ? 'upload-zone__toast--error' : 'upload-zone__toast--info'} upload-zone__toast--visible`;
+      clearTimeout(toastEl._hideTimer);
+      toastEl._hideTimer = setTimeout(() => {
+        toastEl.className = 'upload-zone__toast';
+      }, 5000);
+    }
+
+    function revokeTrackedUrls() {
+      trackedUrls.forEach((url) => {
+        try { URL.revokeObjectURL(url); } catch (e) {}
+      });
+      trackedUrls = [];
+    }
+
+    function showError(msg) {
+      setState('error');
+      const msgEl = zone.querySelector('.upload-zone__error-message');
+      if (msgEl) msgEl.textContent = msg;
+      announce(`Error: ${msg}`);
+    }
+
+    function resetToIdle() {
+      revokeTrackedUrls();
+      queuedFiles = [];
+      singleDocInfo = null;
+      lastResults = null;
+      input.value = '';
+      dragCounter = 0;
+      if (queueListEl) queueListEl.innerHTML = '';
+      if (resultsListEl) resultsListEl.innerHTML = '';
+      if (singleInfoEl) singleInfoEl.style.display = 'none';
+      if (singleDownBtn) singleDownBtn.style.display = 'none';
+      if (zipDownBtn) zipDownBtn.style.display = 'none';
+      setState('idle');
+      announce('Ready to select file.');
+    }
+
+    // ── Drag & Drop ─────────────────────────────────────────
+    zone.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      if (zone.getAttribute('data-state') === 'idle') {
+        dragCounter++;
+        setState('dragover');
+      }
+    });
+
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    zone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      if (zone.getAttribute('data-state') === 'dragover') {
+        dragCounter--;
+        if (dragCounter <= 0) {
+          dragCounter = 0;
+          setState('idle');
+        }
+      }
+    });
+
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      const files = Array.from(/** @type {DragEvent} */ (e).dataTransfer?.files || []);
+      if (files.length > 0) handleIncomingFiles(files);
+    });
+
+    idleArea?.addEventListener('click', () => input.click());
+    idleArea?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        input.click();
+      }
+    });
+
+    input?.addEventListener('change', () => {
+      const files = Array.from(input.files || []);
+      if (files.length > 0) handleIncomingFiles(files);
+      input.value = '';
+    });
+
+    addMoreBtn?.addEventListener('click', () => input.click());
+    replaceBtn?.addEventListener('click', () => input.click());
+    resetBtn?.addEventListener('click', resetToIdle);
+    retryBtn?.addEventListener('click', resetToIdle);
+
+    // ── Mode-specific Option Toggles ────────────────────────
+    if (mode === 'split') {
+      const splitRadios = zone.querySelectorAll(`input[name="${zone.id}-split-mode"]`);
+      const rangeContainer = document.getElementById(`${zone.id}-range-container`);
+      splitRadios.forEach((r) => {
+        r.addEventListener('change', () => {
+          const val = /** @type {HTMLInputElement} */ (r).value;
+          if (rangeContainer) {
+            rangeContainer.style.display = val === 'range' ? 'block' : 'none';
+          }
+        });
+      });
+    }
+
+    if (mode === 'images-to-pdf') {
+      const pageSizeSelect = document.getElementById(`${zone.id}-page-size`);
+      const orientationField = document.getElementById(`${zone.id}-orientation-field`);
+      pageSizeSelect?.addEventListener('change', (e) => {
+        const val = /** @type {HTMLSelectElement} */ (e.target).value;
+        if (orientationField) {
+          orientationField.style.display = val === 'a4' ? 'block' : 'none';
+        }
+      });
+    }
+
+    if (mode === 'pdf-to-images') {
+      const exportRadios = zone.querySelectorAll(`input[name="${zone.id}-export-pages"]`);
+      const singlePageContainer = document.getElementById(`${zone.id}-single-page-container`);
+      exportRadios.forEach((r) => {
+        r.addEventListener('change', () => {
+          const val = /** @type {HTMLInputElement} */ (r).value;
+          if (singlePageContainer) {
+            singlePageContainer.style.display = val === 'single' ? 'block' : 'none';
+          }
+        });
+      });
+
+      const qualitySlider = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-quality`));
+      const qualityVal = zone.querySelector('.pdf-zone__quality-val');
+      qualitySlider?.addEventListener('input', () => {
+        if (qualityVal) qualityVal.textContent = `${qualitySlider.value}%`;
+      });
+    }
+
+    // ── Handle Incoming Files ───────────────────────────────
+    async function handleIncomingFiles(newFiles) {
+      setState('validating');
+      announce('Validating selected files...');
+
+      const allowedTypes = mode === 'images-to-pdf'
+        ? (imageFormat === 'png' ? ['png'] : ['jpg'])
+        : ['pdf'];
+
+      const validFiles = [];
+
+      for (const file of newFiles) {
+        try {
+          const res = await validateFile(file, { allowedTypes });
+          if (res.valid) {
+            validFiles.push(file);
+          } else {
+            showToast(res.error || `File ${file.name} is invalid.`);
+          }
+        } catch (e) {
+          showToast(`Could not validate ${file.name}`);
+        }
+      }
+
+      if (validFiles.length === 0) {
+        if (queuedFiles.length > 0) {
+          setState('options');
+        } else {
+          resetToIdle();
+        }
+        return;
+      }
+
+      // Single file modes
+      if (mode === 'split' || mode === 'compress' || mode === 'pdf-to-images') {
+        const file = validFiles[0];
+        queuedFiles = [file];
+
+        try {
+          const info = await getPdfInfo(file);
+          if (info.isEncrypted) {
+            showError(`"${file.name}" is password-protected. Please remove the password before processing.`);
+            return;
+          }
+
+          singleDocInfo = { file, ...info };
+
+          if (docNameEl) docNameEl.textContent = file.name;
+          if (docMetaEl) docMetaEl.textContent = `${formatBytes(file.size)} \u00B7 ${info.pageCount} page(s)`;
+          if (singleInfoEl) singleInfoEl.style.display = 'flex';
+
+          // Update default range input if split
+          if (mode === 'split') {
+            const rangeInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-range-input`));
+            if (rangeInput) rangeInput.value = info.pageCount > 1 ? `1-${info.pageCount}` : '1';
+          }
+
+          // Update max page for single page mode in pdf-to-images
+          if (mode === 'pdf-to-images') {
+            const pageNumInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-single-page-num`));
+            if (pageNumInput) {
+              pageNumInput.max = String(info.pageCount);
+              pageNumInput.value = '1';
+            }
+          }
+
+          setState('options');
+          announce(`Selected PDF with ${info.pageCount} pages.`);
+        } catch (err) {
+          showError(err instanceof Error ? err.message : 'Failed to read PDF document.');
+        }
+        return;
+      }
+
+      // Multi-file modes (merge, images-to-pdf)
+      validFiles.forEach((f) => queuedFiles.push(f));
+      renderMultiQueue();
+      setState('options');
+      announce(`${queuedFiles.length} file(s) in queue.`);
+    }
+
+    function renderMultiQueue() {
+      if (!queueListEl) return;
+      while (queueListEl.firstChild) queueListEl.removeChild(queueListEl.firstChild);
+
+      if (fileCountEl) fileCountEl.textContent = String(queuedFiles.length);
+
+      queuedFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'queue-item';
+
+        const numEl = document.createElement('span');
+        numEl.className = 'queue-item__icon';
+        numEl.textContent = String(index + 1);
+
+        const details = document.createElement('div');
+        details.className = 'queue-item__details';
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'queue-item__name';
+        nameEl.textContent = file.name;
+
+        const sizeEl = document.createElement('span');
+        sizeEl.className = 'queue-item__size';
+        sizeEl.textContent = formatBytes(file.size);
+
+        details.appendChild(nameEl);
+        details.appendChild(sizeEl);
+
+        const controls = document.createElement('div');
+        controls.className = 'queue-item__controls';
+
+        // Move Up
+        if (index > 0) {
+          const upBtn = document.createElement('button');
+          upBtn.type = 'button';
+          upBtn.className = 'queue-item__btn';
+          upBtn.title = 'Move up';
+          upBtn.innerHTML = '&#9650;';
+          upBtn.addEventListener('click', () => {
+            const temp = queuedFiles[index - 1];
+            queuedFiles[index - 1] = queuedFiles[index];
+            queuedFiles[index] = temp;
+            renderMultiQueue();
+          });
+          controls.appendChild(upBtn);
+        }
+
+        // Move Down
+        if (index < queuedFiles.length - 1) {
+          const downBtn = document.createElement('button');
+          downBtn.type = 'button';
+          downBtn.className = 'queue-item__btn';
+          downBtn.title = 'Move down';
+          downBtn.innerHTML = '&#9660;';
+          downBtn.addEventListener('click', () => {
+            const temp = queuedFiles[index + 1];
+            queuedFiles[index + 1] = queuedFiles[index];
+            queuedFiles[index] = temp;
+            renderMultiQueue();
+          });
+          controls.appendChild(downBtn);
+        }
+
+        // Remove
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'queue-item__btn queue-item__btn--remove';
+        removeBtn.title = 'Remove file';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', () => {
+          queuedFiles.splice(index, 1);
+          if (queuedFiles.length === 0) {
+            resetToIdle();
+          } else {
+            renderMultiQueue();
+          }
+        });
+        controls.appendChild(removeBtn);
+
+        item.appendChild(numEl);
+        item.appendChild(details);
+        item.appendChild(controls);
+        queueListEl.appendChild(item);
+      });
+    }
+
+    // ── Execute Action ──────────────────────────────────────
+    actionBtn?.addEventListener('click', async () => {
+      if (queuedFiles.length === 0) return;
+
+      setState('processing');
+
+      try {
+        await new Promise((r) => setTimeout(r, 80)); // Allow DOM to render spinner
+
+        if (mode === 'merge') {
+          if (queuedFiles.length < 2) {
+            showToast('Please add at least 2 PDF files to merge.');
+            setState('options');
+            return;
+          }
+          if (processingTitle) processingTitle.textContent = 'Merging PDF files in browser...';
+          const res = await mergePdfFiles(queuedFiles, (current, total, name) => {
+            if (progressText) progressText.textContent = `Merging file ${current} of ${total}: ${name}`;
+          });
+          trackedUrls.push(res.url);
+          showSingleDownload(res.url, res.filename, `Merged ${res.pageCount} pages \u00B7 Total Size: ${res.formattedSize}`);
+        } else if (mode === 'split') {
+          const file = queuedFiles[0];
+          const splitRadio = /** @type {HTMLInputElement} */ (zone.querySelector(`input[name="${zone.id}-split-mode"]:checked`));
+          const splitMode = splitRadio?.value || 'range';
+          const rangeInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-range-input`));
+          const rangeStr = rangeInput?.value || '1';
+
+          if (processingTitle) processingTitle.textContent = 'Splitting PDF in browser...';
+          const res = await splitPdfFile(file, { mode: splitMode, rangeStr }, (current, total) => {
+            if (progressText) progressText.textContent = `Processing page ${current} of ${total}...`;
+          });
+
+          if (res.mode === 'range' && res.singleResult) {
+            trackedUrls.push(res.singleResult.url);
+            showSingleDownload(
+              res.singleResult.url,
+              res.singleResult.filename,
+              `Extracted ${res.singleResult.pageCount} page(s) \u00B7 Size: ${res.singleResult.formattedSize}`
+            );
+          } else if (res.allResults) {
+            res.allResults.forEach((r) => trackedUrls.push(r.url));
+            showMultiDownload(res.allResults, 'split-pages.zip', `${res.allResults.length} pages split successfully.`);
+          }
+        } else if (mode === 'compress') {
+          const file = queuedFiles[0];
+          if (processingTitle) processingTitle.textContent = 'Optimizing PDF streams & structure...';
+          const res = await compressPdfFile(file, (step, total) => {
+            const steps = ['Reading structure...', 'Optimizing object streams...', 'Generating compressed PDF...'];
+            if (progressText) progressText.textContent = steps[step - 1] || 'Compressing...';
+          });
+          trackedUrls.push(res.url);
+          showSingleDownload(
+            res.url,
+            res.filename,
+            `Original: ${res.originalSize} \u2192 Compressed: ${res.compressedSize} (${res.savingsStr})`
+          );
+        } else if (mode === 'images-to-pdf') {
+          const pageSizeSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-page-size`));
+          const orientationSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-orientation`));
+          const pageSize = pageSizeSelect?.value || 'fit';
+          const orientation = orientationSelect?.value || 'portrait';
+
+          if (processingTitle) processingTitle.textContent = 'Generating PDF from images...';
+          const res = await imagesToPdf(queuedFiles, { pageSize, orientation }, (current, total) => {
+            if (progressText) progressText.textContent = `Embedding image ${current} of ${total}...`;
+          });
+          trackedUrls.push(res.url);
+          showSingleDownload(
+            res.url,
+            res.filename,
+            `Generated ${res.pageCount} page PDF \u00B7 Size: ${res.formattedSize}`
+          );
+        } else if (mode === 'pdf-to-images') {
+          const file = queuedFiles[0];
+          const scaleSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-scale`));
+          const scale = parseFloat(scaleSelect?.value || '1.5');
+          const qualitySlider = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-quality`));
+          const quality = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.85;
+
+          const exportRadio = /** @type {HTMLInputElement} */ (zone.querySelector(`input[name="${zone.id}-export-pages"]:checked`));
+          const pageSelection = exportRadio?.value || 'all';
+
+          const singlePageNumInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-single-page-num`));
+          const targetPage = singlePageNumInput ? parseInt(singlePageNumInput.value, 10) || 1 : 1;
+
+          if (processingTitle) processingTitle.textContent = `Rendering PDF pages to ${outputFormat.toUpperCase()}...`;
+          const results = await pdfToImages(file, {
+            format: outputFormat,
+            scale,
+            quality,
+            pageSelection,
+            targetPage,
+          }, (current, total) => {
+            if (progressText) progressText.textContent = `Rendering page ${current} of ${total}...`;
+          });
+
+          results.forEach((r) => trackedUrls.push(r.url));
+
+          if (results.length === 1) {
+            showSingleDownload(results[0].url, results[0].filename, `Page ${results[0].pageNum} \u00B7 Size: ${results[0].formattedSize}`);
+          } else {
+            showMultiDownload(results, `${file.name.replace(/\.[^/.]+$/, '')}-images.zip`, `${results.length} pages rendered to ${outputFormat.toUpperCase()}.`);
+          }
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Operation failed.';
+        showError(msg);
+      }
+    });
+
+    function showSingleDownload(url, filename, statsText) {
+      if (statsTextEl) statsTextEl.textContent = statsText;
+      if (resultsListEl) resultsListEl.innerHTML = '';
+      if (zipDownBtn) zipDownBtn.style.display = 'none';
+
+      if (singleDownBtn) {
+        singleDownBtn.href = url;
+        singleDownBtn.download = filename;
+        singleDownBtn.style.display = 'inline-flex';
+        const labelEl = singleDownBtn.querySelector('span');
+        if (labelEl) labelEl.textContent = `Download ${filename}`;
+      }
+
+      setState('download');
+      announce(`Processing complete. ${filename} is ready to download.`);
+    }
+
+    function showMultiDownload(items, zipFilename, statsText) {
+      lastResults = { items, zipFilename };
+      if (statsTextEl) statsTextEl.textContent = statsText;
+      if (singleDownBtn) singleDownBtn.style.display = 'none';
+
+      if (resultsListEl) {
+        while (resultsListEl.firstChild) resultsListEl.removeChild(resultsListEl.firstChild);
+
+        items.forEach((item) => {
+          const row = document.createElement('div');
+          row.className = 'converted-item-row';
+
+          const details = document.createElement('div');
+          details.className = 'converted-item__details';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'converted-item__name';
+          nameSpan.textContent = item.filename;
+
+          const metaSpan = document.createElement('span');
+          metaSpan.className = 'converted-item__meta';
+          metaSpan.textContent = item.formattedSize;
+
+          details.appendChild(nameSpan);
+          details.appendChild(metaSpan);
+
+          const link = document.createElement('a');
+          link.href = item.url;
+          link.download = item.filename;
+          link.className = 'converted-item__download-link';
+          link.textContent = 'Download';
+
+          row.appendChild(details);
+          row.appendChild(link);
+          resultsListEl.appendChild(row);
+        });
+      }
+
+      if (zipDownBtn) {
+        zipDownBtn.style.display = 'inline-flex';
+        const labelEl = zipDownBtn.querySelector('span');
+        if (labelEl) labelEl.textContent = `Download All (.zip)`;
+      }
+
+      setState('download');
+      announce(`Processing complete. ${items.length} files ready to download.`);
+    }
+
+    // ── ZIP Export Handler ──────────────────────────────────
+    zipDownBtn?.addEventListener('click', async () => {
+      if (!lastResults || !lastResults.items.length) return;
+
+      const zip = new JSZip();
+      lastResults.items.forEach((item) => {
+        if (item.blob) zip.file(item.filename, item.blob);
+      });
+
+      const zipBlob = await zip.generateAsync({ type: 'blob', mimeType: 'application/zip' });
+      const zipUrl = URL.createObjectURL(zipBlob);
+      trackedUrls.push(zipUrl);
+
+      const anchor = document.createElement('a');
+      anchor.href = zipUrl;
+      anchor.download = lastResults.zipFilename || 'download.zip';
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+  });
+</script>
+
+<style>
+  /* ── Zone Container & Tokens ────────────────────────────── */
+  .pdf-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: var(--space-8);
+    border: 2px dashed var(--border-subtle);
+    border-radius: var(--radius-xl);
+    background: var(--surface-1);
+    transition:
+      border-color var(--transition-base),
+      background var(--transition-base),
+      box-shadow var(--transition-base);
+    text-align: center;
+  }
+
+  /* ── State Visibility ──────────────────────────────────── */
+  .upload-zone__state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 32rem;
+    gap: var(--space-4);
+    animation: fadeUp 0.25s ease-out;
+  }
+
+  .upload-zone[data-state='idle']       .upload-zone__idle,
+  .upload-zone[data-state='dragover']   .upload-zone__dragover,
+  .upload-zone[data-state='validating'] .upload-zone__validating,
+  .upload-zone[data-state='options']    .upload-zone__options,
+  .upload-zone[data-state='processing'] .upload-zone__processing,
+  .upload-zone[data-state='download']   .upload-zone__download,
+  .upload-zone[data-state='error']      .upload-zone__error {
+    display: flex;
+  }
+
+  /* ── Dropzone States ───────────────────────────────────── */
+  .upload-zone__idle {
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    outline: none;
+  }
+
+  .upload-zone[data-state='idle']:hover {
+    border-color: var(--color-brand-400);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .upload-zone[data-state='dragover'] {
+    border-color: var(--color-accent-400);
+    background: color-mix(in srgb, var(--color-accent-400) 8%, var(--surface-1));
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-400) 20%, transparent);
+  }
+
+  .upload-zone[data-state='options'],
+  .upload-zone[data-state='download'] {
+    border-style: solid;
+    border-color: var(--border-default);
+  }
+
+  .upload-zone[data-state='error'] {
+    border-color: var(--color-error-400);
+  }
+
+  .upload-zone__input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .upload-zone__heading {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .upload-zone__sub {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .upload-zone__browse {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── Spinner ───────────────────────────────────────────── */
+  .upload-zone__spinner {
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--border-default);
+    border-top-color: var(--color-brand-400);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Batch / Queue Header ──────────────────────────────── */
+  .batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .batch-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--text-secondary);
+  }
+
+  .pdf-zone__add-more-btn,
+  .pdf-zone__replace-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-brand-400);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+
+  .pdf-zone__add-more-btn:hover,
+  .pdf-zone__replace-btn:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Queue List ────────────────────────────────────────── */
+  .pdf-zone__queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: var(--space-1);
+  }
+
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+
+  .queue-item__icon {
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    background: var(--surface-3);
+    color: var(--color-brand-300);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+  }
+
+  .queue-item__details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-item__name {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .queue-item__size {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .queue-item__controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .queue-item__btn {
+    background: var(--surface-3);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .queue-item__btn:hover {
+    background: var(--surface-4);
+    color: var(--text-primary);
+  }
+
+  .queue-item__btn--remove:hover {
+    background: color-mix(in srgb, var(--color-error-500) 25%, transparent);
+    color: var(--color-error-400);
+    border-color: var(--color-error-400);
+  }
+
+  /* ── Single Document Card ──────────────────────────────── */
+  .pdf-zone__single-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    text-align: left;
+  }
+
+  .pdf-zone__doc-badge {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    background: color-mix(in srgb, var(--color-brand-500) 25%, transparent);
+    color: var(--color-brand-300);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    padding: 6px 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .pdf-zone__doc-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pdf-zone__doc-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pdf-zone__doc-meta {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+
+  /* ── Options Layout ────────────────────────────────────── */
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+    text-align: left;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    width: 100%;
+    text-align: left;
+  }
+
+  @media (max-width: 500px) {
+    .options-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .option-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+    text-align: left;
+  }
+
+  .option-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .option-sublabel {
+    text-transform: none;
+    font-weight: var(--font-weight-normal);
+    color: var(--text-muted);
+  }
+
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+
+  .text-input,
+  .upload-zone__format-select {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+    outline: none;
+    transition: border-color var(--transition-fast);
+  }
+
+  .text-input:focus,
+  .upload-zone__format-select:focus {
+    border-color: var(--border-focus);
+  }
+
+  .field-hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+
+  .info-notice {
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--color-brand-600) 10%, var(--surface-2));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+
+  .notice-title {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    margin-bottom: 2px;
+  }
+
+  .notice-desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+
+  .quality-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pdf-zone__quality-val {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent-400);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ── Buttons ───────────────────────────────────────────── */
+  .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-3) var(--space-5);
+    background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-600));
+    color: #ffffff;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+    transition: filter var(--transition-fast), transform var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .primary-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2-5) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .secondary-btn:hover {
+    background: var(--surface-3);
+    color: var(--text-primary);
+  }
+
+  .download-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    width: 100%;
+  }
+
+  /* ── Download / Results ────────────────────────────────── */
+  .stats-box {
+    padding: var(--space-2-5) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    width: 100%;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+  }
+
+  .pdf-zone__results-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .converted-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+
+  .converted-item__details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .converted-item__name {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .converted-item__meta {
+    font-size: 11px;
+    color: var(--color-success-400);
+  }
+
+  .converted-item__download-link {
+    font-size: var(--font-size-xs);
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-brand-500);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: background var(--transition-fast);
+  }
+
+  .converted-item__download-link:hover {
+    background: color-mix(in srgb, var(--color-brand-500) 20%, transparent);
+  }
+
+  /* ── Toast Alert ───────────────────────────────────────── */
+  .upload-zone__toast {
+    position: absolute;
+    bottom: var(--space-4);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 10;
+  }
+
+  .upload-zone__toast--error {
+    background: var(--color-error-500);
+    color: #ffffff;
+  }
+
+  .upload-zone__toast--info {
+    background: var(--color-brand-600);
+    color: #ffffff;
+  }
+
+  .upload-zone__toast--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+</style>

@@ -1,0 +1,374 @@
+---
+/**
+ * pdf/jpg-to-pdf.astro — Dedicated JPG to PDF Converter Tool Page
+ * Multi-image JPG/JPEG to PDF document conversion with reordering and layout options.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="JPG to PDF Converter — Convert JPG Images to PDF Online | FreeFileTools"
+  description="Convert JPG and JPEG images to a single multi-page PDF document directly in your browser. Fast, free, 100% private client-side conversion."
+  canonicalURL="https://freefiletool.app/pdf/jpg-to-pdf"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert JPG Images to a PDF Document Online",
+          "description": "Step-by-step instructions to convert multiple JPG and JPEG images into a multi-page PDF document in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select or Drop JPG Images",
+              "text": "Choose one or more JPG/JPEG files from your computer or phone."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Arrange Image Order",
+              "text": "Reorder images using the arrow controls to set the page sequence."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Page Layout",
+              "text": "Choose between fitting the PDF page to image dimensions or creating a standard A4 document."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download PDF",
+              "text": "Click Generate PDF Document to create and download your consolidated file."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I combine multiple JPG photos into a single PDF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can upload multiple JPG images at once. The converter arranges them into consecutive pages within a single PDF document."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does converting JPG to PDF reduce photo quality?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The converter embeds your original JPEG image streams directly into the PDF container without lossy re-encoding, preserving 100% of the original photo clarity."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The entire PDF compilation is performed locally on your device in your web browser RAM."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Image to PDF</div>
+    <h1 class="tool-hero__title">JPG to PDF Converter</h1>
+    <p class="tool-hero__desc">
+      Convert JPG and JPEG images into a clean, multi-page PDF document. Reorder pages, select standard A4 sizing, and download in seconds.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="images-to-pdf" imageFormat="jpg" id="pdf-jpg-to-pdf-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">How are images arranged in the PDF?</p>
+    <p class="quick-answer__a">
+      Each JPG image becomes its own page in the generated PDF document. You can reorder the images using the up and down arrow controls in the queue before clicking <strong>Generate PDF Document</strong>.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Turn JPEG Photographs &amp; Scans into a Multi-Page PDF</h2>
+      <p>
+        Submitting photo documentation, receipts, passport scans, or art portfolios usually requires a clean, standard PDF format rather than loose JPG files. Traditional online converters upload your personal photos to third-party cloud servers, posing privacy concerns.
+      </p>
+      <p>
+        FreeFileTools embeds your JPG images into a newly initialized PDF structure entirely on your local device. The original JPEG image bytes are inserted directly into the PDF stream, ensuring instantaneous processing with zero image degradation and absolute privacy.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert JPG to PDF (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Add your images:</strong> Drag and drop your JPG or JPEG images into the container, or click to browse.</li>
+        <li><strong>Sequence your pages:</strong> Use the &#9650; and &#9660; buttons to arrange your photos into your preferred reading sequence.</li>
+        <li><strong>Select page sizing:</strong>
+          <ul>
+            <li><strong>Fit to Image Dimensions:</strong> Each page matches the exact pixel dimensions of the image.</li>
+            <li><strong>Standard A4 Document:</strong> Centers and scales your image with clean margins on standard A4 paper (portrait or landscape).</li>
+          </ul>
+        </li>
+        <li><strong>Generate &amp; Download:</strong> Click "Generate PDF Document" and download your finished PDF immediately.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Page Sizing: Which Option Should You Choose?</h2>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Layout Option</th>
+              <th>Best Used For</th>
+              <th>Behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fit to Image Dimensions</strong></td>
+              <td>Digital viewing, high-res photography, infographics</td>
+              <td>Pages match the exact aspect ratio and dimensions of each photo. No letterboxing.</td>
+            </tr>
+            <tr>
+              <td><strong>Standard A4 Document</strong></td>
+              <td>Office printing, homework, legal submissions, forms</td>
+              <td>Standardized 8.27 × 11.69 inch pages with 0.5-inch margins for printer compatibility.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Can I add more JPG files after uploading the first ones?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes! Click "+ Add More Files" in the queue header at any time before clicking generate.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a limit on the number of JPG files I can convert?</summary>
+          <div class="faq-answer">
+            <p>
+              You can easily combine dozens of images. Because compilation happens in device memory, we recommend keeping batches under 50 photos for optimal performance on mobile devices.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Does this tool support PNG images too?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes! For PNG images (including transparent backgrounds), use our dedicated <a href="/pdf/png-to-pdf">PNG to PDF Converter</a>.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; Image Tools</h2>
+      <p>Explore other client-side conversion and compression utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>🖼️ <a href="/pdf/png-to-pdf">PNG to PDF</a> — Convert PNG graphics and illustrations to PDF documents.</li>
+        <li>📷 <a href="/pdf/pdf-to-jpg">PDF to JPG</a> — Convert PDF document pages back into JPG images.</li>
+        <li>📑 <a href="/pdf/merge">Merge PDF</a> — Combine existing PDF files into a single unified document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce document size with in-browser stream optimization.</li>
+        <li>🔄 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Convert photos to modern WebP format for website speed.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list ul {
+    margin-top: var(--space-2);
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-4) 0;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

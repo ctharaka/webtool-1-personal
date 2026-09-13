@@ -1,0 +1,371 @@
+---
+/**
+ * pdf/pdf-to-png.astro — Dedicated PDF to PNG Converter Tool Page
+ * Full client-side lossless PDF rasterization to PNG graphics with ZIP packaging.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="PDF to PNG Converter — Extract PDF Pages to PNG Online | FreeFileTools"
+  description="Convert PDF document pages to lossless PNG images directly in your browser. Download single pages or all pages as a ZIP archive. 100% private, no cloud uploads."
+  canonicalURL="https://freefiletool.app/pdf/pdf-to-png"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PDF Pages to PNG Images Online",
+          "description": "Step-by-step instructions to render and extract PDF document pages into lossless PNG graphics in your browser without cloud uploads.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload PDF Document",
+              "text": "Select your PDF file from your device or drag and drop into the upload box."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Select Resolution Profile",
+              "text": "Choose Standard (108 DPI) or High-Res (144 DPI) for razor-sharp text and graphics."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Click Convert to PNG",
+              "text": "Your browser renders the PDF vector pages onto Canvas and encodes lossless PNG streams."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download PNG or ZIP Archive",
+              "text": "Download individual PNG pages or export all pages as a consolidated ZIP file."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why should I convert PDF to PNG instead of JPG?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PNG is a lossless format. If your PDF contains fine line art, architectural blueprints, charts, or small typography, PNG prevents compression blur and fuzzy text edges that can occur with lossy JPEG compression."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I export all pages at once?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! The tool automatically processes all pages and lets you download them together as a ZIP archive or individually as separate PNG files."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my files uploaded to an external server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FreeFileTools processes the PDF 100% locally on your device in your web browser. No document data is ever sent to our servers."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PDF to Image</div>
+    <h1 class="tool-hero__title">PDF to PNG Converter</h1>
+    <p class="tool-hero__desc">
+      Extract PDF pages into lossless PNG graphics with razor-sharp text and clean lines. Download individual images or export all pages as a ZIP archive. 100% private in-browser rendering.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="pdf-to-images" outputFormat="png" id="pdf-to-png-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why choose PNG over JPG for PDF page conversion?</p>
+    <p class="quick-answer__a">
+      PNG uses <strong>lossless compression</strong>, meaning text characters, table borders, charts, and technical schematics stay completely sharp without blurry JPEG artifacting. PNG is the preferred choice for documentation, UI mockups, and presentations.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Lossless, Crisp Rasterization for Technical Diagrams &amp; Typography</h2>
+      <p>
+        When converting business reports, academic publications, or graphic designs into image files, preserving text legibility is critical. Standard JPEG exports introduce "mosquito noise" around high-contrast edges such as letters and vector lines.
+      </p>
+      <p>
+        FreeFileTools utilizes client-side Canvas rendering powered by Mozilla's <code>pdf.js</code> engine to rasterize each vector page directly into lossless PNG data chunks. Because the process is powered by your local device's graphics pipeline, pages are extracted rapidly without any cloud upload delays or file storage risks.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert PDF to PNG (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Select your PDF:</strong> Drag and drop your file into the box or choose it from your local storage.</li>
+        <li><strong>Choose resolution:</strong> Select Standard (108 DPI) for general web delivery or High-Res (144 DPI) for print-ready graphics.</li>
+        <li><strong>Select pages:</strong> Choose whether to export all pages or specify a single page number.</li>
+        <li><strong>Convert &amp; Download:</strong> Click "Convert to PNG" and download your images individually or as a single ZIP archive.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Comparison: PDF to PNG vs PDF to JPG</h2>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>PDF to PNG</th>
+              <th>PDF to JPG</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Compression Type</strong></td>
+              <td>Lossless (Exact pixel fidelity)</td>
+              <td>Lossy (Optimized photo compression)</td>
+            </tr>
+            <tr>
+              <td><strong>Text &amp; Line Sharpness</strong></td>
+              <td>100% crisp with zero ringing</td>
+              <td>Slight compression blur around small fonts</td>
+            </tr>
+            <tr>
+              <td><strong>File Weight</strong></td>
+              <td>Larger byte size (preserves detail)</td>
+              <td>Smaller byte size (easier email sharing)</td>
+            </tr>
+            <tr>
+              <td><strong>Best Use Case</strong></td>
+              <td>Diagrams, charts, invoices, blueprints</td>
+              <td>Scanned photos, magazines, rich imagery</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Are my files uploaded to a remote server?</summary>
+          <div class="faq-answer">
+            <p>
+              No. FreeFileTools processes the PDF entirely in your browser's local memory using JavaScript. Documents are never stored or transmitted.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I convert high-resolution vector blueprints?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes! Select the "High-Res (144 DPI)" rendering resolution to render fine lines, architectural drawings, and dense CAD schematics with exceptional clarity.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there any software to install?</summary>
+          <div class="faq-answer">
+            <p>
+              No installation is required. Everything runs in any modern browser on Windows, Mac, Linux, iOS, or Android.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; Image Tools</h2>
+      <p>Explore other client-side conversion and compression utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>📷 <a href="/pdf/pdf-to-jpg">PDF to JPG</a> — Convert PDF document pages to lightweight JPG images.</li>
+        <li>🖼️ <a href="/pdf/png-to-pdf">PNG to PDF</a> — Convert PNG graphics and images back into a PDF document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce document byte weight with in-browser stream optimization.</li>
+        <li>📑 <a href="/pdf/merge">Merge PDF</a> — Combine multiple PDF files into one clean document.</li>
+        <li>📑 <a href="/pdf">All PDF Tools</a> — Return to the complete catalog of client-side PDF utilities.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-4) 0;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

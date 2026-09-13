@@ -1,0 +1,360 @@
+---
+/**
+ * pdf/merge.astro — Dedicated Merge PDF Tool Landing Page
+ * Full client-side PDF combination with reordering and privacy guarantees.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="Merge PDF Files Online — Free Browser-Side PDF Joiner | FreeFileTools"
+  description="Combine multiple PDF documents into a single PDF file directly in your browser. 100% private, reorder pages, no file uploads to external servers."
+  canonicalURL="https://freefiletool.app/pdf/merge"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Merge PDF Files Online in Your Browser",
+          "description": "Step-by-step instructions to merge multiple PDF files locally using browser-side client execution without server uploads.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select or Drop PDF Files",
+              "text": "Add two or more PDF files using the file picker or drag and drop into the upload box."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Reorder Files",
+              "text": "Use the up and down arrow controls to adjust the exact sequence of your documents."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Click Merge PDF Files Now",
+              "text": "Your browser compiles all pages into a consolidated PDF in memory."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download Merged PDF",
+              "text": "Save the merged document directly to your device without network delay."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I rearrange the order of PDF files before merging?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Once you drop your files, use the up and down arrows next to each document in the queue list to arrange them in your preferred order."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does merging PDFs upload my documents to any server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FreeFileTools merges PDFs 100% locally inside your browser's JavaScript environment. Your documents never leave your computer or phone."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I merge password-protected PDF files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Encrypted or password-locked PDF files cannot be merged until you remove the password using your original document creator."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PDF Merger</div>
+    <h1 class="tool-hero__title">Merge PDF Files Online</h1>
+    <p class="tool-hero__desc">
+      Combine multiple PDF documents into one organized file in seconds. 100% private in-browser merging with zero server uploads.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="merge" id="pdf-merge-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">How does browser-side PDF merging work?</p>
+    <p class="quick-answer__a">
+      FreeFileTools reads your PDF documents into browser memory using pure JavaScript (<code>pdf-lib</code>). It extracts each page, reassembles them sequentially into a single document structure, and generates a local download link. No file data is ever transmitted over the network.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Combine PDF Documents Directly in Your Browser (100% Private)</h2>
+      <p>
+        Merging PDF files is one of the most common document tasks—whether you are combining scanned receipts, assembling multi-chapter reports, or preparing contract appendices. Traditional online tools require you to upload confidential files to cloud servers, introducing privacy risks and slow upload speeds.
+      </p>
+      <p>
+        FreeFileTools changes this model completely. Merging happens entirely on your client device using modern WebAssembly and JavaScript binary manipulation. Your sensitive documents, financial forms, and personal records stay securely in your computer's RAM.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Merge PDF Files (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Select your files:</strong> Drag and drop two or more PDF files into the container, or click to choose from your device.</li>
+        <li><strong>Adjust the sequence:</strong> Use the &#9650; and &#9660; arrow controls in the file queue to order pages from first to last.</li>
+        <li><strong>Merge:</strong> Click "Merge PDF Files Now". The browser extracts and binds pages in milliseconds.</li>
+        <li><strong>Download:</strong> Click "Download Merged PDF" to save the consolidated file to your downloads folder.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Supported Files &amp; Technical Limitations</h2>
+      <p>
+        Our client-side merger supports standard PDF specifications (PDF 1.3 through PDF 2.0). However, because processing is client-side, please note the following technical boundaries:
+      </p>
+      <ul class="checklist">
+        <li><strong>Password Protection:</strong> If a PDF is encrypted or password-protected, you must unlock it before merging.</li>
+        <li><strong>File Size &amp; Memory:</strong> We support up to 50 MB per file. Your device's available browser memory dictates the maximum combined batch.</li>
+        <li><strong>Interactive Form Fields:</strong> While form content and annotations are preserved, active AcroForms may be flattened into static visual pages.</li>
+      </ul>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Are my PDF files uploaded to a cloud server?</summary>
+          <div class="faq-answer">
+            <p>
+              No. All operations run directly in your local browser memory. No document bytes, text, or filenames are ever sent to our servers or third-party APIs.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I rearrange the order of the files before merging?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes! Once files are queued, use the up and down arrow buttons next to each file to arrange them in the exact sequence you want them to appear in the merged output.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a limit on how many PDFs I can merge?</summary>
+          <div class="faq-answer">
+            <p>
+              You can merge dozens of files in a single session. Practical limits depend on your device's available RAM. For smooth mobile performance, we suggest keeping batches under 20 files.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is this PDF merger completely free to use?</summary>
+          <div class="faq-answer">
+            <p>
+              Yes. FreeFileTools is 100% free with no account creation, no watermarks, and no usage quotas.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; File Tools</h2>
+      <p>Explore other client-side document and image utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>📄 <a href="/pdf/split">Split PDF</a> — Extract individual pages or specific page intervals from a PDF document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce the byte size of large PDF documents using object stream optimization.</li>
+        <li>🖼️ <a href="/pdf/jpg-to-pdf">JPG to PDF</a> — Convert photos and scanned images into a consolidated PDF document.</li>
+        <li>📷 <a href="/pdf/pdf-to-jpg">PDF to JPG</a> — Export high-resolution image pages from any PDF document.</li>
+        <li>📑 <a href="/pdf">All PDF Tools</a> — Return to the complete category catalog of in-browser PDF utilities.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  /* ── Quick Answer Box ──────────────────────────────────── */
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .quick-answer__a code {
+    background: var(--surface-3);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    color: var(--color-brand-300);
+  }
+
+  /* ── Content Sections ──────────────────────────────────── */
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .checklist li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    position: relative;
+    padding-left: var(--space-6);
+  }
+
+  .checklist li::before {
+    content: "•";
+    position: absolute;
+    left: var(--space-2);
+    color: var(--color-brand-400);
+    font-size: 1.2em;
+  }
+
+  .checklist strong {
+    color: var(--text-primary);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>

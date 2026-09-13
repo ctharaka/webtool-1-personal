@@ -1,0 +1,455 @@
+---
+/**
+ * pdf/index.astro — PDF Tools Category Hub Page
+ * High-utility index for FreeFileTools' client-side PDF tool cluster.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Free Online PDF Tools — 100% Private Client-Side PDF Suite"
+  description="Merge, split, compress, and convert PDF files directly in your web browser. 100% private, zero server uploads, lightning-fast client-side execution."
+  canonicalURL="https://freefiletool.app/pdf"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Free Online PDF Tools",
+      "description": "Comprehensive suite of client-side PDF manipulation tools for merging, splitting, compressing, and converting PDF documents in your browser.",
+      "url": "https://freefiletool.app/pdf",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Merge PDF",
+            "url": "https://freefiletool.app/pdf/merge"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Split PDF",
+            "url": "https://freefiletool.app/pdf/split"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Compress PDF",
+            "url": "https://freefiletool.app/pdf/compress"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "JPG to PDF",
+            "url": "https://freefiletool.app/pdf/jpg-to-pdf"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "name": "PNG to PDF",
+            "url": "https://freefiletool.app/pdf/png-to-pdf"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "name": "PDF to JPG",
+            "url": "https://freefiletool.app/pdf/pdf-to-jpg"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "name": "PDF to PNG",
+            "url": "https://freefiletool.app/pdf/pdf-to-png"
+          }
+        ]
+      }
+    }
+  </script>
+
+  <header class="hub-hero">
+    <div class="hub-badge">PDF Suite</div>
+    <h1 class="hub-title">Free Online PDF Tools</h1>
+    <p class="hub-desc">
+      Merge, split, compress, and convert documents locally in your browser. All file processing occurs directly on your device—your private documents are never uploaded to any cloud server.
+    </p>
+  </header>
+
+  <!-- AdSense Slot: Above tools list -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="tools-hub" aria-label="Available PDF Tools">
+    <!-- Category 1: Organize & Manage -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📑</span> Organize &amp; Manage
+      </h2>
+      <p class="category-desc">Combine multiple files or extract exact page selections without installing desktop software.</p>
+      
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/merge">Merge PDF Files</a></h3>
+          <p class="tool-desc">
+            Combine multiple PDF files into one clean document. Drag to reorder pages and download a consolidated PDF in seconds.
+          </p>
+          <a href="/pdf/merge" class="tool-link">Use Merger &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/split">Split PDF Pages</a></h3>
+          <p class="tool-desc">
+            Extract individual pages or custom page ranges (e.g. 1-3, 5) into separate PDF documents directly in device memory.
+          </p>
+          <a href="/pdf/split" class="tool-link">Use Splitter &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 2: Compress & Optimize -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📉</span> Compress &amp; Optimize
+      </h2>
+      <p class="category-desc">Shrink PDF document size using in-browser object stream compression and structural cleaning.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/compress">Compress PDF</a></h3>
+          <p class="tool-desc">
+            Reduce PDF file weight for easier email delivery and web publishing while preserving sharp fonts and layout integrity.
+          </p>
+          <a href="/pdf/compress" class="tool-link">Use Compressor &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 3: Image to PDF -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">🖼️</span> Convert Images to PDF
+      </h2>
+      <p class="category-desc">Turn photographs, scans, and graphic illustrations into multi-page PDF documents.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a></h3>
+          <p class="tool-desc">
+            Convert JPEG photos into a multi-page PDF document. Choose between exact image dimensions or standardized A4 paper sizing.
+          </p>
+          <a href="/pdf/jpg-to-pdf" class="tool-link">Convert JPG to PDF &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/png-to-pdf">PNG to PDF Converter</a></h3>
+          <p class="tool-desc">
+            Convert high-resolution PNG images into sharp PDF pages with full support for transparency and batch sequencing.
+          </p>
+          <a href="/pdf/png-to-pdf" class="tool-link">Convert PNG to PDF &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 4: PDF to Image -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📷</span> Convert PDF to Images
+      </h2>
+      <p class="category-desc">Rasterize vector PDF document pages into versatile, standalone image files.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/pdf-to-jpg">PDF to JPG Converter</a></h3>
+          <p class="tool-desc">
+            Convert PDF pages into high-resolution JPG images. Download single page images or export all pages together as a ZIP archive.
+          </p>
+          <a href="/pdf/pdf-to-jpg" class="tool-link">Convert PDF to JPG &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/pdf-to-png">PDF to PNG Converter</a></h3>
+          <p class="tool-desc">
+            Extract PDF pages into lossless PNG graphics with crystal-clear text edges and scalable rendering resolution options.
+          </p>
+          <a href="/pdf/pdf-to-png" class="tool-link">Convert PDF to PNG &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cross Category Linking Section -->
+  <section class="cross-hub-section">
+    <div class="cross-hub-card">
+      <div class="cross-hub-content">
+        <h2 class="cross-hub-title">Looking for Image Optimization?</h2>
+        <p class="cross-hub-desc">
+          Need to optimize WebP, PNG, or JPEG graphics? Check out our dedicated image optimization suite and side-by-side Visual Quality Compare Lab.
+        </p>
+      </div>
+      <div class="cross-hub-actions">
+        <a href="/image-tools" class="tool-link-btn">Explore Image Tools</a>
+        <a href="/optimization-lab" class="tool-link-secondary">Optimization Lab &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="hub-faq-section">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-accordion">
+      <details class="faq-details" open>
+        <summary class="faq-summary">Are my PDF files uploaded to your servers?</summary>
+        <div class="faq-answer">
+          <p>
+            No. FreeFileTools processes all PDF operations 100% locally in your web browser using client-side JavaScript (WebAssembly and Canvas APIs). Your documents and sensitive data never leave your device memory.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-details">
+        <summary class="faq-summary">What is the maximum file size for PDF operations?</summary>
+        <div class="faq-answer">
+          <p>
+            You can process PDFs up to 50 MB per file. Because processing runs in your device's RAM, available browser memory is the practical limit. For optimal performance on mobile devices, we recommend files under 30 MB.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-details">
+        <summary class="faq-summary">Can I process password-protected or encrypted PDFs?</summary>
+        <div class="faq-answer">
+          <p>
+            Encrypted and password-locked PDFs require decryption before editing. For privacy and security reasons, our browser tools do not bypass or crack passwords. Please remove the password using your original software before uploading.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-details">
+        <summary class="faq-summary">Do these PDF tools work on smartphones and tablets?</summary>
+        <div class="faq-answer">
+          <p>
+            Yes! All tools are fully responsive and work on modern mobile browsers including Safari on iOS and Chrome on Android.
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .hub-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .hub-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .hub-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .hub-desc {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 52ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose);
+  }
+
+  .tools-hub {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .category-block {
+    border-top: 1px solid var(--border-default);
+    padding-top: var(--space-8);
+  }
+
+  .category-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .category-icon {
+    font-size: 1.2em;
+    user-select: none;
+  }
+
+  .category-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 600px) {
+    .category-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400);
+    box-shadow: var(--shadow-md);
+  }
+
+  .tool-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .tool-title a {
+    color: inherit;
+  }
+
+  .tool-title a:hover {
+    color: var(--color-brand-400);
+  }
+
+  .tool-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    flex-grow: 1;
+    margin-bottom: var(--space-5);
+  }
+
+  .tool-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    transition: color var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .tool-link:hover {
+    color: var(--color-brand-300);
+    transform: translateX(4px);
+  }
+
+  /* ── Cross Hub Banner ──────────────────────────────────── */
+  .cross-hub-section {
+    margin: var(--space-8) 0 var(--space-12);
+  }
+
+  .cross-hub-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 768px) {
+    .cross-hub-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .cross-hub-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .cross-hub-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    max-width: 48ch;
+    line-height: var(--line-height-normal);
+  }
+
+  .cross-hub-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-shrink: 0;
+  }
+
+  .tool-link-btn {
+    padding: var(--space-2-5) var(--space-5);
+    background: var(--color-brand-500);
+    color: #ffffff;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-md);
+    transition: filter var(--transition-fast);
+  }
+
+  .tool-link-btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .tool-link-secondary {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent-400);
+  }
+
+  .tool-link-secondary:hover {
+    text-decoration: underline;
+  }
+
+  /* ── FAQ Section ───────────────────────────────────────── */
+  .hub-faq-section {
+    max-width: 48rem;
+    margin: 0 auto var(--space-12);
+  }
+
+  .section-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+</style>

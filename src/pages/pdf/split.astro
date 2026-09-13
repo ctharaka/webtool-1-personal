@@ -1,0 +1,395 @@
+---
+/**
+ * pdf/split.astro — Dedicated Split PDF Tool Landing Page
+ * Full client-side PDF page extraction with range parsing and ZIP archives.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="Split PDF Online — Free In-Browser PDF Page Extractor | FreeFileTools"
+  description="Split PDF documents or extract custom page ranges directly in your web browser. 100% private, free client-side processing without server uploads."
+  canonicalURL="https://freefiletool.app/pdf/split"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Split PDF Pages Online in Your Browser",
+          "description": "Step-by-step instructions to extract specific pages or split PDF documents into individual files directly on your device.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select or Drop a PDF",
+              "text": "Add your PDF document using the file picker or drag and drop into the upload container."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Split Method",
+              "text": "Choose between extracting a specific page range (e.g. 1-3, 5) or extracting all pages into individual files."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Click Split PDF Now",
+              "text": "Your browser slices the requested pages directly within device memory."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download Output",
+              "text": "Save the extracted PDF or download all individual page files as a single ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I extract non-consecutive pages from a PDF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can specify any combination of single pages and ranges using commas, such as '1-3, 5, 8-10'. The tool extracts only the requested pages into a new PDF document."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I extract every single page into separate files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Select 'Extract All Pages (Individual PDFs)'. Once processing finishes, you can download all pages as a convenient ZIP archive or download pages one by one."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my PDF documents uploaded to a cloud server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FreeFileTools splits your documents 100% locally inside your browser. No file data is ever transmitted over the network."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PDF Splitter</div>
+    <h1 class="tool-hero__title">Split PDF Online</h1>
+    <p class="tool-hero__desc">
+      Extract custom page ranges or separate all pages into individual PDF files directly in your browser. 100% private and fast.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="split" id="pdf-split-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">How do I specify which pages to extract?</p>
+    <p class="quick-answer__a">
+      Select "Extract Page Range" and type page numbers separated by commas or hyphens. For example, typing <code>1-3, 5, 8</code> will extract pages 1, 2, 3, 5, and 8 into a newly created PDF document. To extract every page separately, select "Extract All Pages".
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Extract Pages or Divide PDF Documents in Your Browser</h2>
+      <p>
+        Whether you need to extract a two-page executive summary from a 100-page presentation, pull out a single signed invoice from a batch receipt scan, or separate individual test reports, splitting a PDF should be fast, private, and painless.
+      </p>
+      <p>
+        FreeFileTools runs all page parsing directly in your web browser. Rather than sending confidential corporate documents or private tax records to a remote server, our tool reads the document structure in your device's memory, slices the requested page tree, and packages the result for instant local download.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Split PDF Files (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Select your PDF:</strong> Drag and drop your document into the box or click to select from your device.</li>
+        <li><strong>Select split mode:</strong>
+          <ul>
+            <li><strong>Extract Page Range:</strong> Enter the exact page numbers you want in your final document.</li>
+            <li><strong>Extract All Pages:</strong> Separates each page into its own individual PDF file.</li>
+          </ul>
+        </li>
+        <li><strong>Process:</strong> Click "Split PDF Now". The browser extracts the pages within milliseconds.</li>
+        <li><strong>Save:</strong> Click download on your single file or export all extracted pages as a ZIP file.</li>
+      </ol>
+    </section>
+
+    <section class="content-block">
+      <h2>Page Range Syntax Guide</h2>
+      <p>The range extractor is flexible and supports standard printing notation:</p>
+      <div class="table-wrapper">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Syntax Example</th>
+              <th>What It Extracts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>1-5</code></td>
+              <td>Pages 1, 2, 3, 4, and 5 sequentially.</td>
+            </tr>
+            <tr>
+              <td><code>2, 4, 6</code></td>
+              <td>Only pages 2, 4, and 6.</td>
+            </tr>
+            <tr>
+              <td><code>1-3, 7, 10-12</code></td>
+              <td>Pages 1 through 3, page 7, and pages 10 through 12.</td>
+            </tr>
+            <tr>
+              <td><code>5</code></td>
+              <td>Extracts just page 5 as a standalone single-page document.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details" open>
+          <summary class="faq-summary">Will splitting a PDF reduce document quality?</summary>
+          <div class="faq-answer">
+            <p>
+              No. Splitting is completely lossless. The original vector fonts, crisp text, images, and layout matrices of each page are extracted and copied verbatim without recompression.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Can I extract pages from password-protected files?</summary>
+          <div class="faq-answer">
+            <p>
+              Protected PDFs cannot be split until decrypted. Please remove any master or user password from the PDF before using this tool.
+            </p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a maximum page limit?</summary>
+          <div class="faq-answer">
+            <p>
+              There is no artificial page limit. We have successfully tested documents containing over 300 pages. Your device's RAM dictates performance.
+            </p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Contextual Internal Linking -->
+    <section class="content-block related-links">
+      <h2>Related PDF &amp; File Tools</h2>
+      <p>Explore other client-side document utilities from FreeFileTools:</p>
+      <ul class="related-list">
+        <li>📑 <a href="/pdf/merge">Merge PDF</a> — Combine multiple PDF files back into a single unified document.</li>
+        <li>📉 <a href="/pdf/compress">Compress PDF</a> — Reduce document byte weight with stream optimization.</li>
+        <li>📷 <a href="/pdf/pdf-to-jpg">PDF to JPG</a> — Export your PDF pages as image files instead.</li>
+        <li>📷 <a href="/pdf/pdf-to-png">PDF to PNG</a> — Extract crisp, lossless PNG graphics from any PDF page.</li>
+        <li>📑 <a href="/pdf">All PDF Tools</a> — Browse our full privacy-first browser PDF utility suite.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .tool-hero__desc {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .upload-section {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10);
+  }
+
+  .quick-answer {
+    max-width: 48rem;
+    margin: 0 auto var(--space-10);
+    background: color-mix(in srgb, var(--color-brand-600) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .quick-answer__a code {
+    background: var(--surface-3);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    color: var(--color-brand-300);
+  }
+
+  .tool-content {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list ul {
+    margin-top: var(--space-2);
+    padding-left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-4) 0;
+  }
+
+  .benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .benchmark-table th,
+  .benchmark-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .benchmark-table th {
+    background: var(--surface-2);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+  }
+
+  .benchmark-table td {
+    color: var(--text-secondary);
+  }
+
+  .benchmark-table code {
+    background: var(--surface-3);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    color: var(--color-brand-300);
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    margin-top: var(--space-4);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related-list a:hover {
+    color: var(--color-brand-300);
+  }
+</style>
