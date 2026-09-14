@@ -1,0 +1,261 @@
+---
+/**
+ * pdf-tools/images-to-pdf.astro — Dedicated Images to PDF Tool Landing Page
+ * Full client-side image-to-PDF conversion supporting JPG and PNG graphics.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="Images to PDF Converter — Convert JPG & PNG to PDF Online | FreeFileTools"
+  description="Convert JPG and PNG images into a clean multi-page PDF document directly in your browser. 100% private, reorder photos, customizable page sizes."
+  canonicalURL="https://freefiletool.app/pdf-tools/images-to-pdf"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert Images to a Multi-Page PDF Document Online",
+          "description": "Step-by-step instructions to convert JPG and PNG pictures into a single PDF document in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Add Images",
+              "text": "Drag and drop JPG or PNG images into the dropzone or select multiple files."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Reorder & Configure",
+              "text": "Arrange the image sequence with the up/down arrows and select Fit to Image or Standard A4 margins."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Generate PDF",
+              "text": "Click Generate PDF Document to embed images into a new PDF using pdf-lib."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download File",
+              "text": "Save the compiled PDF directly to your device."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I combine both JPG and PNG images into the same PDF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! FreeFileTools seamlessly handles mixed queues of JPG and PNG files, embedding each with its optimal compression profile."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will PNG transparency be preserved or turned black?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Our engine embeds PNG alpha channels cleanly using native pdf-lib alpha transparency support, preventing unsightly black backgrounds."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there any limit to the number of images?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can add dozens of images up to our 50 MB total queue boundary without issue."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li><a href="/">Home</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li><a href="/pdf-tools">PDF Tools</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li aria-current="page">Images to PDF</li>
+    </ol>
+  </nav>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Image to PDF</div>
+    <h1 class="tool-hero__title">Images to PDF Converter</h1>
+    <p class="tool-hero__desc">
+      Turn your JPG and PNG photos into a clean, professional multi-page PDF document. Reorder photos, customize paper sizes, and download instantly without cloud uploads.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="images-to-pdf" imageFormat="all" id="images-to-pdf-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">How does browser-side Images-to-PDF conversion work?</p>
+    <p class="quick-answer__a">
+      FreeFileTools loads your image binary streams into browser memory. Using <code>pdf-lib</code>, it creates a new blank PDF document, embeds the raw JPEG or PNG data as PDF XObject image resources, and scales each page to your selected layout (Fit to Image or A4 print standard).
+    </p>
+  </div>
+
+  <!-- Related Tools -->
+  <section class="related-tools">
+    <h2 class="related-tools__title">Related PDF Utilities</h2>
+    <div class="related-grid">
+      <a href="/pdf-tools/pdf-to-images" class="related-card">
+        <span class="related-card__name">PDF to Images &rarr;</span>
+        <span class="related-card__desc">Render PDF pages to PNG or JPG.</span>
+      </a>
+      <a href="/pdf-tools/merge-pdf" class="related-card">
+        <span class="related-card__name">Merge PDF &rarr;</span>
+        <span class="related-card__desc">Combine multiple PDF files into one.</span>
+      </a>
+      <a href="/pdf-tools/compress-pdf" class="related-card">
+        <span class="related-card__name">Compress PDF &rarr;</span>
+        <span class="related-card__desc">Reduce file weight with stream optimization.</span>
+      </a>
+      <a href="/pdf-tools" class="related-card">
+        <span class="related-card__name">All PDF Tools &rarr;</span>
+        <span class="related-card__desc">Browse the complete suite of PDF tools.</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  @import '../../styles/pdf-tools.css';
+
+  .breadcrumb-nav {
+    max-width: 800px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.25rem;
+  }
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--text-muted, #64748b);
+  }
+  .breadcrumb-list a {
+    color: var(--color-brand-400, #38bdf8);
+    text-decoration: none;
+  }
+  .breadcrumb-list a:hover {
+    text-decoration: underline;
+  }
+  .tool-hero {
+    text-align: center;
+    padding: 2rem 1.25rem 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .tool-hero__badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-brand-400, #38bdf8);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    margin-bottom: 0.75rem;
+  }
+  .tool-hero__title {
+    font-size: clamp(2rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.75rem;
+  }
+  .tool-hero__desc {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #94a3b8);
+  }
+  .upload-section {
+    max-width: 800px;
+    margin: 1.5rem auto 2.5rem;
+    padding: 0 1.25rem;
+  }
+  .quick-answer {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: var(--surface-1, #1e1e24);
+    border: 1px solid var(--border-color, #2a2a35);
+    border-radius: 0.75rem;
+  }
+  .quick-answer__label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-accent-400, #a855f7);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .quick-answer__q {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .quick-answer__a {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #94a3b8);
+  }
+  .related-tools {
+    max-width: 800px;
+    margin: 3rem auto 4rem;
+    padding: 0 1.25rem;
+    border-top: 1px solid var(--border-color, #2a2a35);
+    padding-top: 2rem;
+  }
+  .related-tools__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  .related-card {
+    background: var(--surface-1, #1e1e24);
+    border: 1px solid var(--border-color, #2a2a35);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .related-card:hover {
+    border-color: var(--color-brand-400, #38bdf8);
+  }
+  .related-card__name {
+    display: block;
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--color-brand-400, #38bdf8);
+    margin-bottom: 0.25rem;
+  }
+  .related-card__desc {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+</style>

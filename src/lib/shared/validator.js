@@ -54,6 +54,25 @@ export const FILE_TYPES = Object.freeze({
     magic: [0x66, 0x74, 0x79, 0x70],
     magicOffset: 4,
   },
+  wav: {
+    label: 'WAV',
+    mime: 'audio/wav',
+    maxBytes: 100 * 1024 * 1024, // 100 MB
+    /** RIFF header → 0x52 0x49 0x46 0x46 */
+    magic: [0x52, 0x49, 0x46, 0x46],
+    magicOffset: 0,
+    /** "WAVE" at offset 8 → 0x57 0x41 0x56 0x45 */
+    magic2: [0x57, 0x41, 0x56, 0x45],
+    magic2Offset: 8,
+  },
+  mp3: {
+    label: 'MP3',
+    mime: 'audio/mpeg',
+    maxBytes: 100 * 1024 * 1024, // 100 MB
+    /** "ID3" tag → 0x49 0x44 0x33 or frame sync 0xFF */
+    magic: [0x49, 0x44, 0x33],
+    magicOffset: 0,
+  },
 });
 
 /**

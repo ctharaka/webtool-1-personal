@@ -1,0 +1,314 @@
+---
+/**
+ * guides/what-is-a-hash-and-when-do-you-need-one.astro — Cryptographic Hashing Guide
+ * Complete technical overview covering hash functions, MD5 vs SHA-256, checksums, and client-side verification.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="What is a Hash and When Do You Need One? Complete Guide — FreeFileTools"
+  description="Learn how cryptographic hash functions work. Compare MD5, SHA-1, SHA-256, and SHA-512. Understand data integrity, file checksums, password storage, and browser-side verification."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "What is a Hash and When Do You Need One? Complete Guide",
+          "description": "A comprehensive guide to understanding cryptographic hashing algorithms, file checksums, data integrity, and local browser verification.",
+          "author": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://freefiletool.app/favicon.svg"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can a hash be reversed back into the original input?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Cryptographic hash functions are strictly one-way mathematical algorithms. They map data of arbitrary length into a fixed-length string of bytes, making it computationally impossible to reverse engineer the original content from the hash alone."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is MD5 still safe to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MD5 is completely safe for non-cryptographic checksums and verifying that an accidental file transfer error didn't occur. However, it is vulnerable to intentional collision attacks, so SHA-256 must be used for security-critical applications, digital certificates, and passwords."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I verify a downloaded file's integrity using a hash?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Upload the downloaded file to a client-side hash generator. Copy the resulting SHA-256 hash and compare it against the official checksum provided by the software developer on their release page. If both strings match identically, the file is authentic and unaltered."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <article class="guide-article">
+    <header class="guide-header">
+      <div class="guide-badge">Developer &amp; Security Guide</div>
+      <h1 class="guide-title">What is a Hash and When Do You Need One?</h1>
+      <p class="guide-lead">
+        Cryptographic hash functions form the mathematical backbone of modern digital security, file integrity, and software distribution. Here is everything you need to know about hashes and how to use them.
+      </p>
+    </header>
+
+    <div class="guide-content">
+      <section class="guide-section">
+        <h2>What Exactly is a Cryptographic Hash?</h2>
+        <p>
+          A hash function is a mathematical algorithm that takes an input of any size (whether a single letter, a password, or a 10-gigabyte operating system ISO image) and transforms it into a unique, fixed-length alphanumeric string known as a <strong>hash digest</strong> or <strong>checksum</strong>.
+        </p>
+        <p>
+          Regardless of how long the input is, the output of a specific algorithm always maintains the exact same number of characters. For example, SHA-256 always produces a 64-character hexadecimal string (256 bits).
+        </p>
+
+        <div class="callout-card">
+          <div class="callout-title">The Avalanche Effect</div>
+          <p>
+            Cryptographic hashes exhibit what mathematicians call the "avalanche effect." Changing even a single comma or letter in a million-word document causes virtually every character in the resulting hash to flip unpredictably.
+          </p>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h2>Comparing Common Hash Algorithms</h2>
+        <p>
+          Different hashing algorithms offer varying levels of security, speed, and collision resistance:
+        </p>
+
+        <div class="table-container">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Algorithm</th>
+                <th>Output Size</th>
+                <th>Collision Resistance</th>
+                <th>Primary Use Cases</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>MD5</strong></td>
+                <td>128-bit (32 hex)</td>
+                <td>Compromised (Collisions Found)</td>
+                <td>Casual file integrity checks, cache keys, non-security deduplication</td>
+              </tr>
+              <tr>
+                <td><strong>SHA-1</strong></td>
+                <td>160-bit (40 hex)</td>
+                <td>Deprecated (Weak)</td>
+                <td>Legacy Git commit references, legacy certificate validation</td>
+              </tr>
+              <tr>
+                <td><strong>SHA-256</strong></td>
+                <td>256-bit (64 hex)</td>
+                <td>High (Industry Standard)</td>
+                <td>Software checksums, TLS/SSL certificates, blockchain, data verification</td>
+              </tr>
+              <tr>
+                <td><strong>SHA-512</strong></td>
+                <td>512-bit (128 hex)</td>
+                <td>Maximum (Extreme Security)</td>
+                <td>High-security government protocols, financial audits, digital signatures</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h2>When Do You Need to Use a Hash?</h2>
+        <h3>1. Verifying Downloaded Software and File Integrity</h3>
+        <p>
+          When you download operating system installers, developer tools, or firmware updates, malicious actors or network transmission glitches can corrupt the download. Reputable software providers publish SHA-256 checksums alongside their download links. By calculating the hash locally on your computer, you verify that the file on your disk matches the exact byte sequence released by the author.
+        </p>
+
+        <h3>2. Safe Password Storage</h3>
+        <p>
+          Web services never store raw plain-text passwords in databases. Instead, passwords are salted and hashed. When you log in, the system hashes your input and compares it to the stored hash. Even if a database is breached, attackers cannot reverse the hashes back into user passwords.
+        </p>
+
+        <h3>3. Digital Fingerprinting and Deduplication</h3>
+        <p>
+          Cloud storage providers and backup utilities compute file hashes to identify duplicate images or videos without needing to inspect file names or compare contents byte by byte.
+        </p>
+      </section>
+
+      <section class="guide-section">
+        <h2>Why Use Browser-Based Hashing?</h2>
+        <p>
+          Most online hashing websites require you to upload your files or passwords to their servers over the internet. This introduces massive privacy vulnerabilities.
+        </p>
+        <p>
+          The <a href="/hash-generator" class="inline-link">FreeFileTools Hash Generator</a> utilizes the native browser <code>crypto.subtle.digest()</code> Web Crypto API. Your files are read into local device memory and hashed directly on your hardware CPU. Nothing is ever uploaded or recorded.
+        </p>
+      </section>
+
+      <!-- Action Box -->
+      <div class="guide-action-box">
+        <h3>Try Generating Hashes Now</h3>
+        <p>Compute MD5, SHA-1, SHA-256, and SHA-512 checksums directly in your browser with zero data uploads.</p>
+        <a href="/hash-generator" class="btn-guide-action">Open Free Hash Generator &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <style>
+    .guide-article {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-4) var(--space-16);
+    }
+    .guide-header {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    .guide-badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .guide-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-4);
+    }
+    .guide-lead {
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .guide-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+    .guide-section h2 {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-3);
+    }
+    .guide-section h3 {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: var(--space-4) 0 var(--space-2);
+    }
+    .guide-section p {
+      margin: 0 0 var(--space-4);
+    }
+
+    .callout-card {
+      background: var(--surface-card);
+      border-left: 4px solid var(--color-brand-500);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+    }
+    .callout-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    .callout-card p {
+      margin: 0;
+      font-size: var(--font-size-sm);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: var(--space-4) 0;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--font-size-sm);
+    }
+    .comparison-table th, .comparison-table td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .comparison-table th {
+      background: var(--surface-card);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .inline-link {
+      color: var(--color-brand-400);
+      text-decoration: underline;
+    }
+
+    .guide-action-box {
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, var(--surface-card) 100%);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .guide-action-box h3 {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .guide-action-box p {
+      margin: 0;
+      max-width: 500px;
+    }
+    .btn-guide-action {
+      background: var(--color-brand-500);
+      color: #000000;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      margin-top: var(--space-2);
+      transition: all var(--transition-base);
+    }
+    .btn-guide-action:hover {
+      background: var(--color-brand-400);
+      transform: translateY(-1px);
+    }
+  </style>
+</BaseLayout>

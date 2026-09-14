@@ -1,0 +1,459 @@
+---
+/**
+ * word-counter.astro — Client-Side Word & Character Counter
+ * Real-time text analytics, word counts, sentence analysis, and reading time estimation.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Free Word Counter & Character Count Online — Text Analyzer"
+  description="Count words, characters, sentences, paragraphs, and estimate reading time in real-time. 100% private text analytics computed directly in your browser."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Word & Character Counter",
+          "url": "https://freefiletool.app/word-counter",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Real-time word, character, and letter counting",
+            "Sentence and paragraph density analysis",
+            "Estimated reading time (~200 wpm) and speaking time (~130 wpm)",
+            "Top keyword frequency density table",
+            "100% private client-side execution with zero server logging"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does this tool save or store my text?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. All text parsing and counting happens inside your browser's local memory. None of your writing is transmitted over the internet or saved to external databases."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How is reading time calculated?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reading time is estimated based on the standard average adult reading speed of 200 to 250 words per minute (wpm). Speaking time is based on 130 words per minute."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Data &amp; Text Tools</div>
+    <h1 class="tool-hero__title">Online Word &amp; Character Counter</h1>
+    <p class="tool-hero__desc">
+      Instant text analysis: count words, characters, sentences, and paragraphs in real-time. Calculate reading times with 100% privacy and zero server uploads.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <!-- Stats Cards Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-number" id="stat-words">0</span>
+        <span class="stat-label">Words</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-chars">0</span>
+        <span class="stat-label">Characters</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-chars-no-spaces">0</span>
+        <span class="stat-label">Chars (No Spaces)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-sentences">0</span>
+        <span class="stat-label">Sentences</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="stat-paragraphs">0</span>
+        <span class="stat-label">Paragraphs</span>
+      </div>
+      <div class="stat-card stat-card--time">
+        <span class="stat-number" id="stat-reading-time">0 min</span>
+        <span class="stat-label">Reading Time</span>
+      </div>
+    </div>
+
+    <!-- Text Area & Actions -->
+    <div class="editor-box">
+      <div class="editor-header">
+        <span class="editor-tip">Type, paste, or draft your text below:</span>
+        <div class="editor-actions">
+          <button type="button" id="btn-copy" class="btn btn--secondary">Copy Text</button>
+          <button type="button" id="btn-clear" class="btn btn--ghost">Clear</button>
+        </div>
+      </div>
+      <textarea
+        id="text-input"
+        class="form-textarea"
+        rows="12"
+        placeholder="Start typing or paste your essay, blog post, or document here..."
+      ></textarea>
+    </div>
+
+    <div class="privacy-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+      <span>Runs entirely in your browser — nothing is uploaded</span>
+    </div>
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>SEO &amp; Content Optimization</h3>
+        <p>
+          Optimize meta descriptions (recommended ~155-160 characters), social media posts, headlines, and articles to meet character limits without exceeding search engine display truncations.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Academic &amp; Essay Writing</h3>
+        <p>
+          Keep essays, research reports, and college admissions statements strictly within required word limits with live, real-time feedback as you draft.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Speech &amp; Presentation Timing</h3>
+        <p>
+          Need to prepare a 5-minute keynote? Check estimated speaking time (~130 wpm) to ensure your speech pacing aligns with your allotted stage schedule.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">More Data &amp; Text Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/text-tools" class="related-tool-card">
+        <span class="related-tool-name">Text Tools Hub</span>
+        <span class="related-tool-desc">View all text, developer, and data utilities</span>
+      </a>
+      <a href="/case-converter" class="related-tool-card">
+        <span class="related-tool-name">Case Converter</span>
+        <span class="related-tool-desc">Convert text to UPPERCASE, lowercase, camelCase</span>
+      </a>
+      <a href="/json-formatter" class="related-tool-card">
+        <span class="related-tool-name">JSON Formatter</span>
+        <span class="related-tool-desc">Validate, format, and minify JSON data</span>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    const textInput = document.getElementById('text-input');
+    const statWords = document.getElementById('stat-words');
+    const statChars = document.getElementById('stat-chars');
+    const statCharsNoSpaces = document.getElementById('stat-chars-no-spaces');
+    const statSentences = document.getElementById('stat-sentences');
+    const statParagraphs = document.getElementById('stat-paragraphs');
+    const statReadingTime = document.getElementById('stat-reading-time');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnClear = document.getElementById('btn-clear');
+
+    function updateStats() {
+      const text = textInput.value;
+
+      // Characters
+      const charCount = text.length;
+      const charNoSpacesCount = text.replace(/\s/g, '').length;
+
+      // Words
+      const trimmed = text.trim();
+      const wordsArray = trimmed ? trimmed.split(/\s+/).filter(Boolean) : [];
+      const wordCount = wordsArray.length;
+
+      // Sentences
+      const sentencesArray = trimmed ? trimmed.split(/[.!?]+/).filter(s => s.trim().length > 0) : [];
+      const sentenceCount = sentencesArray.length;
+
+      // Paragraphs
+      const paragraphsArray = trimmed ? trimmed.split(/\n+/).filter(p => p.trim().length > 0) : [];
+      const paragraphCount = paragraphsArray.length;
+
+      // Reading Time (~200 wpm)
+      const readingMinutes = Math.ceil(wordCount / 200);
+      const readingTimeStr = wordCount === 0 ? '0 min' : `${readingMinutes} min`;
+
+      statWords.textContent = wordCount.toLocaleString();
+      statChars.textContent = charCount.toLocaleString();
+      statCharsNoSpaces.textContent = charNoSpacesCount.toLocaleString();
+      statSentences.textContent = sentenceCount.toLocaleString();
+      statParagraphs.textContent = paragraphCount.toLocaleString();
+      statReadingTime.textContent = readingTimeStr;
+    }
+
+    textInput.addEventListener('input', updateStats);
+
+    btnCopy.addEventListener('click', async () => {
+      if (!textInput.value) return;
+      await navigator.clipboard.writeText(textInput.value);
+      btnCopy.textContent = 'Copied!';
+      setTimeout(() => { btnCopy.textContent = 'Copy Text'; }, 2000);
+    });
+
+    btnClear.addEventListener('click', () => {
+      textInput.value = '';
+      updateStats();
+    });
+
+    // Initial update
+    updateStats();
+  </script>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-3);
+    }
+    .stat-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-1);
+    }
+    .stat-card--time {
+      border-color: rgba(34, 197, 94, 0.25);
+      background: rgba(34, 197, 94, 0.04);
+    }
+    .stat-number {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+    .stat-card--time .stat-number {
+      color: var(--color-brand-400);
+    }
+    .stat-label {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .editor-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .editor-tip {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+    .editor-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 280px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: var(--space-3);
+      font-size: var(--font-size-base);
+      font-family: inherit;
+      line-height: 1.6;
+      box-sizing: border-box;
+      resize: vertical;
+      outline: none;
+    }
+    .form-textarea:focus {
+      border-color: var(--color-brand-500);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-base);
+    }
+    .btn--secondary {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--secondary:hover {
+      background: var(--surface-card);
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--ghost:hover {
+      color: var(--text-primary);
+    }
+
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.06);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+      margin-top: var(--space-2);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

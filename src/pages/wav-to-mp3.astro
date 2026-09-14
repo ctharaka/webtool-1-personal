@@ -1,0 +1,260 @@
+---
+/**
+ * wav-to-mp3.astro — Client-Side WAV to MP3 Converter
+ * Converts uncompressed WAV audio files to lightweight MP3 format in the browser.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudioZone from '../components/AudioZone.astro';
+---
+
+<BaseLayout
+  title="Free WAV to MP3 Converter — Convert WAV to MP3 Online"
+  description="Convert uncompressed WAV audio files to MP3 directly in your browser. Choose custom bitrates (128kbps to 320kbps) to reduce file size by up to 90%. 100% private, zero uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools WAV to MP3 Converter",
+          "url": "https://freefiletool.app/wav-to-mp3",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires Web Audio API and JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Convert large uncompressed WAV files into compact MP3s",
+            "Selectable bitrates: 128 kbps, 192 kbps, 256 kbps, 320 kbps",
+            "Saves up to 90% in audio file size while maintaining clarity",
+            "100% browser-side processing without transmitting audio bytes"
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Convert WAV to MP3 in Your Browser",
+          "description": "Step-by-step instructions to convert WAV audio to MP3 client-side.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload WAV File",
+              "text": "Drag and drop your .wav audio file into the converter box or select it from your device."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Select MP3 Bitrate",
+              "text": "Choose your preferred bitrate (192 kbps recommended for high fidelity, 320 kbps for audiophile quality)."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert Audio Now'. The browser will encode the MP3 in local RAM and provide an instant download button."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much file size do I save by converting WAV to MP3?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Uncompressed 16-bit 44.1kHz stereo WAV requires approximately 10 MB per minute of audio. Converting to 192 kbps MP3 reduces this to roughly 1.4 MB per minute — saving over 85% of disk and bandwidth space."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will converting WAV to MP3 degrade sound quality?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MP3 is a psychoacoustic lossy compression format, meaning it discards inaudible frequencies. At 192 kbps or 320 kbps, the compression is virtually indistinguishable from the original WAV on standard headphones and speakers."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Audio Converter</div>
+    <h1 class="tool-hero__title">Convert WAV to MP3 Online</h1>
+    <p class="tool-hero__desc">
+      Shrink bulky uncompressed WAV recordings into compact, universally compatible MP3 files. Customizable bitrates, instant browser encoding, and 100% privacy with zero server uploads.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <AudioZone id="wav-to-mp3-zone" defaultTargetFormat="mp3" mode="convert" presetBitrate={192} allowedInputs=".wav,audio/wav" />
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Enormous Storage Savings</h3>
+        <p>
+          Studio recordings in WAV format take up huge amounts of disk space. Converting to 192kbps or 320kbps MP3 slashes file sizes by up to 90%, making them easy to share via email or upload to web platforms.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Universal Device Support</h3>
+        <p>
+          While some mobile devices and web players struggle with large WAV audio streams, MP3 plays seamlessly across every phone, tablet, car stereo, and operating system on Earth.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Detailed WAV vs MP3 Guide</h3>
+        <p>
+          Learn the technical mechanics behind sample rates, bit depths, and psychoacoustic compression in our in-depth article:
+          <a href="/guides/wav-vs-mp3-which-audio-format-to-use" class="text-link">WAV vs MP3: Full Format Guide &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">Related Audio Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/mp3-to-wav" class="related-tool-card">
+        <span class="related-tool-name">MP3 to WAV Converter</span>
+        <span class="related-tool-desc">Decompress MP3 audio to uncompressed PCM WAV</span>
+      </a>
+      <a href="/audio-trimmer" class="related-tool-card">
+        <span class="related-tool-name">Audio Trimmer</span>
+        <span class="related-tool-desc">Cut and trim audio clips with instant preview</span>
+      </a>
+      <a href="/compress-audio" class="related-tool-card">
+        <span class="related-tool-name">Audio Compressor</span>
+        <span class="related-tool-desc">Optimize audio bitrates to minimize file size</span>
+      </a>
+      <a href="/audio-converter" class="related-tool-card">
+        <span class="related-tool-name">Universal Audio Converter</span>
+        <span class="related-tool-desc">Convert any supported audio format</span>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 760px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .text-link {
+      color: var(--color-brand-400);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: var(--space-1);
+    }
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

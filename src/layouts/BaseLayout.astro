@@ -117,7 +117,13 @@ const ogImageUrl = `${siteUrl}/og-image.svg`;
               <a href="/image-tools" class="nav-link">Image Tools</a>
             </li>
             <li class="nav-item">
-              <a href="/pdf" class="nav-link">PDF Tools</a>
+              <a href="/pdf-tools" class="nav-link">PDF Tools</a>
+            </li>
+            <li class="nav-item">
+              <a href="/text-tools" class="nav-link">Text Tools</a>
+            </li>
+            <li class="nav-item">
+              <a href="/audio-tools" class="nav-link">Audio Tools</a>
             </li>
             <li class="nav-item">
               <a href="/optimization-lab" class="nav-link nav-link--highlight">Optimization Lab</a>
@@ -173,21 +179,50 @@ const ogImageUrl = `${siteUrl}/og-image.svg`;
           <div class="footer-col">
             <h3 class="footer-heading">PDF Tools</h3>
             <ul class="footer-links">
-              <li><a href="/pdf/merge">Merge PDF</a></li>
-              <li><a href="/pdf/split">Split PDF</a></li>
-              <li><a href="/pdf/compress">Compress PDF</a></li>
-              <li><a href="/pdf/jpg-to-pdf">JPG to PDF</a></li>
-              <li><a href="/pdf/pdf-to-jpg">PDF to JPG</a></li>
-              <li><a href="/pdf">All PDF Tools</a></li>
+              <li><a href="/pdf-tools/merge-pdf">Merge PDF</a></li>
+              <li><a href="/pdf-tools/split-pdf">Split PDF</a></li>
+              <li><a href="/pdf-tools/compress-pdf">Compress PDF</a></li>
+              <li><a href="/pdf-tools/pdf-to-images">PDF to Images</a></li>
+              <li><a href="/pdf-tools/images-to-pdf">Images to PDF</a></li>
+              <li><a href="/pdf-tools/pdf-page-extractor">PDF Page Extractor</a></li>
+              <li><a href="/pdf-tools">All PDF Tools</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-heading">Text Tools</h3>
+            <ul class="footer-links">
+              <li><a href="/qr-code-generator">QR Code Generator</a></li>
+              <li><a href="/json-formatter">JSON Formatter</a></li>
+              <li><a href="/base64-encoder-decoder">Base64 Converter</a></li>
+              <li><a href="/hash-generator">Hash Generator</a></li>
+              <li><a href="/word-counter">Word Counter</a></li>
+              <li><a href="/case-converter">Case Converter</a></li>
+              <li><a href="/text-tools">All Text Tools</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-heading">Audio Tools</h3>
+            <ul class="footer-links">
+              <li><a href="/audio-converter">Universal Audio Converter</a></li>
+              <li><a href="/wav-to-mp3">WAV to MP3</a></li>
+              <li><a href="/mp3-to-wav">MP3 to WAV</a></li>
+              <li><a href="/audio-trimmer">Audio Trimmer</a></li>
+              <li><a href="/compress-audio">Compress Audio</a></li>
+              <li><a href="/audio-tools">All Audio Tools</a></li>
             </ul>
           </div>
 
           <div class="footer-col">
             <h3 class="footer-heading">Guides</h3>
             <ul class="footer-links">
+              <li><a href="/guides/pdf-tools">Complete PDF Guide</a></li>
               <li><a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG</a></li>
               <li><a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size</a></li>
-              <li><a href="/guides/how-browser-based-image-compression-works">How Browser Compression Works</a></li>
+              <li><a href="/guides/what-is-a-hash-and-when-do-you-need-one">What is a Hash?</a></li>
+              <li><a href="/guides/wav-vs-mp3-which-audio-format-to-use">WAV vs MP3 Guide</a></li>
+              <li><a href="/guides">All Guides</a></li>
             </ul>
           </div>
 
@@ -469,17 +504,17 @@ const ogImageUrl = `${siteUrl}/og-image.svg`;
 
   .footer-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: var(--space-6);
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 768px) {
     .footer-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
     .footer-grid {
       grid-template-columns: 1fr;
     }

@@ -1,0 +1,643 @@
+---
+/**
+ * base64-encoder-decoder.astro — Client-Side Base64 Encoder & Decoder
+ * Encodes and decodes text and binary files to Base64 in your browser.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Free Base64 Encoder & Decoder — Text & File Conversion Online"
+  description="Encode and decode text, strings, and binary files to and from Base64 directly in your browser. UTF-8 multi-byte support, instant conversion, 100% private with no server uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Base64 Encoder & Decoder",
+          "url": "https://freefiletool.app/base64-encoder-decoder",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Encode UTF-8 plain text to Base64 format",
+            "Decode Base64 strings back to clean readable text",
+            "Convert small binary files to Base64 data strings",
+            "Export decoded Base64 strings as downloadable binary files",
+            "100% client-side processing with zero server uploads"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does this tool support international Unicode characters?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Standard browser btoa() fails on characters outside Latin1 (like emojis, accented characters, and Asian scripts). FreeFileTools uses TextEncoder and TextDecoder to guarantee full UTF-8 compatibility."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert images or binary files to Base64 data URIs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Switch to the File Mode tab to drop any small binary file (PNG, JPG, PDF, SVG, etc.) and convert it into a Base64 string suitable for embedding directly into HTML or CSS."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my data safe when decoding credentials or tokens?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Because conversion occurs entirely in your browser memory, tokens, certificates, and passwords are never transmitted across the network."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Data &amp; Text Tools</div>
+    <h1 class="tool-hero__title">Online Base64 Encoder &amp; Decoder</h1>
+    <p class="tool-hero__desc">
+      Convert plain text, Unicode strings, and binary files to Base64 and back. Full UTF-8 support, file export, and instant browser-side conversion with zero server tracking.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button type="button" id="tab-text" class="tab-btn tab-btn--active">Text Mode</button>
+      <button type="button" id="tab-file" class="tab-btn">File Mode</button>
+    </div>
+
+    <!-- TEXT MODE PANEL -->
+    <div id="panel-text" class="panel-container">
+      <div class="dual-editor-grid">
+        <div class="editor-col">
+          <div class="col-header">
+            <label for="plain-input" class="col-title">Plain Text (UTF-8)</label>
+            <div class="col-actions">
+              <button type="button" id="btn-encode" class="btn btn--primary">Encode →</button>
+              <button type="button" id="btn-clear-plain" class="btn btn--ghost">Clear</button>
+            </div>
+          </div>
+          <textarea
+            id="plain-input"
+            class="form-textarea"
+            rows="10"
+            placeholder="Type or paste plain text here (supports emojis 🚀 and international characters)..."
+          ></textarea>
+        </div>
+
+        <div class="editor-col">
+          <div class="col-header">
+            <label for="base64-input" class="col-title">Base64 Encoded</label>
+            <div class="col-actions">
+              <button type="button" id="btn-decode" class="btn btn--primary">← Decode</button>
+              <button type="button" id="btn-copy-b64" class="btn btn--secondary">Copy</button>
+            </div>
+          </div>
+          <textarea
+            id="base64-input"
+            class="form-textarea form-textarea--code"
+            rows="10"
+            placeholder="Paste Base64 string here..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE MODE PANEL -->
+    <div id="panel-file" class="panel-container" style="display: none;">
+      <div class="file-box-grid">
+        <div class="file-upload-box">
+          <h3 class="box-title">File → Base64</h3>
+          <p class="box-desc">Select any small file (image, document, audio) to convert into a Base64 string.</p>
+          <input type="file" id="binary-file-input" class="file-field" />
+          <div class="file-result-wrapper">
+            <label for="file-b64-output" class="form-label">Base64 Output:</label>
+            <textarea id="file-b64-output" class="form-textarea form-textarea--code" rows="6" readonly placeholder="Base64 output will appear here..."></textarea>
+            <div class="action-row">
+              <button type="button" id="btn-copy-file-b64" class="btn btn--secondary">Copy Base64</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="file-decode-box">
+          <h3 class="box-title">Base64 → File Download</h3>
+          <p class="box-desc">Paste a Base64 string to reconstruct and download it as an original file.</p>
+          <div class="form-group">
+            <label for="decode-filename" class="form-label">Target Filename (with extension):</label>
+            <input type="text" id="decode-filename" value="decoded-file.bin" class="form-input" />
+          </div>
+          <textarea id="decode-b64-input" class="form-textarea form-textarea--code" rows="5" placeholder="Paste Base64 or Data URI here..."></textarea>
+          <div class="action-row">
+            <button type="button" id="btn-download-file" class="btn btn--primary">Reconstruct &amp; Download File</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+      <span>Runs entirely in your browser — nothing is uploaded</span>
+    </div>
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Safe UTF-8 Encoding</h3>
+        <p>
+          JavaScript's default <code>window.btoa()</code> throws an exception when encountering multibyte characters. FreeFileTools converts strings to UTF-8 byte arrays first, guaranteeing support for emojis, Cyrillic, Chinese, and symbols.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Binary File Embeds</h3>
+        <p>
+          Quickly convert icon graphics, fonts, or configuration files to Base64 strings for embedding directly into CSS stylesheets or HTML documents without hosting external assets.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Private &amp; Offline</h3>
+        <p>
+          Decode sensitive authorization headers, JWT parts, and certificates safely on your device without transmitting credentials over unverified third-party servers.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">More Data &amp; Text Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/text-tools" class="related-tool-card">
+        <span class="related-tool-name">Text Tools Hub</span>
+        <span class="related-tool-desc">View all text, developer, and data utilities</span>
+      </a>
+      <a href="/hash-generator" class="related-tool-card">
+        <span class="related-tool-name">Hash Generator</span>
+        <span class="related-tool-desc">Generate MD5 and SHA-256 cryptographic hashes</span>
+      </a>
+      <a href="/json-formatter" class="related-tool-card">
+        <span class="related-tool-name">JSON Formatter</span>
+        <span class="related-tool-desc">Validate, format, and minify JSON data</span>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    // Tab switching
+    const tabText = document.getElementById('tab-text');
+    const tabFile = document.getElementById('tab-file');
+    const panelText = document.getElementById('panel-text');
+    const panelFile = document.getElementById('panel-file');
+
+    tabText.addEventListener('click', () => {
+      tabText.classList.add('tab-btn--active');
+      tabFile.classList.remove('tab-btn--active');
+      panelText.style.display = 'block';
+      panelFile.style.display = 'none';
+    });
+
+    tabFile.addEventListener('click', () => {
+      tabFile.classList.add('tab-btn--active');
+      tabText.classList.remove('tab-btn--active');
+      panelFile.style.display = 'block';
+      panelText.style.display = 'none';
+    });
+
+    // UTF-8 safe Base64 encoding/decoding
+    function utf8ToBase64(str) {
+      const bytes = new TextEncoder().encode(str);
+      const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+      return btoa(binString);
+    }
+
+    function base64ToUtf8(b64) {
+      // Strip any whitespace
+      const cleanB64 = b64.replace(/\s+/g, '');
+      const binString = atob(cleanB64);
+      const bytes = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    // Text Mode Elements
+    const plainInput = document.getElementById('plain-input');
+    const base64Input = document.getElementById('base64-input');
+    const btnEncode = document.getElementById('btn-encode');
+    const btnDecode = document.getElementById('btn-decode');
+    const btnClearPlain = document.getElementById('btn-clear-plain');
+    const btnCopyB64 = document.getElementById('btn-copy-b64');
+
+    btnEncode.addEventListener('click', () => {
+      try {
+        base64Input.value = utf8ToBase64(plainInput.value);
+      } catch (err) {
+        alert('Encoding error: ' + err.message);
+      }
+    });
+
+    btnDecode.addEventListener('click', () => {
+      try {
+        plainInput.value = base64ToUtf8(base64Input.value);
+      } catch (err) {
+        alert('Decoding error: Invalid Base64 string.');
+      }
+    });
+
+    btnClearPlain.addEventListener('click', () => {
+      plainInput.value = '';
+    });
+
+    btnCopyB64.addEventListener('click', async () => {
+      if (!base64Input.value) return;
+      await navigator.clipboard.writeText(base64Input.value);
+      btnCopyB64.textContent = 'Copied!';
+      setTimeout(() => { btnCopyB64.textContent = 'Copy'; }, 2000);
+    });
+
+    // File Mode Elements
+    const binaryFileInput = document.getElementById('binary-file-input');
+    const fileB64Output = document.getElementById('file-b64-output');
+    const btnCopyFileB64 = document.getElementById('btn-copy-file-b64');
+    const decodeFilename = document.getElementById('decode-filename');
+    const decodeB64Input = document.getElementById('decode-b64-input');
+    const btnDownloadFile = document.getElementById('btn-download-file');
+
+    binaryFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        // Strip data URL prefix if user just wants raw b64
+        const commaIndex = result.indexOf(',');
+        fileB64Output.value = commaIndex !== -1 ? result.substring(commaIndex + 1) : result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    btnCopyFileB64.addEventListener('click', async () => {
+      if (!fileB64Output.value) return;
+      await navigator.clipboard.writeText(fileB64Output.value);
+      btnCopyFileB64.textContent = 'Copied!';
+      setTimeout(() => { btnCopyFileB64.textContent = 'Copy Base64'; }, 2000);
+    });
+
+    btnDownloadFile.addEventListener('click', () => {
+      let b64 = decodeB64Input.value.trim();
+      if (!b64) {
+        alert('Please paste a Base64 string to download.');
+        return;
+      }
+      // If it has data: prefix, strip it
+      const commaIndex = b64.indexOf(',');
+      if (commaIndex !== -1) {
+        b64 = b64.substring(commaIndex + 1);
+      }
+      try {
+        const binString = atob(b64.replace(/\s+/g, ''));
+        const bytes = Uint8Array.from(binString, (m) => m.charCodeAt(0));
+        const blob = new Blob([bytes]);
+        const filename = decodeFilename.value.trim() || 'download.bin';
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch (err) {
+        alert('Failed to reconstruct file: Invalid Base64 encoding.');
+      }
+    });
+  </script>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: var(--space-2);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: var(--space-2);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--surface-elevated);
+    }
+    .tab-btn--active {
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .dual-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 768px) {
+      .dual-editor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .editor-col {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .col-title {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .col-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .file-box-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 768px) {
+      .file-box-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .file-upload-box, .file-decode-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .box-title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .box-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .file-field {
+      padding: var(--space-3);
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      color: var(--text-secondary);
+      font-size: var(--font-size-xs);
+    }
+
+    .form-textarea {
+      width: 100%;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: var(--space-3);
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+      line-height: 1.6;
+      box-sizing: border-box;
+      resize: vertical;
+      outline: none;
+    }
+    .form-textarea:focus, .form-input:focus {
+      border-color: var(--color-brand-500);
+    }
+    .form-textarea--code {
+      font-family: monospace;
+      font-size: var(--font-size-xs);
+    }
+    .form-input {
+      width: 100%;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .form-label {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-base);
+    }
+    .btn--primary {
+      background: var(--color-brand-500);
+      color: #000000;
+      font-weight: 600;
+    }
+    .btn--primary:hover {
+      background: var(--color-brand-400);
+    }
+    .btn--secondary {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--secondary:hover {
+      background: var(--surface-card);
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--ghost:hover {
+      color: var(--text-primary);
+    }
+
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.06);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+      margin-top: var(--space-2);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

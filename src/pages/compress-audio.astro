@@ -1,0 +1,260 @@
+---
+/**
+ * compress-audio.astro — Client-Side Audio Compressor
+ * Reduces audio file sizes by re-encoding sound at optimized MP3 bitrates directly in the browser.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudioZone from '../components/AudioZone.astro';
+---
+
+<BaseLayout
+  title="Free Audio Compressor — Compress MP3 & Audio Online"
+  description="Reduce audio file sizes directly in your browser. Re-encode sound at optimized bitrates (64kbps to 192kbps) to save up to 80% disk space. 100% private, zero uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Audio Compressor",
+          "url": "https://freefiletool.app/compress-audio",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires Web Audio API and JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Compress audio files to 64 kbps, 96 kbps, 128 kbps, or 192 kbps",
+            "Reduce podcast, lecture, and speech recording sizes by up to 80%",
+            "In-browser playback preview before and after compression",
+            "100% client-side encoding with zero server uploads"
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Compress Audio Online in Your Browser",
+          "description": "Step-by-step instructions to reduce audio file size client-side.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select Audio File",
+              "text": "Drag and drop your audio file (WAV, MP3, M4A) or select it from your computer."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Target Bitrate",
+              "text": "Select an optimized compression preset (64 kbps for voice, 128 kbps for balanced sound)."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Compress & Download",
+              "text": "Click 'Compress Audio Now'. The browser will re-encode the audio in local RAM and provide your compressed file."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does audio compression reduce file size?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "By lowering the bitrate (e.g. from 320 kbps to 128 kbps or 96 kbps), fewer bits are allocated per second of audio. For speech, voice memos, and podcasts, this cuts file sizes dramatically without noticeably impacting speech clarity."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my voice recordings uploaded to a server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The entire compression process occurs inside your device's browser memory using client-side Web Audio and JavaScript. Nothing is transmitted over the network."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Audio Optimizer</div>
+    <h1 class="tool-hero__title">Online Audio Compressor</h1>
+    <p class="tool-hero__desc">
+      Shrink audio recordings, podcasts, and music files to manageable sizes. Choose targeted bitrates, preview sound quality, and enjoy 100% privacy with zero server uploads.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <AudioZone id="compress-zone" defaultTargetFormat="mp3" mode="compress" presetBitrate={128} />
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Targeted Voice Compression</h3>
+        <p>
+          Spoken voice recordings and meetings don't need high 320kbps music bitrates. Compressing to 64kbps or 96kbps cuts file size by up to 75% while keeping voices crisp and fully intelligible.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Email &amp; Messaging Ready</h3>
+        <p>
+          Need to send an audio memo through email or messaging apps with strict 25MB attachment limits? Compress your files locally in seconds to fit within transfer restrictions.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Bitrate Selection Guide</h3>
+        <p>
+          Learn how different bitrates impact audio quality and download sizes in our complete technical guide:
+          <a href="/guides/wav-vs-mp3-which-audio-format-to-use" class="text-link">Audio Format &amp; Bitrate Guide &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">Related Audio Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/audio-trimmer" class="related-tool-card">
+        <span class="related-tool-name">Audio Trimmer</span>
+        <span class="related-tool-desc">Cut and trim audio clips with instant preview</span>
+      </a>
+      <a href="/audio-converter" class="related-tool-card">
+        <span class="related-tool-name">Universal Audio Converter</span>
+        <span class="related-tool-desc">Convert between WAV and MP3 formats</span>
+      </a>
+      <a href="/wav-to-mp3" class="related-tool-card">
+        <span class="related-tool-name">WAV to MP3 Converter</span>
+        <span class="related-tool-desc">Compress large WAV files into compact MP3s</span>
+      </a>
+      <a href="/mp3-to-wav" class="related-tool-card">
+        <span class="related-tool-name">MP3 to WAV Converter</span>
+        <span class="related-tool-desc">Decompress MP3 to 16-bit PCM WAV</span>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 760px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .text-link {
+      color: var(--color-brand-400);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: var(--space-1);
+    }
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,324 @@
+---
+/**
+ * text-tools/index.astro — Data & Text Tools Hub Page
+ * Index for client-side text converters, generators, developer formatters, and analyzers.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Free Online Data & Text Tools — Formatters, Converters & Generators"
+  description="Explore our suite of 100% private browser-side text tools. QR Code Generator, JSON Formatter, Base64 Encoder, Hash Generator, Word Counter, and Case Converter with zero server uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "FreeFileTools Data & Text Tools Hub",
+          "url": "https://freefiletool.app/text-tools",
+          "description": "Collection of private, client-side data and text processing utilities.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          }
+        }
+      ]
+    }
+  </script>
+
+  <header class="hub-hero">
+    <div class="hub-badge">Data &amp; Text Utilities</div>
+    <h1 class="hub-title">Online Data &amp; Text Tools</h1>
+    <p class="hub-desc">
+      All encoding, formatting, cryptographic hashing, and text conversions run locally in your browser memory. Your text and data are never sent to any server.
+    </p>
+  </header>
+
+  <section class="tools-hub" aria-label="Available Data and Text Tools">
+    <!-- Category: Generators -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📱</span> Generators
+      </h2>
+      <p class="category-desc">Create high-resolution visual codes and assets directly on your device.</p>
+
+      <div class="category-grid">
+        <div class="tool-card tool-card--featured">
+          <div class="tool-badge">Featured</div>
+          <h3 class="tool-title"><a href="/qr-code-generator">QR Code Generator</a></h3>
+          <p class="tool-desc">
+            Generate custom QR codes for web links, text, contacts, and Wi-Fi networks. Export crisp vector SVG or high-res PNG up to 2048px with custom colors.
+          </p>
+          <a href="/qr-code-generator" class="tool-link">Create QR Code &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Developer Tools -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">🛠️</span> Developer Tools
+      </h2>
+      <p class="category-desc">Beautify payloads, inspect data structures, and compute cryptographic signatures.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/json-formatter">JSON Formatter &amp; Validator</a></h3>
+          <p class="tool-desc">
+            Pretty-print, validate syntax, and minify JSON data with exact line and column error reporting. Supports direct .json file upload and download.
+          </p>
+          <a href="/json-formatter" class="tool-link">Format JSON &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/hash-generator">Cryptographic Hash Generator</a></h3>
+          <p class="tool-desc">
+            Compute MD5, SHA-1, SHA-256, and SHA-512 checksums for passwords, text, and binary files using hardware-accelerated Web Crypto.
+          </p>
+          <a href="/hash-generator" class="tool-link">Compute Hashes &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Converters -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">🔄</span> Encoders &amp; Converters
+      </h2>
+      <p class="category-desc">Transform representations between binary formats and text casings.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/base64-encoder-decoder">Base64 Encoder &amp; Decoder</a></h3>
+          <p class="tool-desc">
+            Encode and decode plain text, Unicode strings, and binary files to Base64 with full UTF-8 international character support.
+          </p>
+          <a href="/base64-encoder-decoder" class="tool-link">Open Base64 Tool &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/case-converter">Text Case Converter</a></h3>
+          <p class="tool-desc">
+            Transform text between UPPERCASE, lowercase, Title Case, Sentence case, camelCase, snake_case, and kebab-case with one click.
+          </p>
+          <a href="/case-converter" class="tool-link">Convert Case &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Text Analytics -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">📊</span> Text Analytics
+      </h2>
+      <p class="category-desc">Analyze word density, character lengths, and speaking durations.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/word-counter">Word &amp; Character Counter</a></h3>
+          <p class="tool-desc">
+            Live real-time word counting, character density without spaces, sentence tracking, and estimated reading and speaking times.
+          </p>
+          <a href="/word-counter" class="tool-link">Count Words &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>100% Client-Side Privacy</h3>
+        <p>
+          Every tool in the FreeFileTools suite operates within your web browser's sandboxed JavaScript engine. No text, tokens, hashes, or files are ever sent to our servers or saved in any database.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Zero Network Latency</h3>
+        <p>
+          Because calculations happen on your device CPU, formatting large JSON objects or computing SHA-256 hashes for files finishes instantaneously without waiting for network transfers.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Helpful Developer Guides</h3>
+        <p>
+          Learn more about cryptographic algorithms in our dedicated guide:
+          <a href="/guides/what-is-a-hash-and-when-do-you-need-one" class="guide-link">What is a Hash and When Do You Need One? &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .hub-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hub-badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .hub-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .hub-desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tools-hub {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .category-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .category-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin: 0;
+    }
+    .category-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin: 0 0 var(--space-4);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      position: relative;
+      transition: all var(--transition-base);
+    }
+    .tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .tool-card--featured {
+      border-color: rgba(34, 197, 94, 0.4);
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.05) 0%, var(--surface-card) 100%);
+    }
+
+    .tool-badge {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius-full);
+      padding: 2px 8px;
+    }
+
+    .tool-title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .tool-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+      flex: 1;
+    }
+    .tool-link {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      text-decoration: none;
+      margin-top: var(--space-2);
+      display: inline-flex;
+      align-items: center;
+    }
+    .tool-link:hover {
+      text-decoration: underline;
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .guide-link {
+      color: var(--color-brand-400);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: var(--space-1);
+    }
+    .guide-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</BaseLayout>

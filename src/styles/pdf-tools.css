@@ -1,0 +1,145 @@
+/**
+ * pdf-tools.css — Styles for FreeFileTools PDF Tools Suite
+ *
+ * Provides responsive layout, focus-visible states, component classes,
+ * queue management, thumbnail lists, and accessible alert boxes.
+ */
+
+.pdf-tools-hub {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.pdf-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.pdf-tool-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1, #1e1e24);
+  border: 1px solid var(--border-color, #2a2a35);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pdf-tool-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-400, #38bdf8);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.pdf-tool-card:focus-visible {
+  outline: 2px solid var(--color-brand-400, #38bdf8);
+  outline-offset: 3px;
+}
+
+.pdf-tool-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent-400, #a855f7);
+  background: rgba(168, 85, 247, 0.12);
+  border-radius: 9999px;
+  padding: 0.25rem 0.65rem;
+  width: fit-content;
+  margin-bottom: 0.85rem;
+}
+
+.pdf-tool-card__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 0.5rem;
+}
+
+.pdf-tool-card__desc {
+  font-size: 0.925rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #94a3b8);
+  flex-grow: 1;
+  margin-bottom: 1.25rem;
+}
+
+.pdf-tool-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-brand-400, #38bdf8);
+}
+
+/* ── Interactive PDF Zone Extensions ── */
+.pdf-zone:focus-visible {
+  outline: 2px solid var(--color-brand-400, #38bdf8);
+  outline-offset: 2px;
+}
+
+.pdf-zone__page-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.pdf-zone__page-input {
+  width: 90px;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: var(--surface-2, #262630);
+  border: 1px solid var(--border-color, #383848);
+  border-radius: 0.375rem;
+  color: #fff;
+}
+
+.pdf-zone__page-input:focus-visible {
+  outline: 2px solid var(--color-brand-400, #38bdf8);
+}
+
+.pdf-privacy-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  color: #d1fae5;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.pdf-privacy-callout svg {
+  flex-shrink: 0;
+  color: #10b981;
+  margin-top: 0.125rem;
+}
+
+/* ── Responsive adjustments down to 360px ── */
+@media (max-width: 640px) {
+  .pdf-tools-hub {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .pdf-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .pdf-tool-card {
+    padding: 1.25rem;
+  }
+}

@@ -1,0 +1,261 @@
+---
+/**
+ * pdf-tools/compress-pdf.astro — Dedicated Compress PDF Tool Landing Page
+ * In-browser stream compaction and redundant metadata removal.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PdfZone from '../../components/PdfZone.astro';
+---
+
+<BaseLayout
+  title="Compress PDF Online — Free In-Browser PDF Size Reducer | FreeFileTools"
+  description="Reduce PDF file size directly in your browser. Optimizes internal object streams and cleans metadata without uploading documents to external servers."
+  canonicalURL="https://freefiletool.app/pdf-tools/compress-pdf"
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Compress PDF Files Online Without Server Uploads",
+          "description": "Step-by-step instructions to optimize PDF internal streams and reduce file weight using client-side JavaScript.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select PDF Document",
+              "text": "Drop your PDF into the upload zone or choose it using the file picker."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Click Compress PDF Now",
+              "text": "Your browser optimizes object streams and clears unneeded metadata."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Inspect Savings",
+              "text": "Review original size, compressed size, and total percentage saved."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download Compressed PDF",
+              "text": "Save the compact PDF directly to your device."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does FreeFileTools compress PDF documents?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It uses pdf-lib to analyze document xref tables, collapse individual objects into compressed object streams, and remove orphaned metadata while leaving vector graphics and text completely unaltered."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Will compressing my PDF blur the text or line art?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Vector fonts, curves, diagrams, and digital signatures retain 100% mathematical precision. Compression targets binary packaging efficiency, not lossy rasterization."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my files private?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Compression is executed purely in your browser memory. FreeFileTools never transmits your document to any cloud or remote server."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li><a href="/">Home</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li><a href="/pdf-tools">PDF Tools</a></li>
+      <li aria-hidden="true">&rsaquo;</li>
+      <li aria-current="page">Compress PDF</li>
+    </ol>
+  </nav>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PDF Optimizer</div>
+    <h1 class="tool-hero__title">Compress PDF Online</h1>
+    <p class="tool-hero__desc">
+      Shrink PDF file size directly in your browser. Re-encodes object streams and strips unnecessary structural data with zero quality loss on fonts or vector art.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <PdfZone mode="compress" id="pdf-compress-zone" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why is in-browser PDF compression safer?</p>
+    <p class="quick-answer__a">
+      Traditional online PDF compressors upload your confidential contracts, tax returns, and statements to cloud servers where data breaches and storage risks exist. FreeFileTools compresses everything locally in your computer's RAM, keeping your private data 100% secure.
+    </p>
+  </div>
+
+  <!-- Related Tools -->
+  <section class="related-tools">
+    <h2 class="related-tools__title">Related PDF Utilities</h2>
+    <div class="related-grid">
+      <a href="/pdf-tools/merge-pdf" class="related-card">
+        <span class="related-card__name">Merge PDF &rarr;</span>
+        <span class="related-card__desc">Combine multiple PDF files into one.</span>
+      </a>
+      <a href="/pdf-tools/split-pdf" class="related-card">
+        <span class="related-card__name">Split PDF &rarr;</span>
+        <span class="related-card__desc">Extract specific pages or page ranges.</span>
+      </a>
+      <a href="/pdf-tools/pdf-to-images" class="related-card">
+        <span class="related-card__name">PDF to Images &rarr;</span>
+        <span class="related-card__desc">Render PDF pages as PNG or JPG graphics.</span>
+      </a>
+      <a href="/pdf-tools" class="related-card">
+        <span class="related-card__name">All PDF Tools &rarr;</span>
+        <span class="related-card__desc">Browse the complete suite of PDF tools.</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  @import '../../styles/pdf-tools.css';
+
+  .breadcrumb-nav {
+    max-width: 800px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.25rem;
+  }
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--text-muted, #64748b);
+  }
+  .breadcrumb-list a {
+    color: var(--color-brand-400, #38bdf8);
+    text-decoration: none;
+  }
+  .breadcrumb-list a:hover {
+    text-decoration: underline;
+  }
+  .tool-hero {
+    text-align: center;
+    padding: 2rem 1.25rem 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .tool-hero__badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-brand-400, #38bdf8);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    margin-bottom: 0.75rem;
+  }
+  .tool-hero__title {
+    font-size: clamp(2rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.75rem;
+  }
+  .tool-hero__desc {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #94a3b8);
+  }
+  .upload-section {
+    max-width: 800px;
+    margin: 1.5rem auto 2.5rem;
+    padding: 0 1.25rem;
+  }
+  .quick-answer {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: var(--surface-1, #1e1e24);
+    border: 1px solid var(--border-color, #2a2a35);
+    border-radius: 0.75rem;
+  }
+  .quick-answer__label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-accent-400, #a855f7);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .quick-answer__q {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  .quick-answer__a {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #94a3b8);
+  }
+  .related-tools {
+    max-width: 800px;
+    margin: 3rem auto 4rem;
+    padding: 0 1.25rem;
+    border-top: 1px solid var(--border-color, #2a2a35);
+    padding-top: 2rem;
+  }
+  .related-tools__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  .related-card {
+    background: var(--surface-1, #1e1e24);
+    border: 1px solid var(--border-color, #2a2a35);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .related-card:hover {
+    border-color: var(--color-brand-400, #38bdf8);
+  }
+  .related-card__name {
+    display: block;
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--color-brand-400, #38bdf8);
+    margin-bottom: 0.25rem;
+  }
+  .related-card__desc {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+</style>

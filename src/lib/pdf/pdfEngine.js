@@ -559,3 +559,50 @@ export async function pdfToImages(file, options = {}, onProgress = null) {
 
   return results;
 }
+
+/**
+ * Extract a single specific page from a PDF document into a new PDF.
+ *
+ * @param {File} file
+ * @param {number} pageNum - 1-based page number
+ * @returns {Promise<{ blob: Blob, url: string, filename: string, pageNum: number, pageCount: number, sizeBytes: number, formattedSize: string }>}
+ */
+export async function extractSinglePagePdf(file, pageNum) {
+  const { PDFDocument } = await getPdfLib();
+  const arrayBuffer = await file.arrayBuffer();
+  let srcDoc;
+  try {
+    srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : '';
+    if (msg.toLowerCase().includes('encrypt') || msg.toLowerCase().includes('password')) {
+      throw new Error(`"${file.name}" is password-protected. Please unlock it before extracting.`);
+    }
+    throw new Error(`Could not parse "${file.name}". File may be corrupt.`);
+  }
+
+  const totalPages = srcDoc.getPageCount();
+  if (pageNum < 1 || pageNum > totalPages) {
+    throw new Error(`Page ${pageNum} is out of bounds. The document has ${totalPages} pages.`);
+  }
+
+  const newDoc = await PDFDocument.create();
+  const [copiedPage] = await newDoc.copyPages(srcDoc, [pageNum - 1]);
+  newDoc.addPage(copiedPage);
+
+  const bytes = await newDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const rawBase = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ''));
+  const filename = `${rawBase}-page-${pageNum}.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageNum,
+    pageCount: 1,
+    sizeBytes: blob.size,
+    formattedSize: formatBytes(blob.size),
+  };
+}

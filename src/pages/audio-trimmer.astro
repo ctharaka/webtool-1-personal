@@ -1,0 +1,251 @@
+---
+/**
+ * audio-trimmer.astro — Client-Side Audio Trimmer & Cutter
+ * Cuts audio clips to custom start and end points with browser playback preview.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudioZone from '../components/AudioZone.astro';
+---
+
+<BaseLayout
+  title="Free Online Audio Trimmer — Cut & Trim MP3 and Audio Files"
+  description="Trim, cut, and split audio files directly in your browser. Set precise start and end times, preview the sound, and export as MP3 or WAV. 100% private, zero uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Audio Trimmer",
+          "url": "https://freefiletool.app/audio-trimmer",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires Web Audio API and JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Cut audio to millisecond-precise start and end times",
+            "Real-time audio playback preview before exporting",
+            "Export trimmed clips as MP3 or uncompressed WAV",
+            "Create ringtones, notification sounds, and podcast snippets",
+            "100% browser-local processing with zero server uploads"
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Trim Audio Online in Your Browser",
+          "description": "Step-by-step instructions to cut and trim sound files client-side.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select Audio File",
+              "text": "Drag and drop your audio file (MP3, WAV, M4A) into the trimmer box or choose it from your files."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Set Start and End Times",
+              "text": "Listen to the audio player and enter your desired start and end times in seconds."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Export Trimmed Clip",
+              "text": "Select MP3 or WAV and click 'Trim & Export Audio' to download your cut snippet instantly."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is my audio uploaded anywhere to trim it?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The audio waveform is decoded into your computer's RAM using the browser Web Audio API, sliced in memory, and re-encoded locally. Your files remain 100% private."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use this tool to make mobile phone ringtones?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Load your favorite track, specify a 20 to 30 second snippet with start and end times, and export as MP3 to create custom phone ringtones and notification chimes."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Audio Editor</div>
+    <h1 class="tool-hero__title">Online Audio Trimmer &amp; Cutter</h1>
+    <p class="tool-hero__desc">
+      Trim songs, voice recordings, and podcasts to exact start and end times. Real-time playback preview, export to MP3 or WAV, and 100% privacy with zero server uploads.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <AudioZone id="trimmer-zone" defaultTargetFormat="mp3" mode="trim" presetBitrate={192} />
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Sample-Accurate Slicing</h3>
+        <p>
+          Trim operations slice PCM audio samples directly at the buffer level, eliminating audio click artifacts and ensuring clean transitions for loops, sample packs, and sound design.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Custom Ringtones &amp; Notifications</h3>
+        <p>
+          Isolate the best hook of a song or a funny voice snippet to use as a personalized phone ringtone, alarm, or messaging chime without downloading clunky desktop editing software.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Podcast &amp; Speech Editing</h3>
+        <p>
+          Remove awkward silence, cut out introductory test tones, or isolate specific interview quotes for social media teasers safely on your local device.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">Related Audio Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/compress-audio" class="related-tool-card">
+        <span class="related-tool-name">Audio Compressor</span>
+        <span class="related-tool-desc">Reduce audio file size with bitrate optimization</span>
+      </a>
+      <a href="/audio-converter" class="related-tool-card">
+        <span class="related-tool-name">Universal Audio Converter</span>
+        <span class="related-tool-desc">Convert between WAV and MP3 formats</span>
+      </a>
+      <a href="/wav-to-mp3" class="related-tool-card">
+        <span class="related-tool-name">WAV to MP3 Converter</span>
+        <span class="related-tool-desc">Compress large WAV files into compact MP3s</span>
+      </a>
+      <a href="/mp3-to-wav" class="related-tool-card">
+        <span class="related-tool-name">MP3 to WAV Converter</span>
+        <span class="related-tool-desc">Decompress MP3 to 16-bit PCM WAV</span>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 760px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

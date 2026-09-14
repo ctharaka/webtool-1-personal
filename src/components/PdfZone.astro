@@ -13,16 +13,16 @@
  */
 
 export interface Props {
-  mode: 'merge' | 'split' | 'compress' | 'images-to-pdf' | 'pdf-to-images';
-  imageFormat?: 'jpg' | 'png';
+  mode: 'merge' | 'split' | 'compress' | 'images-to-pdf' | 'pdf-to-images' | 'page-extractor';
+  imageFormat?: 'jpg' | 'png' | 'all';
   outputFormat?: 'jpg' | 'png';
   id?: string;
 }
 
 const {
   mode = 'merge',
-  imageFormat = 'jpg',
-  outputFormat = 'jpg',
+  imageFormat = 'all',
+  outputFormat = 'png',
   id = `pdf-zone-${mode}`,
 } = Astro.props;
 
@@ -40,16 +40,26 @@ if (mode === 'split') {
   multiple = false;
   defaultHeading = 'Drop a PDF file here to compress';
   defaultSub = 'or browse files \u00B7 In-browser stream & structure optimization';
+} else if (mode === 'page-extractor') {
+  multiple = false;
+  defaultHeading = 'Drop a PDF file here to extract a page';
+  defaultSub = 'or browse files \u00B7 Extract any single page as a standalone PDF';
 } else if (mode === 'images-to-pdf') {
   multiple = true;
-  accept = imageFormat === 'png' ? '.png,image/png' : '.jpg,.jpeg,image/jpeg';
-  defaultHeading = `Drop ${imageFormat.toUpperCase()} images here to convert to PDF`;
-  defaultSub = `or browse files \u00B7 Reorder images \u00B7 Multi-page PDF export`;
+  accept = imageFormat === 'png'
+    ? '.png,image/png'
+    : imageFormat === 'jpg'
+    ? '.jpg,.jpeg,image/jpeg'
+    : '.jpg,.jpeg,.png,image/jpeg,image/png';
+  defaultHeading = imageFormat === 'all'
+    ? 'Drop images here to convert to PDF'
+    : `Drop ${imageFormat.toUpperCase()} images here to convert to PDF`;
+  defaultSub = 'or browse files \u00B7 Reorder images \u00B7 Multi-page PDF export';
 } else if (mode === 'pdf-to-images') {
   multiple = false;
   accept = '.pdf,application/pdf';
-  defaultHeading = `Drop a PDF file here to convert to ${outputFormat.toUpperCase()}`;
-  defaultSub = `or browse files \u00B7 Render high-resolution ${outputFormat.toUpperCase()} pages`;
+  defaultHeading = 'Drop a PDF file here to convert to images';
+  defaultSub = 'or browse files \u00B7 Render high-resolution PNG or JPG pages';
 }
 ---
 
@@ -209,6 +219,14 @@ if (mode === 'split') {
       <div class="options-container">
         <div class="options-grid">
           <div class="option-field">
+            <label for={`${id}-format-select`} class="option-label">Output Format</label>
+            <select id={`${id}-format-select`} class="upload-zone__format-select">
+              <option value="png" selected={outputFormat === 'png'}>PNG (Lossless & Transparent)</option>
+              <option value="jpg" selected={outputFormat === 'jpg'}>JPG (Compressed)</option>
+            </select>
+          </div>
+
+          <div class="option-field">
             <label for={`${id}-scale`} class="option-label">Rendering Resolution</label>
             <select id={`${id}-scale`} class="upload-zone__format-select">
               <option value="1.5" selected>Standard (108 DPI)</option>
@@ -217,23 +235,21 @@ if (mode === 'split') {
             </select>
           </div>
 
-          {outputFormat === 'jpg' && (
-            <div class="option-field">
-              <div class="quality-label-row">
-                <label for={`${id}-quality`} class="option-label">JPG Quality</label>
-                <span class="pdf-zone__quality-val">85%</span>
-              </div>
-              <input
-                type="range"
-                id={`${id}-quality`}
-                class="upload-zone__quality-slider"
-                min="30"
-                max="100"
-                value="85"
-                step="5"
-              />
+          <div class="option-field" id={`${id}-quality-field`} style={outputFormat === 'jpg' ? '' : 'display: none;'}>
+            <div class="quality-label-row">
+              <label for={`${id}-quality`} class="option-label">JPG Quality</label>
+              <span class="pdf-zone__quality-val">85%</span>
             </div>
-          )}
+            <input
+              type="range"
+              id={`${id}-quality`}
+              class="upload-zone__quality-slider"
+              min="30"
+              max="100"
+              value="85"
+              step="5"
+            />
+          </div>
         </div>
 
         <div class="option-field">
@@ -263,13 +279,34 @@ if (mode === 'split') {
       </div>
     )}
 
+    {mode === 'page-extractor' && (
+      <div class="options-container">
+        <div class="option-field">
+          <label for={`${id}-extractor-page-num`} class="option-label">
+            Page to Extract <span class="option-sublabel pdf-zone__max-page-hint"></span>
+          </label>
+          <div class="pdf-zone__page-selector">
+            <input
+              type="number"
+              id={`${id}-extractor-page-num`}
+              class="text-input pdf-zone__page-input"
+              min="1"
+              value="1"
+            />
+            <span class="field-hint">Extracts this page as an independent PDF file.</span>
+          </div>
+        </div>
+      </div>
+    )}
+
     <!-- Primary Action Button -->
     <button type="button" class="pdf-zone__action-btn primary-btn">
       {mode === 'merge' && 'Merge PDF Files Now'}
       {mode === 'split' && 'Split PDF Now'}
       {mode === 'compress' && 'Compress PDF Now'}
       {mode === 'images-to-pdf' && 'Generate PDF Document'}
-      {mode === 'pdf-to-images' && `Convert to ${outputFormat.toUpperCase()}`}
+      {mode === 'pdf-to-images' && 'Convert to Images'}
+      {mode === 'page-extractor' && 'Extract Page as PDF'}
     </button>
   </div>
 
@@ -354,7 +391,8 @@ if (mode === 'split') {
     splitPdfFile,
     compressPdfFile,
     imagesToPdf,
-    pdfToImages
+    pdfToImages,
+    extractSinglePagePdf
   } from '../lib/pdf/pdfEngine.js';
 
   document.querySelectorAll('.pdf-zone').forEach((zone) => {
@@ -514,6 +552,14 @@ if (mode === 'split') {
     }
 
     if (mode === 'pdf-to-images') {
+      const formatSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-format-select`));
+      const qualityField = document.getElementById(`${zone.id}-quality-field`);
+      formatSelect?.addEventListener('change', () => {
+        if (qualityField) {
+          qualityField.style.display = formatSelect.value === 'jpg' ? 'block' : 'none';
+        }
+      });
+
       const exportRadios = zone.querySelectorAll(`input[name="${zone.id}-export-pages"]`);
       const singlePageContainer = document.getElementById(`${zone.id}-single-page-container`);
       exportRadios.forEach((r) => {
@@ -538,7 +584,7 @@ if (mode === 'split') {
       announce('Validating selected files...');
 
       const allowedTypes = mode === 'images-to-pdf'
-        ? (imageFormat === 'png' ? ['png'] : ['jpg'])
+        ? (imageFormat === 'png' ? ['png'] : imageFormat === 'jpg' ? ['jpg'] : ['png', 'jpg'])
         : ['pdf'];
 
       const validFiles = [];
@@ -566,7 +612,7 @@ if (mode === 'split') {
       }
 
       // Single file modes
-      if (mode === 'split' || mode === 'compress' || mode === 'pdf-to-images') {
+      if (mode === 'split' || mode === 'compress' || mode === 'pdf-to-images' || mode === 'page-extractor') {
         const file = validFiles[0];
         queuedFiles = [file];
 
@@ -595,6 +641,19 @@ if (mode === 'split') {
             if (pageNumInput) {
               pageNumInput.max = String(info.pageCount);
               pageNumInput.value = '1';
+            }
+          }
+
+          // Update page extractor controls
+          if (mode === 'page-extractor') {
+            const pageNumInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-extractor-page-num`));
+            const maxHint = zone.querySelector('.pdf-zone__max-page-hint');
+            if (pageNumInput) {
+              pageNumInput.max = String(info.pageCount);
+              pageNumInput.value = '1';
+            }
+            if (maxHint) {
+              maxHint.textContent = `(Total: ${info.pageCount} page${info.pageCount === 1 ? '' : 's'})`;
             }
           }
 
@@ -774,6 +833,8 @@ if (mode === 'split') {
           );
         } else if (mode === 'pdf-to-images') {
           const file = queuedFiles[0];
+          const formatSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-format-select`));
+          const actualFormat = formatSelect?.value || outputFormat || 'png';
           const scaleSelect = /** @type {HTMLSelectElement} */ (document.getElementById(`${zone.id}-scale`));
           const scale = parseFloat(scaleSelect?.value || '1.5');
           const qualitySlider = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-quality`));
@@ -785,9 +846,9 @@ if (mode === 'split') {
           const singlePageNumInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-single-page-num`));
           const targetPage = singlePageNumInput ? parseInt(singlePageNumInput.value, 10) || 1 : 1;
 
-          if (processingTitle) processingTitle.textContent = `Rendering PDF pages to ${outputFormat.toUpperCase()}...`;
+          if (processingTitle) processingTitle.textContent = `Rendering PDF pages to ${actualFormat.toUpperCase()}...`;
           const results = await pdfToImages(file, {
-            format: outputFormat,
+            format: actualFormat,
             scale,
             quality,
             pageSelection,
@@ -801,8 +862,21 @@ if (mode === 'split') {
           if (results.length === 1) {
             showSingleDownload(results[0].url, results[0].filename, `Page ${results[0].pageNum} \u00B7 Size: ${results[0].formattedSize}`);
           } else {
-            showMultiDownload(results, `${file.name.replace(/\.[^/.]+$/, '')}-images.zip`, `${results.length} pages rendered to ${outputFormat.toUpperCase()}.`);
+            showMultiDownload(results, `${file.name.replace(/\.[^/.]+$/, '')}-images.zip`, `${results.length} pages rendered to ${actualFormat.toUpperCase()}.`);
           }
+        } else if (mode === 'page-extractor') {
+          const file = queuedFiles[0];
+          const pageInput = /** @type {HTMLInputElement} */ (document.getElementById(`${zone.id}-extractor-page-num`));
+          const pageNum = pageInput ? parseInt(pageInput.value, 10) || 1 : 1;
+
+          if (processingTitle) processingTitle.textContent = `Extracting page ${pageNum} in browser...`;
+          const res = await extractSinglePagePdf(file, pageNum);
+          trackedUrls.push(res.url);
+          showSingleDownload(
+            res.url,
+            res.filename,
+            `Extracted Page ${res.pageNum} of ${singleDocInfo?.pageCount || 1} \u00B7 Size: ${res.formattedSize}`
+          );
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Operation failed.';
@@ -899,6 +973,8 @@ if (mode === 'split') {
 </script>
 
 <style>
+  @import '../styles/pdf-tools.css';
+
   /* ── Zone Container & Tokens ────────────────────────────── */
   .pdf-zone {
     position: relative;

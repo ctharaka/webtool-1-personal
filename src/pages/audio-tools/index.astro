@@ -1,0 +1,306 @@
+---
+/**
+ * audio-tools/index.astro — Audio Tools Hub Page
+ * Index for client-side audio converters, trimmers, and compressors.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Browser-Side Audio Conversion & Editing Tools — FreeFileTools"
+  description="Explore our suite of 100% private browser-side audio tools. Convert WAV and MP3, trim audio clips, and compress sound files with zero server uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "FreeFileTools Audio Tools Hub",
+          "url": "https://freefiletool.app/audio-tools",
+          "description": "Collection of private, client-side audio conversion, editing, and compression tools.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          }
+        }
+      ]
+    }
+  </script>
+
+  <header class="hub-hero">
+    <div class="hub-badge">Audio Utilities</div>
+    <h1 class="hub-title">Online Audio Processing Tools</h1>
+    <p class="hub-desc">
+      All audio decoding, trimming, and MP3 encoding runs locally inside your browser memory using the Web Audio API. Your private voice memos, music, and recordings are never uploaded to any server.
+    </p>
+  </header>
+
+  <section class="tools-hub" aria-label="Available Audio Tools">
+    <!-- Category: Convert Formats -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">🔄</span> Audio Converters
+      </h2>
+      <p class="category-desc">Convert between uncompressed PCM WAV and lightweight MP3 with custom quality controls.</p>
+
+      <div class="category-grid">
+        <div class="tool-card tool-card--featured">
+          <div class="tool-badge">Featured</div>
+          <h3 class="tool-title"><a href="/audio-converter">Universal Audio Converter</a></h3>
+          <p class="tool-desc">
+            Universal client-side audio conversion between WAV, MP3, and browser-supported audio formats with custom bitrates from 128 kbps to 320 kbps.
+          </p>
+          <a href="/audio-converter" class="tool-link">Open Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/wav-to-mp3">WAV to MP3 Converter</a></h3>
+          <p class="tool-desc">
+            Compress heavy studio WAV recordings into universally compatible MP3 format. Cut file weight by up to 90% while preserving clarity.
+          </p>
+          <a href="/wav-to-mp3" class="tool-link">Convert to MP3 &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/mp3-to-wav">MP3 to WAV Converter</a></h3>
+          <p class="tool-desc">
+            Decompress MP3 audio files to 16-bit linear PCM WAV for professional DAWs, sound synthesis, and video editing suites.
+          </p>
+          <a href="/mp3-to-wav" class="tool-link">Convert to WAV &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Edit & Trim -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">✂️</span> Audio Editing
+      </h2>
+      <p class="category-desc">Cut sound files to millisecond-precise durations for custom ringtones and clips.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/audio-trimmer">Audio Trimmer &amp; Cutter</a></h3>
+          <p class="tool-desc">
+            Set custom start and end points, preview the cut audio in real-time, and export trimmed snippets as MP3 or WAV files.
+          </p>
+          <a href="/audio-trimmer" class="tool-link">Trim Audio &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Optimize & Compress -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">⚡</span> Audio Optimization
+      </h2>
+      <p class="category-desc">Re-encode audio at lower bitrates to fit email and messaging attachment limits.</p>
+
+      <div class="category-grid">
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/compress-audio">Audio Compressor</a></h3>
+          <p class="tool-desc">
+            Shrink voice notes, lectures, and music tracks by re-encoding to 64 kbps, 96 kbps, or 128 kbps. Save up to 80% disk space.
+          </p>
+          <a href="/compress-audio" class="tool-link">Compress Audio &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>100% Client-Side Privacy</h3>
+        <p>
+          Unlike online audio converters that transmit sensitive recordings to remote servers, FreeFileTools decodes and encodes audio directly on your device's CPU and RAM.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Cross-Browser Codec Support</h3>
+        <p>
+          WAV and MP3 decoding is universally supported across Chrome, Safari, Firefox, and Edge. Apple iOS/WebKit does not reliably support OGG decoding, so we prioritize reliable WAV and MP3 pipelines.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Comprehensive Format Guide</h3>
+        <p>
+          Understand sample rates, lossy vs. lossless compression, and bitrate selection in our technical guide:
+          <a href="/guides/wav-vs-mp3-which-audio-format-to-use" class="guide-link">WAV vs MP3: Which Format to Use? &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .hub-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hub-badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .hub-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .hub-desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tools-hub {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+    }
+
+    .category-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .category-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin: 0;
+    }
+    .category-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin: 0 0 var(--space-4);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      position: relative;
+      transition: all var(--transition-base);
+    }
+    .tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .tool-card--featured {
+      border-color: rgba(34, 197, 94, 0.4);
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.05) 0%, var(--surface-card) 100%);
+    }
+
+    .tool-badge {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius-full);
+      padding: 2px 8px;
+    }
+
+    .tool-title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .tool-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+      flex: 1;
+    }
+    .tool-link {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      text-decoration: none;
+      margin-top: var(--space-2);
+      display: inline-flex;
+      align-items: center;
+    }
+    .tool-link:hover {
+      text-decoration: underline;
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .guide-link {
+      color: var(--color-brand-400);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: var(--space-1);
+    }
+    .guide-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,620 @@
+---
+/**
+ * qr-code-generator.astro — Client-Side QR Code Generator
+ * Generates high-resolution QR codes as PNG and SVG in your browser.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Free QR Code Generator — Create Custom PNG & SVG QR Codes"
+  description="Generate high-resolution QR codes instantly in your browser. Customize colors, error correction, and size. Download as PNG or SVG with 100% privacy and zero server uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools QR Code Generator",
+          "url": "https://freefiletool.app/qr-code-generator",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript and HTML5 Canvas",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Generate QR codes from text, URLs, phone numbers, or Wi-Fi credentials",
+            "Export as crisp vector SVG or high-resolution PNG up to 1024px",
+            "Customizable colors and error correction levels (L, M, Q, H)",
+            "100% client-side rendering with zero server uploads"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my QR code contents sent to any external server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The QR code generator runs entirely within your browser using client-side JavaScript. Your text, URLs, and confidential credentials never leave your device."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which error correction level should I choose?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Level M (15% recovery) is ideal for standard links and marketing prints. Level H (30% recovery) is recommended if you plan to place logos in the center or if the printed code may suffer physical wear or dirt."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I download vector SVG QR codes for printing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. You can export clean vector SVG files that scale infinitely without pixelation, making them perfect for posters, packaging, business cards, and billboards."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Data &amp; Text Tools</div>
+    <h1 class="tool-hero__title">Free Client-Side QR Code Generator</h1>
+    <p class="tool-hero__desc">
+      Create clean, custom QR codes for websites, text, contact cards, and Wi-Fi networks. Download vector SVG or high-res PNG directly in your browser with zero data tracking.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <div class="workspace-grid">
+      <!-- Input Panel -->
+      <div class="panel">
+        <h2 class="panel-title">1. Content &amp; Settings</h2>
+        <div class="form-group">
+          <label for="qr-text" class="form-label">Text or Web URL</label>
+          <textarea
+            id="qr-text"
+            class="form-textarea"
+            rows="4"
+            placeholder="Enter website URL (e.g. https://example.com) or text..."
+          >https://freefiletool.app</textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="qr-ecc" class="form-label">Error Correction</label>
+            <select id="qr-ecc" class="form-select">
+              <option value="L">L — 7% Recovery</option>
+              <option value="M" selected>M — 15% Recovery (Standard)</option>
+              <option value="Q">Q — 25% Recovery</option>
+              <option value="H">H — 30% Recovery (High)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="qr-size" class="form-label">PNG Resolution</label>
+            <select id="qr-size" class="form-select">
+              <option value="256">256 x 256 px</option>
+              <option value="512" selected>512 x 512 px</option>
+              <option value="1024">1024 x 1024 px</option>
+              <option value="2048">2048 x 2048 px (Print)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="qr-fg" class="form-label">Foreground Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="qr-fg" value="#000000" class="color-picker" />
+              <input type="text" id="qr-fg-hex" value="#000000" class="form-input form-input--code" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="qr-bg" class="form-label">Background Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="qr-bg" value="#ffffff" class="color-picker" />
+              <input type="text" id="qr-bg-hex" value="#ffffff" class="form-input form-input--code" />
+            </div>
+          </div>
+        </div>
+
+        <div class="privacy-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>Runs entirely in your browser — nothing is uploaded</span>
+        </div>
+      </div>
+
+      <!-- Preview & Download Panel -->
+      <div class="panel panel--preview">
+        <h2 class="panel-title">2. Preview &amp; Export</h2>
+        <div class="qr-canvas-container" id="qr-container">
+          <canvas id="qr-canvas" aria-label="Generated QR Code Preview"></canvas>
+        </div>
+
+        <div class="download-actions">
+          <button type="button" id="download-png-btn" class="btn btn--primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+            </svg>
+            Download PNG
+          </button>
+          <button type="button" id="download-svg-btn" class="btn btn--secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+            </svg>
+            Download SVG
+          </button>
+          <button type="button" id="copy-btn" class="btn btn--ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            <span id="copy-text">Copy Image</span>
+          </button>
+        </div>
+        <p id="status-msg" class="status-message" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Educational & Feature Content -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>100% Private &amp; Offline-Ready</h3>
+        <p>
+          Unlike online generators that log your links or redirect through tracking URLs, FreeFileTools renders QR codes directly on your local device. Once loaded, it operates completely without internet access.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Vector SVG for High-End Print</h3>
+        <p>
+          Need to print QR codes on billboards, merchandise, or product packaging? Export crisp vector SVGs that remain tack-sharp at any printing scale without pixel distortion.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Robust Error Correction</h3>
+        <p>
+          Choose from four levels of Reed-Solomon error correction. Level H enables codes to be scanned reliably even if up to 30% of the graphic is obscured or smudged.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">More Data &amp; Text Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/text-tools" class="related-tool-card">
+        <span class="related-tool-name">Text Tools Hub</span>
+        <span class="related-tool-desc">Explore all free browser text and data tools</span>
+      </a>
+      <a href="/json-formatter" class="related-tool-card">
+        <span class="related-tool-name">JSON Formatter</span>
+        <span class="related-tool-desc">Validate, pretty-print, and minify JSON data</span>
+      </a>
+      <a href="/hash-generator" class="related-tool-card">
+        <span class="related-tool-name">Hash Generator</span>
+        <span class="related-tool-desc">Generate MD5, SHA-1, SHA-256, and SHA-512 hashes</span>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    let QRCodeLib = null;
+
+    async function loadQRCode() {
+      if (!QRCodeLib) {
+        const mod = await import('qrcode');
+        QRCodeLib = mod.default || mod;
+      }
+      return QRCodeLib;
+    }
+
+    const textInput = document.getElementById('qr-text');
+    const eccSelect = document.getElementById('qr-ecc');
+    const sizeSelect = document.getElementById('qr-size');
+    const fgColor = document.getElementById('qr-fg');
+    const fgHex = document.getElementById('qr-fg-hex');
+    const bgColor = document.getElementById('qr-bg');
+    const bgHex = document.getElementById('qr-bg-hex');
+    const canvas = document.getElementById('qr-canvas');
+    const downloadPngBtn = document.getElementById('download-png-btn');
+    const downloadSvgBtn = document.getElementById('download-svg-btn');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyText = document.getElementById('copy-text');
+    const statusMsg = document.getElementById('status-msg');
+
+    // Sync color inputs
+    fgColor.addEventListener('input', () => { fgHex.value = fgColor.value; renderQR(); });
+    fgHex.addEventListener('input', () => { fgColor.value = fgHex.value; renderQR(); });
+    bgColor.addEventListener('input', () => { bgHex.value = bgColor.value; renderQR(); });
+    bgHex.addEventListener('input', () => { bgColor.value = bgHex.value; renderQR(); });
+
+    textInput.addEventListener('input', renderQR);
+    eccSelect.addEventListener('change', renderQR);
+    sizeSelect.addEventListener('change', renderQR);
+
+    async function renderQR() {
+      const text = textInput.value.trim();
+      if (!text) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        statusMsg.textContent = 'Enter text or URL to generate QR code.';
+        return;
+      }
+
+      statusMsg.textContent = 'Rendering QR code...';
+      try {
+        const lib = await loadQRCode();
+        const size = parseInt(sizeSelect.value, 10) || 512;
+        canvas.width = size;
+        canvas.height = size;
+
+        await lib.toCanvas(canvas, text, {
+          errorCorrectionLevel: eccSelect.value,
+          width: size,
+          margin: 2,
+          color: {
+            dark: fgColor.value,
+            light: bgColor.value
+          }
+        });
+        statusMsg.textContent = `Generated successfully (${size}x${size}px).`;
+      } catch (err) {
+        statusMsg.textContent = 'Error: ' + (err.message || 'Failed to generate QR code.');
+      }
+    }
+
+    downloadPngBtn.addEventListener('click', () => {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'qrcode.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      }, 'image/png');
+    });
+
+    downloadSvgBtn.addEventListener('click', async () => {
+      const text = textInput.value.trim();
+      if (!text) return;
+      try {
+        const lib = await loadQRCode();
+        const svgString = await lib.toString(text, {
+          type: 'svg',
+          errorCorrectionLevel: eccSelect.value,
+          margin: 2,
+          color: {
+            dark: fgColor.value,
+            light: bgColor.value
+          }
+        });
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'qrcode.svg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch (err) {
+        alert('Failed to generate SVG: ' + err.message);
+      }
+    });
+
+    copyBtn.addEventListener('click', () => {
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          copyText.textContent = 'Copied!';
+          setTimeout(() => { copyText.textContent = 'Copy Image'; }, 2000);
+        } catch (_) {
+          copyText.textContent = 'Copy not supported';
+          setTimeout(() => { copyText.textContent = 'Copy Image'; }, 2000);
+        }
+      });
+    });
+
+    // Initial render
+    renderQR();
+  </script>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 768px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .panel--preview {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .panel-title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      width: 100%;
+      margin: 0 0 var(--space-2);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      width: 100%;
+    }
+    .form-label {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .form-textarea, .form-input, .form-select {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color var(--transition-base);
+    }
+    .form-textarea:focus, .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--color-brand-500);
+    }
+    .form-input--code {
+      font-family: monospace;
+    }
+
+    .color-input-wrapper {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+    .color-picker {
+      width: 40px;
+      height: 38px;
+      padding: 0;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.06);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+      margin-top: auto;
+    }
+
+    .qr-canvas-container {
+      background: #ffffff;
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 280px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      margin: var(--space-2) 0;
+    }
+    #qr-canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .download-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      justify-content: center;
+      width: 100%;
+      margin-top: var(--space-2);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-base);
+    }
+    .btn--primary {
+      background: var(--color-brand-500);
+      color: #000000;
+      font-weight: 600;
+    }
+    .btn--primary:hover {
+      background: var(--color-brand-400);
+    }
+    .btn--secondary {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--secondary:hover {
+      background: var(--surface-card);
+      border-color: var(--border-default);
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+    .btn--ghost:hover {
+      color: var(--text-primary);
+      background: var(--surface-elevated);
+    }
+    .status-message {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      min-height: 18px;
+      margin: 0;
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>

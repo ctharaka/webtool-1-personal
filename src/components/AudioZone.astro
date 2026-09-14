@@ -1,0 +1,723 @@
+---
+/**
+ * AudioZone.astro — Client-Side Audio Dropzone & Processing Interface
+ * Supports decoding via Web Audio API and encoding via pure-JS WAV and lamejs MP3.
+ */
+export interface Props {
+  id?: string;
+  defaultTargetFormat?: 'mp3' | 'wav';
+  allowedInputs?: string; // e.g. "audio/*, .mp3, .wav, .ogg, .m4a"
+  mode?: 'convert' | 'compress' | 'trim';
+  presetBitrate?: number; // e.g. 128, 192
+}
+
+const {
+  id = 'audio-zone',
+  defaultTargetFormat = 'mp3',
+  allowedInputs = 'audio/*, .mp3, .wav, .ogg, .m4a, .aac',
+  mode = 'convert',
+  presetBitrate = 192,
+} = Astro.props;
+---
+
+<div class="audio-zone" id={id} data-mode={mode} data-default-format={defaultTargetFormat} data-preset-bitrate={presetBitrate}>
+  <!-- State 1: Drop Area (Idle) -->
+  <div class="drop-card" id={`${id}-drop`}>
+    <input type="file" id={`${id}-file-input`} accept={allowedInputs} class="file-input-hidden" />
+    <div class="drop-content">
+      <div class="drop-icon-wrapper">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+      </div>
+      <h3 class="drop-title">Select or Drop Audio File</h3>
+      <p class="drop-desc">Supports MP3, WAV, M4A, and AAC (up to 100MB). Processed 100% locally in your browser.</p>
+      <button type="button" class="btn-select" id={`${id}-select-btn`}>Choose Audio File</button>
+    </div>
+  </div>
+
+  <!-- State 2: Configuration & Preview Area (Active File) -->
+  <div class="config-card" id={`${id}-config`} style="display: none;">
+    <div class="file-summary">
+      <div class="file-meta">
+        <span class="file-name" id={`${id}-filename`}>audio-file.mp3</span>
+        <span class="file-details" id={`${id}-filedetails`}>0 MB • 0:00</span>
+      </div>
+      <button type="button" class="btn-change" id={`${id}-change-btn`}>Change File</button>
+    </div>
+
+    <!-- Audio Player Preview -->
+    <div class="audio-player-wrapper">
+      <audio id={`${id}-audio-player`} controls class="native-audio-player"></audio>
+    </div>
+
+    <!-- Trimmer Controls (if mode === 'trim') -->
+    {mode === 'trim' && (
+      <div class="trim-controls" id={`${id}-trim-controls`}>
+        <div class="trim-row">
+          <div class="trim-input-group">
+            <label for={`${id}-trim-start`} class="trim-label">Start Time (sec):</label>
+            <input type="number" id={`${id}-trim-start`} value="0" min="0" step="0.1" class="trim-input" />
+          </div>
+          <div class="trim-input-group">
+            <label for={`${id}-trim-end`} class="trim-label">End Time (sec):</label>
+            <input type="number" id={`${id}-trim-end`} value="10" min="0" step="0.1" class="trim-input" />
+          </div>
+          <div class="trim-input-group">
+            <label class="trim-label">Trimmed Duration:</label>
+            <span id={`${id}-trimmed-duration`} class="trimmed-duration-badge">0:00</span>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- Options Bar -->
+    <div class="options-bar">
+      <div class="option-group">
+        <label for={`${id}-format-select`} class="option-label">Target Format:</label>
+        <select id={`${id}-format-select`} class="option-select">
+          <option value="mp3" selected={defaultTargetFormat === 'mp3'}>MP3 (MPEG Audio)</option>
+          <option value="wav" selected={defaultTargetFormat === 'wav'}>WAV (Uncompressed PCM)</option>
+        </select>
+      </div>
+
+      <div class="option-group" id={`${id}-bitrate-group`}>
+        <label for={`${id}-bitrate-select`} class="option-label">MP3 Bitrate:</label>
+        <select id={`${id}-bitrate-select`} class="option-select">
+          {mode === 'compress' ? (
+            <>
+              <option value="64">64 kbps (High Compression)</option>
+              <option value="96">96 kbps (Medium Compression)</option>
+              <option value="128" selected={presetBitrate === 128}>128 kbps (Standard Quality)</option>
+              <option value="192" selected={presetBitrate === 192}>192 kbps (Good Quality)</option>
+            </>
+          ) : (
+            <>
+              <option value="128">128 kbps (Standard)</option>
+              <option value="192" selected={presetBitrate === 192}>192 kbps (High Quality)</option>
+              <option value="256">256 kbps (Very High)</option>
+              <option value="320" selected={presetBitrate === 320}>320 kbps (Maximum Quality)</option>
+            </>
+          )}
+        </select>
+      </div>
+    </div>
+
+    <!-- Process Action -->
+    <div class="process-action">
+      <button type="button" class="btn-process" id={`${id}-process-btn`}>
+        {mode === 'compress' ? 'Compress Audio Now' : mode === 'trim' ? 'Trim & Export Audio' : 'Convert Audio Now'}
+      </button>
+    </div>
+  </div>
+
+  <!-- State 3: Processing & Progress -->
+  <div class="progress-card" id={`${id}-progress`} style="display: none;">
+    <div class="progress-spinner"></div>
+    <span class="progress-status" id={`${id}-progress-status`}>Processing audio...</span>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id={`${id}-progress-fill`} style="width: 0%;"></div>
+    </div>
+    <span class="progress-percent" id={`${id}-progress-pct`}>0%</span>
+  </div>
+
+  <!-- State 4: Finished Download Area -->
+  <div class="download-card" id={`${id}-download`} style="display: none;">
+    <div class="success-icon-wrapper">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </div>
+    <h3 class="download-title">Audio Processing Complete!</h3>
+    <p class="download-desc" id={`${id}-result-info`}>Result: 0 MB • Ready for download</p>
+
+    <div class="download-actions">
+      <button type="button" class="btn-download" id={`${id}-download-btn`}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+        </svg>
+        Download Processed Audio
+      </button>
+      <button type="button" class="btn-reset" id={`${id}-reset-btn`}>Process Another File</button>
+    </div>
+  </div>
+
+  <!-- Error Message Alert -->
+  <div class="error-alert" id={`${id}-error`} style="display: none;" role="alert">
+    <span class="error-icon">⚠️</span>
+    <span class="error-text" id={`${id}-error-msg`}>An error occurred.</span>
+  </div>
+
+  <!-- Privacy Banner -->
+  <div class="privacy-badge">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+    <span>Runs entirely in your browser — nothing is uploaded</span>
+  </div>
+</div>
+
+<script>
+  import { decodeAudioFile, encodeToWav, encodeToMp3, trimAudioBuffer, formatDuration, triggerAudioDownload } from '../lib/audio/audioEngine.js';
+
+  document.querySelectorAll('.audio-zone').forEach((zone) => {
+    const id = zone.id;
+    const mode = zone.getAttribute('data-mode') || 'convert';
+    const dropCard = document.getElementById(`${id}-drop`);
+    const configCard = document.getElementById(`${id}-config`);
+    const progressCard = document.getElementById(`${id}-progress`);
+    const downloadCard = document.getElementById(`${id}-download`);
+    const errorAlert = document.getElementById(`${id}-error`);
+    const errorMsg = document.getElementById(`${id}-error-msg`);
+
+    const fileInput = document.getElementById(`${id}-file-input`);
+    const selectBtn = document.getElementById(`${id}-select-btn`);
+    const changeBtn = document.getElementById(`${id}-change-btn`);
+    const processBtn = document.getElementById(`${id}-process-btn`);
+    const downloadBtn = document.getElementById(`${id}-download-btn`);
+    const resetBtn = document.getElementById(`${id}-reset-btn`);
+
+    const filenameEl = document.getElementById(`${id}-filename`);
+    const filedetailsEl = document.getElementById(`${id}-filedetails`);
+    const audioPlayer = document.getElementById(`${id}-audio-player`);
+    const formatSelect = document.getElementById(`${id}-format-select`);
+    const bitrateSelect = document.getElementById(`${id}-bitrate-select`);
+    const bitrateGroup = document.getElementById(`${id}-bitrate-group`);
+
+    const progressStatus = document.getElementById(`${id}-progress-status`);
+    const progressFill = document.getElementById(`${id}-progress-fill`);
+    const progressPct = document.getElementById(`${id}-progress-pct`);
+    const resultInfo = document.getElementById(`${id}-result-info`);
+
+    // Trim elements
+    const trimStartInput = document.getElementById(`${id}-trim-start`);
+    const trimEndInput = document.getElementById(`${id}-trim-end`);
+    const trimmedDurationBadge = document.getElementById(`${id}-trimmed-duration`);
+
+    let currentFile = null;
+    let decodedBuffer = null;
+    let resultBlob = null;
+    let outputFilename = '';
+
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorAlert.style.display = 'flex';
+    }
+
+    function hideError() {
+      errorAlert.style.display = 'none';
+    }
+
+    function showState(state) {
+      dropCard.style.display = state === 'drop' ? 'block' : 'none';
+      configCard.style.display = state === 'config' ? 'flex' : 'none';
+      progressCard.style.display = state === 'progress' ? 'flex' : 'none';
+      downloadCard.style.display = state === 'download' ? 'flex' : 'none';
+    }
+
+    // Toggle bitrate visibility based on format
+    if (formatSelect) {
+      formatSelect.addEventListener('change', () => {
+        if (bitrateGroup) {
+          bitrateGroup.style.display = formatSelect.value === 'mp3' ? 'flex' : 'none';
+        }
+      });
+    }
+
+    // Drag & Drop
+    dropCard.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropCard.classList.add('drop-card--active');
+    });
+    dropCard.addEventListener('dragleave', () => {
+      dropCard.classList.remove('drop-card--active');
+    });
+    dropCard.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropCard.classList.remove('drop-card--active');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        loadFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    selectBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files[0]) {
+        loadFile(fileInput.files[0]);
+      }
+    });
+
+    changeBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      showState('drop');
+    });
+
+    resetBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      currentFile = null;
+      decodedBuffer = null;
+      resultBlob = null;
+      showState('drop');
+    });
+
+    async function loadFile(file) {
+      hideError();
+      currentFile = file;
+      filenameEl.textContent = file.name;
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      filedetailsEl.textContent = `${sizeMB} MB • Reading...`;
+
+      // Set audio player source
+      const objUrl = URL.createObjectURL(file);
+      audioPlayer.src = objUrl;
+
+      showState('progress');
+      progressStatus.textContent = 'Decoding audio file in browser...';
+      progressFill.style.width = '20%';
+      progressPct.textContent = '20%';
+
+      try {
+        decodedBuffer = await decodeAudioFile(file, (msg, pct) => {
+          progressStatus.textContent = msg;
+          progressFill.style.width = `${pct}%`;
+          progressPct.textContent = `${pct}%`;
+        });
+
+        const dur = formatDuration(decodedBuffer.duration);
+        filedetailsEl.textContent = `${sizeMB} MB • ${dur} (${decodedBuffer.numberOfChannels} ch, ${decodedBuffer.sampleRate} Hz)`;
+
+        if (mode === 'trim' && trimStartInput && trimEndInput) {
+          trimStartInput.value = '0';
+          trimEndInput.value = decodedBuffer.duration.toFixed(2);
+          updateTrimDuration();
+        }
+
+        showState('config');
+      } catch (err) {
+        showError(err.message || 'Failed to decode audio. The format may not be supported by this browser.');
+        showState('drop');
+      }
+    }
+
+    function updateTrimDuration() {
+      if (!trimStartInput || !trimEndInput || !trimmedDurationBadge) return;
+      const start = parseFloat(trimStartInput.value) || 0;
+      const end = parseFloat(trimEndInput.value) || 0;
+      const dur = Math.max(0, end - start);
+      trimmedDurationBadge.textContent = formatDuration(dur);
+    }
+
+    if (trimStartInput && trimEndInput) {
+      trimStartInput.addEventListener('input', updateTrimDuration);
+      trimEndInput.addEventListener('input', updateTrimDuration);
+    }
+
+    // Process button click
+    processBtn.addEventListener('click', async () => {
+      if (!decodedBuffer) return;
+      hideError();
+      showState('progress');
+
+      const targetFormat = formatSelect.value;
+      const bitrate = parseInt(bitrateSelect.value, 10) || 192;
+      const baseName = currentFile.name.replace(/\.[^/.]+$/, '');
+
+      try {
+        let bufferToEncode = decodedBuffer;
+
+        if (mode === 'trim') {
+          const start = parseFloat(trimStartInput.value) || 0;
+          const end = parseFloat(trimEndInput.value) || decodedBuffer.duration;
+          progressStatus.textContent = 'Trimming audio buffer...';
+          bufferToEncode = trimAudioBuffer(decodedBuffer, start, end);
+        }
+
+        if (targetFormat === 'wav') {
+          outputFilename = `${baseName}${mode === 'trim' ? '-trimmed' : ''}.wav`;
+          resultBlob = await encodeToWav(bufferToEncode, (msg, pct) => {
+            progressStatus.textContent = msg;
+            progressFill.style.width = `${pct}%`;
+            progressPct.textContent = `${pct}%`;
+          });
+        } else {
+          outputFilename = `${baseName}${mode === 'trim' ? '-trimmed' : mode === 'compress' ? '-compressed' : ''}.mp3`;
+          resultBlob = await encodeToMp3(bufferToEncode, bitrate, (msg, pct) => {
+            progressStatus.textContent = msg;
+            progressFill.style.width = `${pct}%`;
+            progressPct.textContent = `${pct}%`;
+          });
+        }
+
+        const outSizeMB = (resultBlob.size / (1024 * 1024)).toFixed(2);
+        resultInfo.textContent = `Output: ${outputFilename} (${outSizeMB} MB) • Format: ${targetFormat.toUpperCase()}`;
+        showState('download');
+      } catch (err) {
+        showError(err.message || 'Processing failed. Please try again.');
+        showState('config');
+      }
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (!resultBlob) return;
+      triggerAudioDownload(resultBlob, outputFilename);
+    });
+  });
+</script>
+
+<style>
+  .audio-zone {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .drop-card {
+    background: var(--surface-card);
+    border: 2px dashed var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-10) var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+    cursor: pointer;
+  }
+  .drop-card:hover, .drop-card--active {
+    border-color: var(--color-brand-400);
+    background: rgba(34, 197, 94, 0.03);
+  }
+  .file-input-hidden {
+    display: none;
+  }
+  .drop-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .drop-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--color-brand-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drop-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .drop-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 500px;
+    line-height: 1.5;
+  }
+  .btn-select {
+    background: var(--color-brand-500);
+    color: #000000;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    margin-top: var(--space-2);
+    transition: all var(--transition-base);
+  }
+  .btn-select:hover {
+    background: var(--color-brand-400);
+    transform: translateY(-1px);
+  }
+
+  .config-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  .file-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: var(--space-4);
+  }
+  .file-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .file-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    word-break: break-all;
+  }
+  .file-details {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+  .btn-change {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    font-size: var(--font-size-xs);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+  .btn-change:hover {
+    color: var(--text-primary);
+    border-color: var(--border-default);
+  }
+
+  .audio-player-wrapper {
+    width: 100%;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    padding: var(--space-2);
+  }
+  .native-audio-player {
+    width: 100%;
+    height: 40px;
+    outline: none;
+  }
+
+  .trim-controls {
+    background: var(--surface-elevated);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+  }
+  .trim-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: flex-end;
+  }
+  .trim-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    flex: 1;
+    min-width: 120px;
+  }
+  .trim-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .trim-input {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    outline: none;
+  }
+  .trim-input:focus {
+    border-color: var(--color-brand-500);
+  }
+  .trimmed-duration-badge {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-brand-400);
+    padding: var(--space-2) 0;
+  }
+
+  .options-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+  .option-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    flex: 1;
+    min-width: 180px;
+  }
+  .option-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .option-select {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    outline: none;
+  }
+  .option-select:focus {
+    border-color: var(--color-brand-500);
+  }
+
+  .process-action {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn-process {
+    background: var(--color-brand-500);
+    color: #000000;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+  .btn-process:hover {
+    background: var(--color-brand-400);
+  }
+
+  .progress-card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-10) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+  }
+  .progress-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(34, 197, 94, 0.2);
+    border-top-color: var(--color-brand-400);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .progress-status {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .progress-bar-container {
+    width: 100%;
+    max-width: 400px;
+    height: 8px;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-brand-500);
+    transition: width 0.2s ease;
+  }
+  .progress-percent {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+
+  .download-card {
+    background: var(--surface-card);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+  }
+  .success-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--color-brand-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .download-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .download-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .download-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .btn-download {
+    background: var(--color-brand-500);
+    color: #000000;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .btn-download:hover {
+    background: var(--color-brand-400);
+  }
+  .btn-reset {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+  .btn-reset:hover {
+    background: var(--surface-card);
+  }
+
+  .error-alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .privacy-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-brand-400);
+    background: rgba(34, 197, 94, 0.06);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+  }
+</style>

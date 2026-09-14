@@ -1,0 +1,273 @@
+---
+/**
+ * audio-converter.astro — Universal Client-Side Audio Converter
+ * Converts audio files between WAV and MP3 with selectable bitrates directly in the browser.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudioZone from '../components/AudioZone.astro';
+---
+
+<BaseLayout
+  title="Free Audio Converter — Convert WAV, MP3 & Audio Online"
+  description="Convert audio files between WAV, MP3, and browser-supported formats directly in your browser. Choose custom MP3 bitrates (128k to 320k) with 100% privacy and zero server uploads."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Audio Converter",
+          "url": "https://freefiletool.app/audio-converter",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires Web Audio API and JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Convert WAV to MP3 with selectable bitrates (128kbps, 192kbps, 256kbps, 320kbps)",
+            "Convert MP3 to uncompressed 16-bit PCM WAV",
+            "In-browser audio playback preview",
+            "Real-time decoding and encoding progress tracking",
+            "100% client-side execution with zero cloud uploads"
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Convert Audio Files in Your Browser",
+          "description": "Step-by-step instructions to convert audio formats client-side using FreeFileTools.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select Audio File",
+              "text": "Drag and drop your audio file (MP3, WAV, M4A) or click 'Choose Audio File' to select it from your device."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Output Format & Bitrate",
+              "text": "Choose MP3 or WAV as your target format and select your desired audio quality bitrate."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert Audio Now'. The browser will decode and re-encode the sound in local memory and provide an instant download link."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my audio recordings uploaded to an online server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The entire audio decoding and MP3 encoding pipeline runs directly in your browser using the HTML5 Web Audio API and pure JavaScript. Your private audio never leaves your device."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is OGG format not universally converted on all devices?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OGG Vorbis audio decoding is supported natively by Chrome, Firefox, and Edge, but Apple Safari and iOS WebKit do not support OGG decoding in the Web Audio API. To ensure dependable results across all operating systems, we recommend WAV and MP3."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What bitrate should I choose for MP3?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "192 kbps offers the best balance of transparent CD-like audio quality and compact file size. 320 kbps provides maximum audio fidelity, while 128 kbps is suitable for spoken word podcasts and voice notes."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Universal Audio Converter</div>
+    <h1 class="tool-hero__title">Online Audio Format Converter</h1>
+    <p class="tool-hero__desc">
+      Convert sound files between WAV, MP3, and browser-supported formats directly in your browser. Fast local encoding, customizable bitrates, and 100% privacy with zero server uploads.
+    </p>
+  </section>
+
+  <div class="tool-workspace">
+    <AudioZone id="audio-main" defaultTargetFormat="mp3" mode="convert" presetBitrate={192} />
+  </div>
+
+  <!-- Educational Section -->
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>100% Browser-Side Processing</h3>
+        <p>
+          Unlike conventional audio conversion websites that upload your voice recordings, songs, or interviews to remote servers, FreeFileTools executes the entire conversion locally using Web Audio API and LAME MP3 encoding.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>Format &amp; Device Compatibility</h3>
+        <p>
+          WAV and MP3 are decoded natively across all modern desktop and mobile browsers. M4A/AAC files are supported on WebKit and Chromium browsers. OGG decoding depends on operating system codec availability.
+        </p>
+      </div>
+      <div class="info-card">
+        <h3>WAV vs. MP3 Guide</h3>
+        <p>
+          Unsure whether you need lossless PCM or compressed MP3? Read our full technical comparison:
+          <a href="/guides/wav-vs-mp3-which-audio-format-to-use" class="text-link">WAV vs MP3: Which Audio Format to Use? &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="related-tools-section">
+    <h2 class="related-tools-title">More Audio Utilities</h2>
+    <div class="related-tools-grid">
+      <a href="/audio-tools" class="related-tool-card">
+        <span class="related-tool-name">Audio Tools Hub</span>
+        <span class="related-tool-desc">Explore all client-side audio utilities</span>
+      </a>
+      <a href="/wav-to-mp3" class="related-tool-card">
+        <span class="related-tool-name">WAV to MP3 Converter</span>
+        <span class="related-tool-desc">Direct high-speed WAV to MP3 conversion</span>
+      </a>
+      <a href="/mp3-to-wav" class="related-tool-card">
+        <span class="related-tool-name">MP3 to WAV Converter</span>
+        <span class="related-tool-desc">Decompress MP3 to 16-bit PCM WAV</span>
+      </a>
+      <a href="/audio-trimmer" class="related-tool-card">
+        <span class="related-tool-name">Audio Trimmer</span>
+        <span class="related-tool-desc">Cut and trim audio clips with instant preview</span>
+      </a>
+      <a href="/compress-audio" class="related-tool-card">
+        <span class="related-tool-name">Audio Compressor</span>
+        <span class="related-tool-desc">Reduce audio file size with bitrate optimization</span>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .tool-hero {
+      text-align: center;
+      padding: var(--space-8) var(--space-4) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tool-hero__badge {
+      display: inline-block;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-brand-400);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+    }
+    .tool-hero__desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-workspace {
+      max-width: 760px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+
+    .info-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    .info-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .info-card h3 {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2);
+    }
+    .info-card p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .text-link {
+      color: var(--color-brand-400);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: var(--space-1);
+    }
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    .related-tools-section {
+      max-width: 1040px;
+      margin: 0 auto var(--space-12);
+      padding: 0 var(--space-4);
+    }
+    .related-tools-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .related-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+    .related-tool-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: all var(--transition-base);
+    }
+    .related-tool-card:hover {
+      border-color: var(--color-brand-500);
+      transform: translateY(-2px);
+    }
+    .related-tool-name {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .related-tool-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+    }
+  </style>
+</BaseLayout>
