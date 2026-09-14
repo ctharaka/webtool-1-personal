@@ -1,12 +1,12 @@
 ---
-title: "Convert Image to AVIF - FreeFileTool"
-description: "Convert images to the modern AVIF format directly in the browser – privacy‑first, no uploads."
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UploadZone from '../../components/UploadZone.astro';
 ---
 
-import Layout from '../../layouts/BaseLayout.astro';
-import UploadZone from '../../components/UploadZone.astro';
-
-<BaseLayout>
+<BaseLayout
+  title="Convert Image to AVIF - FreeFileTool"
+  description="Convert images to the modern AVIF format directly in the browser – privacy‑first, no uploads."
+>
   <section class="tool-hero py-12 text-center">
     <h1 class="text-4xl font-bold mb-4">Convert to AVIF</h1>
     <p class="text-lg mb-6">Convert your images to AVIF format for superior compression, all client‑side.</p>
@@ -19,7 +19,7 @@ import UploadZone from '../../components/UploadZone.astro';
       data-allowed-types="image/*"
       data-max-file-bytes="52428800"
       data-max-batch-bytes="209715200"
-      client:class="flex flex-col items-center"
+      class="flex flex-col items-center"
     />
   </section>
 

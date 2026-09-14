@@ -1,12 +1,12 @@
 ---
-title: "Resize Images Online - FreeFileTool"
-description: "Resize images in your browser while preserving privacy. No uploads, batch processing, aspect-ratio lock."
----
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import UploadZone from '../../components/UploadZone.astro';
+---
 
-<BaseLayout>
+<BaseLayout
+  title="Resize Images Online - FreeFileTool"
+  description="Resize images in your browser while preserving privacy. No uploads, batch processing, aspect-ratio lock."
+>
   <section class="tool-hero py-12 text-center">
     <h1 class="text-4xl font-bold mb-4">Resize Images</h1>
     <p class="text-lg mb-6">Resize your images instantly in the browser – no files leave your device.</p>
@@ -18,7 +18,7 @@ import UploadZone from '../../components/UploadZone.astro';
       data-allowed-types="image/*"
       data-max-file-bytes="52428800"
       data-max-batch-bytes="209715200"
-      client:class="flex flex-col items-center"
+      class="flex flex-col items-center"
     >
       <div class="w-full max-w-md mb-4">
         <label class="block text-sm font-medium mb-1" for="width-input">Width (px)</label>

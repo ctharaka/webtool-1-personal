@@ -1,12 +1,12 @@
 ---
-title: "Strip Image Metadata - FreeFileTool"
-description: "Remove EXIF and other metadata from images in-browser - privacy‑first, no uploads."
----
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import UploadZone from '../../components/UploadZone.astro';
+---
 
-<BaseLayout>
+<BaseLayout
+  title="Strip Image Metadata - FreeFileTool"
+  description="Remove EXIF and other metadata from images in-browser - privacy‑first, no uploads."
+>
   <section class="tool-hero py-12 text-center">
     <h1 class="text-4xl font-bold mb-4">Strip Image Metadata</h1>
     <p class="text-lg mb-6">Remove hidden EXIF data from your photos directly in the browser.</p>
@@ -18,7 +18,7 @@ import UploadZone from '../../components/UploadZone.astro';
       data-allowed-types="image/*"
       data-max-file-bytes="52428800"
       data-max-batch-bytes="209715200"
-      client:class="flex flex-col items-center"
+      class="flex flex-col items-center"
     />
   </section>
 
