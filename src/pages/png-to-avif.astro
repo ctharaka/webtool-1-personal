@@ -1,0 +1,213 @@
+---
+/**
+ * png-to-avif.astro — Dedicated PNG to AVIF Converter Landing Page
+ * Pre-sets default format to AVIF with transparency preservation.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="PNG to AVIF Converter — Convert PNG to AVIF Online"
+  description="Convert PNG images to next-gen AVIF format in your browser. Preserve alpha transparency while cutting file sizes by up to 60%. 100% free and private."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert PNG to AVIF Online",
+          "description": "Step-by-step instructions to convert PNG graphics to next-generation AVIF format in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload PNG Graphics",
+              "text": "Drag and drop PNG files into the upload box or select files from your computer or phone."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Configure AVIF Quality",
+              "text": "Select your desired compression quality (80% recommended) for the optimal balance of transparency clarity and small file size."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert All Files Now' and download the lightweight AVIF images individually or in a single ZIP package."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does AVIF support PNG transparency?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! AVIF fully supports 8-bit, 10-bit, and 12-bit alpha channel transparency, making it an excellent replacement for heavy PNG graphics."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How much smaller is AVIF compared to PNG?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "For complex graphics, screenshots, and illustrations, AVIF can be up to 50%–70% smaller than a PNG file while maintaining crisp visual quality and transparency."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">PNG to AVIF Converter</div>
+    <h1 class="tool-hero__title">Convert PNG to AVIF Online</h1>
+    <p class="tool-hero__desc">
+      Transform heavy PNG graphics into next-generation AVIF files. Maintain full alpha transparency while reducing file sizes by up to 60% with browser-based AV1 encoding.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['png']} defaultFormat="avif" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why convert PNG to AVIF?</p>
+    <p class="quick-answer__a">
+      PNG graphics with transparent backgrounds are often very large. Converting to <strong>AVIF</strong> retains transparent regions while using modern AV1 compression to shrink file weight by up to <strong>60%</strong>, accelerating website load times significantly.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Modern Compression for Transparent Graphics</h2>
+      <p>
+        While PNG has long been the standard for web graphics requiring transparency, its DEFLATE compression often produces files that are megabytes in size. AVIF solves this by supporting full alpha channels alongside high-efficiency AV1 predictive compression.
+      </p>
+      <p>
+        Our PNG to AVIF converter operates completely within your browser, ensuring that your branding assets, logos, and UI graphics are converted rapidly without uploading to external servers.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Comparison: PNG vs AVIF</h2>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">PNG</th>
+              <th scope="col">AVIF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Transparency</strong></td>
+              <td>Yes (Alpha channel)</td>
+              <td>Yes (Alpha channel)</td>
+            </tr>
+            <tr>
+              <td><strong>Compression Type</strong></td>
+              <td>Lossless only</td>
+              <td>Lossy or Lossless (AV1)</td>
+            </tr>
+            <tr>
+              <td><strong>Average File Size</strong></td>
+              <td>Large (100% baseline)</td>
+              <td>Compact (35%–50% of PNG)</td>
+            </tr>
+            <tr>
+              <td><strong>Browser Support</strong></td>
+              <td>100% universal</td>
+              <td>93%+ modern browsers</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert PNG to AVIF Step-by-Step</h2>
+      <ol class="steps-list">
+        <li><strong>Select PNG files:</strong> Drag and drop your PNG graphics into the converter area above.</li>
+        <li><strong>Tune quality:</strong> Choose your desired quality percentage (80% recommended for transparent UI assets).</li>
+        <li><strong>Convert:</strong> Click <em>Convert All Files Now</em> to execute in-memory conversion.</li>
+        <li><strong>Download:</strong> Download individual AVIF images or grab the entire batch in a ZIP archive.</li>
+      </ol>
+    </section>
+
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-details">
+          <summary class="faq-summary">Will my logos stay sharp in AVIF?</summary>
+          <div class="faq-answer">
+            <p>Yes. AVIF preserves sharp edges and contrast gradients effectively, even at lower quality settings.</p>
+          </div>
+        </details>
+        <details class="faq-details">
+          <summary class="faq-summary">What if I need broader browser compatibility?</summary>
+          <div class="faq-answer">
+            <p>If you need universal 98%+ browser compatibility, we recommend converting your PNGs to <a href="/png-to-webp">WebP format</a>, which also supports alpha transparency.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="content-block related-links">
+      <h2>Related Converters &amp; Guides</h2>
+      <ul class="related-list">
+        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
+        <li>✨ <a href="/png-to-webp">PNG to WebP Converter</a> — Convert PNGs to WebP for universal browser compatibility.</li>
+        <li>🖼️ <a href="/jpg-to-avif">JPG to AVIF Converter</a> — Convert JPEG photos to next-generation AVIF.</li>
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG and WebP files without format changes.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — In-depth breakdown of formats and compatibility.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
+  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
+  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
+  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
+  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
+  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
+  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
+  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
+  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
+  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
+  .content-block { margin-bottom: var(--space-10); }
+  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
+  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
+  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .table-wrapper { overflow-x: auto; margin: var(--space-4) 0; }
+  .comparison-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); text-align: left; }
+  .comparison-table th, .comparison-table td { padding: var(--space-3) var(--space-4); border: 1px solid var(--border-default); }
+  .comparison-table th { background: var(--surface-2); color: var(--text-primary); font-weight: var(--font-weight-semibold); }
+  .comparison-table td { background: var(--surface-1); color: var(--text-secondary); }
+  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
+  .faq-details[open] .faq-summary::after { content: '\u2212'; }
+  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
+  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
+  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .related-list a:hover { text-decoration: underline; }
+</style>

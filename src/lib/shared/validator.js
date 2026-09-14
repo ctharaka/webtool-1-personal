@@ -46,6 +46,14 @@ export const FILE_TYPES = Object.freeze({
     magic2: [0x57, 0x45, 0x42, 0x50],
     magic2Offset: 8,
   },
+  avif: {
+    label: 'AVIF',
+    mime: 'image/avif',
+    maxBytes: 50 * 1024 * 1024, // 50 MB
+    /** "ftyp" at offset 4 → 0x66 0x74 0x79 0x70 */
+    magic: [0x66, 0x74, 0x79, 0x70],
+    magicOffset: 4,
+  },
 });
 
 /**

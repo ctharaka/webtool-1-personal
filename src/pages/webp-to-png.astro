@@ -1,0 +1,213 @@
+---
+/**
+ * webp-to-png.astro — Dedicated WebP to PNG Converter Landing Page
+ * Pre-sets default format to PNG (Lossless) with alpha transparency preservation.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="WebP to PNG Converter — Convert WebP to Lossless PNG Online"
+  description="Convert WebP images to lossless PNG format in your browser. Preserve full transparent backgrounds with pixel-perfect accuracy. 100% free and private."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert WebP to PNG Online",
+          "description": "Step-by-step instructions to convert WebP images to lossless PNG format directly in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Select WebP Files",
+              "text": "Drop your WebP files into the upload box or select them from your computer or phone."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Confirm PNG Target",
+              "text": "The target format is preset to PNG for lossless rendering and transparent channel preservation."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert All Files Now' to generate your PNG files and download them individually or as a single ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does converting WebP to PNG preserve transparency?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! WebP images with transparent backgrounds will convert into PNGs with complete 8-bit alpha channel transparency preserved intact."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why convert WebP to PNG instead of JPG?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PNG supports transparent backgrounds and uses lossless compression. If your WebP image is a logo, icon, or diagram with transparent regions, PNG is the best format to retain clarity and alpha channels."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">WebP to PNG Converter</div>
+    <h1 class="tool-hero__title">Convert WebP to PNG Online</h1>
+    <p class="tool-hero__desc">
+      Convert WebP graphics to lossless Portable Network Graphics (PNG) format. Retain pixel-perfect transparency, avoid JPEG compression artifacts, and prepare files for photo editing.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['webp']} defaultFormat="png" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why convert WebP to PNG?</p>
+    <p class="quick-answer__a">
+      When you download a <code>.webp</code> logo, graphic, or sticker from the web and need to import it into graphic design software (like Photoshop, Illustrator, Figma, or GIMP) with <strong>100% lossless quality and transparent background</strong>, converting to PNG is the ideal choice.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Preserve Transparency and Lossless Detail</h2>
+      <p>
+        WebP is an outstanding delivery format for web browsers, but many desktop graphics suites, video editors, and game engines still prefer standard Portable Network Graphics (PNG) for raw asset management and multi-layer composition.
+      </p>
+      <p>
+        The FreeFileTools WebP to PNG converter transforms your WebP files into uncompressed, 32-bit RGBA PNG files with full 8-bit alpha channel transparency. The conversion runs entirely in-memory on your machine, preventing privacy leaks and ensuring instant batch processing.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Comparison: WebP vs PNG</h2>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">WebP</th>
+              <th scope="col">PNG</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Transparency</strong></td>
+              <td>Yes (Alpha channel)</td>
+              <td>Yes (Alpha channel)</td>
+            </tr>
+            <tr>
+              <td><strong>Compression</strong></td>
+              <td>Lossy or Lossless (VP8)</td>
+              <td>Lossless (DEFLATE)</td>
+            </tr>
+            <tr>
+              <td><strong>Software Support</strong></td>
+              <td>Modern browsers, newer editors</td>
+              <td>Universal across all software & OS</td>
+            </tr>
+            <tr>
+              <td><strong>Best For</strong></td>
+              <td>Web delivery, bandwidth saving</td>
+              <td>Editing, logos, printing, archival</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert WebP to PNG (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Select WebP images:</strong> Drag and drop your WebP files into the conversion area.</li>
+        <li><strong>Verify target format:</strong> PNG is selected by default to ensure lossless reproduction.</li>
+        <li><strong>Convert:</strong> Click <em>Convert All Files Now</em> to decode and render in browser memory.</li>
+        <li><strong>Download:</strong> Download individual PNG files or save the full batch in a single ZIP file.</li>
+      </ol>
+    </section>
+
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-details">
+          <summary class="faq-summary">Will the output PNG have the same resolution as the WebP?</summary>
+          <div class="faq-answer">
+            <p>Yes. The output PNG matches the exact pixel dimensions and aspect ratio of your original WebP file without downsampling or distortion.</p>
+          </div>
+        </details>
+        <details class="faq-details">
+          <summary class="faq-summary">Is there a limit on how many files I can convert?</summary>
+          <div class="faq-answer">
+            <p>You can convert up to 50 files per batch, with a total batch size up to 200 MB. The tool is 100% free with unlimited conversions.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="content-block related-links">
+      <h2>Related Converters &amp; Guides</h2>
+      <ul class="related-list">
+        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
+        <li>🖼️ <a href="/webp-to-jpg">WebP to JPG Converter</a> — Convert WebP files to standard JPEG photos.</li>
+        <li>✨ <a href="/png-to-webp">PNG to WebP Converter</a> — Convert PNG graphics to lightweight WebP files.</li>
+        <li>📐 <a href="/image/resize">Resize Images</a> — Resize PNG and WebP dimensions with aspect-ratio locking.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — In-depth guide on format differences and use cases.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
+  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
+  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
+  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
+  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
+  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
+  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
+  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
+  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
+  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
+  .content-block { margin-bottom: var(--space-10); }
+  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
+  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
+  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .table-wrapper { overflow-x: auto; margin: var(--space-4) 0; }
+  .comparison-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); text-align: left; }
+  .comparison-table th, .comparison-table td { padding: var(--space-3) var(--space-4); border: 1px solid var(--border-default); }
+  .comparison-table th { background: var(--surface-2); color: var(--text-primary); font-weight: var(--font-weight-semibold); }
+  .comparison-table td { background: var(--surface-1); color: var(--text-secondary); }
+  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
+  .faq-details[open] .faq-summary::after { content: '\u2212'; }
+  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
+  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
+  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .related-list a:hover { text-decoration: underline; }
+</style>

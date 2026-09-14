@@ -1,0 +1,171 @@
+---
+/**
+ * avif-to-jpg.astro — Dedicated AVIF to JPG Converter Landing Page
+ * Pre-sets default format to JPG for maximum software compatibility.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="AVIF to JPG Converter — Convert AVIF to JPEG Online"
+  description="Convert AVIF images to standard JPG format in your browser. Solve compatibility issues with offline photo viewers, editors, and legacy devices. 100% free and private."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert AVIF to JPG Online",
+          "description": "Step-by-step instructions to convert AVIF images to standard JPG format in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload AVIF Files",
+              "text": "Drag and drop your .avif files into the converter area or select them using the file picker."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Configure JPEG Quality",
+              "text": "Select your desired quality level (80%–90% recommended for high visual fidelity)."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert All Files Now' to decode and export to JPG, then download individual files or the complete ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why do I need to convert AVIF to JPG?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Although AVIF is supported by modern web browsers, many desktop photo editors, email clients, social media apps, and older operating systems cannot open .avif files. Converting to JPG makes them universally accessible."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my image data kept private?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The entire AVIF decoding and JPEG encoding pipeline executes locally inside your web browser. No files are uploaded to any server."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">AVIF to JPG Converter</div>
+    <h1 class="tool-hero__title">Convert AVIF to JPG Online</h1>
+    <p class="tool-hero__desc">
+      Convert AVIF images into standard JPEG photos. Ensure compatibility across desktop photo software, mobile devices, and printing services with 100% client-side decoding.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['avif']} defaultFormat="jpg" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why convert AVIF to JPG?</p>
+    <p class="quick-answer__a">
+      Downloaded an <code>.avif</code> file that won't open in your photo viewer, Photoshop, or social media app? Converting it to standard <strong>JPG</strong> restores complete compatibility across every operating system, device, and software program.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Universal Compatibility for Next-Gen AVIF Files</h2>
+      <p>
+        AVIF is an ultra-efficient image format designed for web browsers, but broad support across desktop operating systems, graphic design tools, and mobile photo galleries is still catching up.
+      </p>
+      <p>
+        The FreeFileTools AVIF to JPG converter decodes your AVIF files and re-encodes them into standardized JPEG photos. The entire process runs locally in your browser, providing lightning-fast batch conversions without compromising your privacy.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert AVIF to JPG (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Add AVIF images:</strong> Drag your <code>.avif</code> files into the upload box above.</li>
+        <li><strong>Set quality level:</strong> Choose your desired JPEG quality percentage (80% is recommended for everyday photos).</li>
+        <li><strong>Convert:</strong> Click <em>Convert All Files Now</em> to decode and re-encode files in browser memory.</li>
+        <li><strong>Download:</strong> Download converted JPG photos individually or grab all converted images in a single ZIP archive.</li>
+      </ol>
+    </section>
+
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-details">
+          <summary class="faq-summary">Will converting AVIF to JPG increase file size?</summary>
+          <div class="faq-answer">
+            <p>Yes. Because AVIF uses superior compression compared to the 30-year-old JPEG algorithm, the resulting JPG file will typically be larger than the original AVIF file, but it will open in any software application.</p>
+          </div>
+        </details>
+        <details class="faq-details">
+          <summary class="faq-summary">Can I convert AVIF to PNG instead?</summary>
+          <div class="faq-answer">
+            <p>Yes! If your AVIF image contains transparent areas, use our <a href="/avif-to-png">AVIF to PNG Converter</a> to preserve full transparency.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="content-block related-links">
+      <h2>Related Converters &amp; Guides</h2>
+      <ul class="related-list">
+        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
+        <li>🖼️ <a href="/avif-to-png">AVIF to PNG Converter</a> — Convert AVIF to lossless PNG with transparency.</li>
+        <li>🚀 <a href="/jpg-to-avif">JPG to AVIF Converter</a> — Convert JPEG photos into lightweight AVIF images.</li>
+        <li>📄 <a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a> — Compile converted JPGs into a multi-page PDF document.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — Format comparison and compatibility benchmarks.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
+  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
+  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
+  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
+  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
+  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
+  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
+  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
+  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
+  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
+  .content-block { margin-bottom: var(--space-10); }
+  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
+  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
+  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
+  .faq-details[open] .faq-summary::after { content: '\u2212'; }
+  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
+  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
+  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .related-list a:hover { text-decoration: underline; }
+</style>

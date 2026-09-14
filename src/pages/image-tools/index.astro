@@ -1,19 +1,19 @@
 ---
 /**
  * image-tools/index.astro — Image Tools Index / Hub Page
- * Scalable category index for image optimization tools.
+ * Scalable category index for image optimization and conversion tools.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Browser-Side Image Optimization Tools Hub — FreeFileTools"
-  description="Explore our suite of 100% private browser-side image conversion and compression tools. Process PNG, JPG, and WebP locally without cloud uploads."
+  title="Browser-Side Image Optimization & Conversion Tools — FreeFileTools"
+  description="Explore our suite of 100% private browser-side image conversion, compression, and editing tools. Convert JPG, PNG, WebP, and AVIF locally without cloud uploads."
 >
   <header class="hub-hero">
-    <h1 class="hub-title">Online Image Optimization Tools</h1>
+    <h1 class="hub-title">Online Image Optimization &amp; Conversion Tools</h1>
     <p class="hub-desc">
-      All conversion, compression, and encoding processes occur locally inside your browser memory. Your files are never uploaded to any remote server.
+      All conversion, compression, and editing processes occur locally inside your browser memory. Your files are never uploaded to any remote server.
     </p>
   </header>
 
@@ -21,33 +21,114 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   <div class="adsense-slot" aria-label="Advertisement"></div>
 
   <section class="tools-hub" aria-label="Available Image Tools">
-    <!-- Category: Convert -->
+    <!-- Category: Convert Formats -->
     <div class="category-block">
       <h2 class="category-title">
-        <span class="category-icon">🔄</span> Convert Formats
+        <span class="category-icon">🔄</span> Format Converters
       </h2>
-      <p class="category-desc">Convert legacy raster file formats into highly optimized next-generation files with customized quality sliders.</p>
+      <p class="category-desc">Convert between JPG, PNG, WebP, and AVIF formats with custom quality controls and batch processing.</p>
       
       <div class="category-grid">
-        <div class="tool-card">
-          <h3 class="tool-title"><a href="/png-to-webp">PNG to WebP Converter</a></h3>
+        <div class="tool-card tool-card--featured">
+          <div class="tool-badge">Hub</div>
+          <h3 class="tool-title"><a href="/image-converter">Universal Image Converter</a></h3>
           <p class="tool-desc">
-            Transform Portable Network Graphics (PNG) to WebP format. Retains 8-bit alpha transparency while compressing file sizes by up to 35%.
+            All-in-one format converter supporting any combination of JPG, PNG, WebP, and AVIF. Batch processing with ZIP downloads.
           </p>
-          <a href="/png-to-webp" class="tool-link">Use Converter &rarr;</a>
+          <a href="/image-converter" class="tool-link">Open Converter &rarr;</a>
         </div>
 
         <div class="tool-card">
           <h3 class="tool-title"><a href="/jpg-to-webp">JPG to WebP Converter</a></h3>
           <p class="tool-desc">
-            Convert Joint Photographic Experts Group (JPG/JPEG) photographs to WebP. Drastically reduce photo storage weight for mobile web optimization.
+            Re-encode JPEG photos into lightweight WebP format to save up to 40% in page file size for Core Web Vitals.
           </p>
           <a href="/jpg-to-webp" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/png-to-webp">PNG to WebP Converter</a></h3>
+          <p class="tool-desc">
+            Transform PNG graphics to WebP while retaining full 8-bit alpha transparency and reducing file weight by up to 35%.
+          </p>
+          <a href="/png-to-webp" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/jpg-to-png">JPG to PNG Converter</a></h3>
+          <p class="tool-desc">
+            Convert JPEG photos to lossless PNG format to stop compression artifacts during graphic design and editing passes.
+          </p>
+          <a href="/jpg-to-png" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/png-to-jpg">PNG to JPG Converter</a></h3>
+          <p class="tool-desc">
+            Convert oversized PNGs to lightweight JPGs with clean white background compositing for email and web sharing.
+          </p>
+          <a href="/png-to-jpg" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/webp-to-jpg">WebP to JPG Converter</a></h3>
+          <p class="tool-desc">
+            Convert downloaded WebP web graphics to standard JPEG files for legacy desktop photo viewers and office software.
+          </p>
+          <a href="/webp-to-jpg" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/webp-to-png">WebP to PNG Converter</a></h3>
+          <p class="tool-desc">
+            Extract WebP graphics into uncompressed, pixel-perfect PNG format with complete alpha transparency preserved.
+          </p>
+          <a href="/webp-to-png" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/jpg-to-avif">JPG to AVIF Converter</a></h3>
+          <p class="tool-desc">
+            Convert JPEG images to next-generation AVIF format for up to 50% byte savings using modern AV1 compression.
+          </p>
+          <a href="/jpg-to-avif" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/png-to-avif">PNG to AVIF Converter</a></h3>
+          <p class="tool-desc">
+            Compress transparent PNG graphics into high-efficiency AVIF format with alpha channel support.
+          </p>
+          <a href="/png-to-avif" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/avif-to-jpg">AVIF to JPG Converter</a></h3>
+          <p class="tool-desc">
+            Convert AVIF images into standard JPEG format for universal compatibility with all photo software and devices.
+          </p>
+          <a href="/avif-to-jpg" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/avif-to-png">AVIF to PNG Converter</a></h3>
+          <p class="tool-desc">
+            Convert next-generation AVIF files into lossless PNG format with transparent background retention.
+          </p>
+          <a href="/avif-to-png" class="tool-link">Use Converter &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/image/convert-to-avif">Convert to AVIF</a></h3>
+          <p class="tool-desc">
+            Convert uploaded images to modern AVIF format for superior compression directly in your browser.
+          </p>
+          <a href="/image/convert-to-avif" class="tool-link">Use Converter &rarr;</a>
         </div>
       </div>
     </div>
 
-    <!-- Category: Compress -->
+    <!-- Category: Compress & Optimize -->
     <div class="category-block">
       <h2 class="category-title">
         <span class="category-icon">📉</span> Compress &amp; Optimize
@@ -62,26 +143,39 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </p>
           <a href="/compress-image" class="tool-link">Use Compressor &rarr;</a>
         </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/optimization-lab">Optimization Lab</a></h3>
+          <p class="tool-desc">
+            Interactive playground for benchmarking compression ratios, format comparisons, and visual quality trade-offs.
+          </p>
+          <a href="/optimization-lab" class="tool-link">Open Lab &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category: Edit & Privacy -->
+    <div class="category-block">
+      <h2 class="category-title">
+        <span class="category-icon">✂️</span> Edit &amp; Privacy
+      </h2>
+      <p class="category-desc">Resize image dimensions and remove tracking metadata before publishing online.</p>
+
+      <div class="category-grid">
         <div class="tool-card">
           <h3 class="tool-title"><a href="/image/resize">Resize Images</a></h3>
           <p class="tool-desc">
-            Resize images to custom dimensions while preserving aspect ratio. No uploads – all processing in-browser.
+            Resize images to custom width and height dimensions while preserving aspect ratio. No uploads – all processing in-browser.
           </p>
           <a href="/image/resize" class="tool-link">Resize Images &rarr;</a>
         </div>
+
         <div class="tool-card">
           <h3 class="tool-title"><a href="/image/strip-metadata">Strip Image Metadata</a></h3>
           <p class="tool-desc">
-            Remove EXIF and other metadata from images to protect privacy. Client‑side only.
+            Remove hidden EXIF camera data, timestamps, and GPS coordinates from photos to protect privacy before sharing.
           </p>
           <a href="/image/strip-metadata" class="tool-link">Strip Metadata &rarr;</a>
-        </div>
-        <div class="tool-card">
-          <h3 class="tool-title"><a href="/image/convert-to-avif">Convert to AVIF</a></h3>
-          <p class="tool-desc">
-            Convert images to modern AVIF format for superior compression. Works in supported browsers.
-          </p>
-          <a href="/image/convert-to-avif" class="tool-link">Convert to AVIF &rarr;</a>
         </div>
       </div>
     </div>
@@ -100,6 +194,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             Combine multiple JPEG photos into a clean multi-page PDF document with standardized A4 layout options.
           </p>
           <a href="/pdf/jpg-to-pdf" class="tool-link">Convert JPG to PDF &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/pdf/png-to-pdf">PNG to PDF Converter</a></h3>
+          <p class="tool-desc">
+            Convert high-resolution PNG images into standard PDF documents with client-side processing.
+          </p>
+          <a href="/pdf/png-to-pdf" class="tool-link">Convert PNG to PDF &rarr;</a>
         </div>
 
         <div class="tool-card">
@@ -136,7 +238,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .hub-desc {
     font-size: var(--font-size-lg);
     color: var(--text-secondary);
-    max-width: 44ch;
+    max-width: 50ch;
     margin-inline: auto;
     line-height: var(--line-height-loose);
   }
@@ -176,7 +278,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-6);
   }
 
@@ -194,7 +296,26 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
     transition: transform var(--transition-base), border-color var(--transition-base);
+  }
+
+  .tool-card--featured {
+    border-color: color-mix(in srgb, var(--color-brand-400) 50%, var(--border-default));
+    background: color-mix(in srgb, var(--color-brand-500) 5%, var(--surface-1));
+  }
+
+  .tool-badge {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-brand-300);
+    background: color-mix(in srgb, var(--color-brand-500) 20%, transparent);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
   }
 
   .tool-card:hover {

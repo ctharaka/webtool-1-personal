@@ -1,0 +1,213 @@
+---
+/**
+ * jpg-to-avif.astro — Dedicated JPG to AVIF Converter Landing Page
+ * Pre-sets default format to AVIF for next-generation compression.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="JPG to AVIF Converter — Convert JPEG to AVIF Format Online"
+  description="Convert JPG/JPEG images to modern AVIF format in your browser. Achieve up to 50% smaller file sizes than JPEG with next-generation AV1 compression. 100% free and private."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "name": "How to Convert JPG to AVIF Online",
+          "description": "Step-by-step instructions to convert JPEG images to next-gen AVIF format directly in your browser.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload JPG Photos",
+              "text": "Drag and drop your JPG/JPEG files into the conversion zone or select them from your device."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Set AVIF Quality",
+              "text": "Adjust the compression quality slider (80% recommended) for high visual fidelity with minimum file size."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert All Files Now' to process locally and download your lightweight AVIF images."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the AVIF image format?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AVIF (AV1 Image File Format) is an open, royalty-free image format developed by the Alliance for Open Media. It uses AV1 video keyframe compression to deliver significantly smaller file sizes than JPEG and WebP at equivalent visual quality."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which web browsers support AVIF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "AVIF is supported by all modern major browsers including Google Chrome, Mozilla Firefox, Apple Safari, and Microsoft Edge, covering more than 93% of global web users."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">JPG to AVIF Converter</div>
+    <h1 class="tool-hero__title">Convert JPG to AVIF Online</h1>
+    <p class="tool-hero__desc">
+      Convert standard JPEG photos into cutting-edge AVIF format. Reduce image weight by up to 50% compared to JPG with next-gen AV1 compression, completely client-side.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone allowedTypes={['jpg']} defaultFormat="avif" />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Quick Answer</p>
+    <p class="quick-answer__q">Why convert JPG to AVIF?</p>
+    <p class="quick-answer__a">
+      AVIF is the newest major image format for the web. Compared to standard JPEG, AVIF cuts file weight by <strong>40% to 50%</strong> while maintaining sharp detail, smoother gradients, and higher dynamic range, dramatically boosting your Core Web Vitals (LCP) performance.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Next-Generation Image Optimization with AVIF</h2>
+      <p>
+        The AV1 Image File Format (AVIF) represents the next leap in web media optimization. Created by the Alliance for Open Media (AOMedia)—consisting of Google, Apple, Microsoft, Mozilla, and Netflix—AVIF applies modern AV1 video codec intra-frame compression to still photographs.
+      </p>
+      <p>
+        Converting your JPG photographs to AVIF allows you to achieve superior compression ratios without the color banding, blocking, or blurriness typical of high-compression JPEGs.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Comparison: JPG vs AVIF</h2>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">JPG / JPEG</th>
+              <th scope="col">AVIF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Compression Codec</strong></td>
+              <td>DCT (1992 standard)</td>
+              <td>AV1 Intra-Frame (Modern)</td>
+            </tr>
+            <tr>
+              <td><strong>Average File Size Savings</strong></td>
+              <td>Baseline</td>
+              <td>40%–50% smaller than JPG</td>
+            </tr>
+            <tr>
+              <td><strong>Color Depth</strong></td>
+              <td>8-bit only</td>
+              <td>8-bit, 10-bit, 12-bit HDR support</td>
+            </tr>
+            <tr>
+              <td><strong>Color Banding</strong></td>
+              <td>Frequent in dark gradients</td>
+              <td>Greatly minimized</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>Step-by-Step: Converting JPG to AVIF</h2>
+      <ol class="steps-list">
+        <li><strong>Upload JPGs:</strong> Drag and drop your JPG or JPEG images into the upload area above.</li>
+        <li><strong>Choose compression quality:</strong> Use the slider to choose quality (75%–85% provides optimal savings for web publishing).</li>
+        <li><strong>Process locally:</strong> Click <em>Convert All Files Now</em>. The encoding executes directly in your browser without uploading to external servers.</li>
+        <li><strong>Download:</strong> Save your AVIF images individually or download all files packaged in a single ZIP file.</li>
+      </ol>
+    </section>
+
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-details">
+          <summary class="faq-summary">What if my browser doesn't support AVIF export?</summary>
+          <div class="faq-answer">
+            <p>AVIF encoding requires modern browser support. If your browser does not support AVIF export, our tool will display a clear message recommending WebP or PNG as an alternative.</p>
+          </div>
+        </details>
+        <details class="faq-details">
+          <summary class="faq-summary">Are my files uploaded to any servers?</summary>
+          <div class="faq-answer">
+            <p>Never. FreeFileTools processes all files 100% client-side in browser RAM. Your images never leave your device.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="content-block related-links">
+      <h2>Related Converters &amp; Guides</h2>
+      <ul class="related-list">
+        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
+        <li>🚀 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Convert JPGs to WebP for universal browser compatibility.</li>
+        <li>✨ <a href="/png-to-avif">PNG to AVIF Converter</a> — Convert transparent PNGs into lightweight AVIF graphics.</li>
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress images with custom lossy and lossless presets.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — Compare modern formats and compression benchmarks.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
+  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
+  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
+  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
+  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
+  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
+  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
+  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
+  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
+  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
+  .content-block { margin-bottom: var(--space-10); }
+  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
+  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
+  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .table-wrapper { overflow-x: auto; margin: var(--space-4) 0; }
+  .comparison-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); text-align: left; }
+  .comparison-table th, .comparison-table td { padding: var(--space-3) var(--space-4); border: 1px solid var(--border-default); }
+  .comparison-table th { background: var(--surface-2); color: var(--text-primary); font-weight: var(--font-weight-semibold); }
+  .comparison-table td { background: var(--surface-1); color: var(--text-secondary); }
+  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
+  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
+  .faq-details[open] .faq-summary::after { content: '\u2212'; }
+  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
+  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
+  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
+  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
+  .related-list a:hover { text-decoration: underline; }
+</style>

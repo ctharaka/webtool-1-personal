@@ -1,0 +1,564 @@
+---
+/**
+ * image-converter.astro — Central Image Converter Hub
+ * All-in-one client-side conversion utility supporting JPG, PNG, WebP, and AVIF.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UploadZone from '../components/UploadZone.astro';
+---
+
+<BaseLayout
+  title="Free Online Image Converter — Convert JPG, PNG, WebP & AVIF"
+  description="Convert images between JPG, PNG, WebP, and AVIF formats directly in your browser. Batch convert multiple files with custom quality controls. 100% private, free, and fast."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTools Image Converter",
+          "url": "https://freefiletool.app/image-converter",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript and HTML5 Canvas support",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Convert JPG to PNG, WebP, AVIF",
+            "Convert PNG to JPG, WebP, AVIF",
+            "Convert WebP to JPG, PNG, AVIF",
+            "Convert AVIF to JPG, PNG, WebP",
+            "Multi-file batch processing",
+            "Single-click JSZip archive download",
+            "100% client-side processing without server uploads"
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "name": "How to Convert Images Online in Your Browser",
+          "description": "Step-by-step instructions to convert image formats client-side using FreeFileTools.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload Source Images",
+              "text": "Drag and drop your JPG, PNG, WebP, or AVIF files into the upload box or select them using the file browser."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Choose Target Format & Quality",
+              "text": "Select your desired output format (WebP, PNG, JPG, or AVIF) and adjust the quality slider if using lossy compression."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click 'Convert All Files Now' to process your files locally, then download individual converted files or save all files in a single ZIP archive."
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any server during conversion?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. All conversion operations are performed entirely inside your browser using the HTML5 Canvas and ImageBitmap APIs. No image data is transmitted across the internet."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which image format should I choose for my website?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "WebP is the recommended general-purpose web format offering excellent compression, transparency support, and universal 98%+ browser compatibility. AVIF offers even smaller file sizes for next-generation browsers, while PNG is best for lossless graphics and JPG for legacy photo compatibility."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert multiple images at once?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can drop multiple images into the converter simultaneously. The batch processor converts all files sequentially in memory and provides a single-click 'Download All as ZIP' button."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Universal Image Converter</div>
+    <h1 class="tool-hero__title">Online Image Format Converter</h1>
+    <p class="tool-hero__desc">
+      Convert photos and graphics between JPG, PNG, WebP, and AVIF formats instantly in your browser. Batch processing, transparency preservation, and custom quality controls with zero server uploads.
+    </p>
+  </section>
+
+  <!-- AdSense Slot: Above main tool card -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+
+  <section class="upload-section">
+    <UploadZone
+      allowedTypes={['jpg', 'png', 'webp', 'avif']}
+      defaultFormat="webp"
+    />
+  </section>
+
+  <!-- Quick Answer Box -->
+  <div class="quick-answer" role="note">
+    <p class="quick-answer__label">✦ Format Selection Guide</p>
+    <p class="quick-answer__q">Which output format should you choose?</p>
+    <p class="quick-answer__a">
+      Choose <strong>WebP</strong> for the best balance of 25–40% file size reduction, full alpha transparency, and universal web compatibility. Choose <strong>PNG</strong> when you need 100% lossless precision. Choose <strong>JPG</strong> for maximum compatibility with legacy applications and photo viewers. Choose <strong>AVIF</strong> for maximum bleeding-edge compression on modern devices.
+    </p>
+  </div>
+
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Universal Client-Side Image Format Conversion</h2>
+      <p>
+        The FreeFileTools Image Converter serves as your all-in-one conversion utility for digital images. Whether you need to prepare assets for modern websites, ensure compatibility across legacy operating systems, or switch between lossy and lossless algorithms, our converter executes all encoding and decoding inside your browser’s local memory sandbox.
+      </p>
+      <p>
+        Unlike cloud-based conversion platforms that require you to upload private files over remote networks, our client-side architecture guarantees complete data privacy, eliminates server waiting queues, and enables lightning-fast batch processing.
+      </p>
+    </section>
+
+    <!-- Format Matrix Table -->
+    <section class="content-block">
+      <h2>Supported Conversion Matrix</h2>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Source Format</th>
+              <th scope="col">Supported Target Outputs</th>
+              <th scope="col">Ideal Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>JPG / JPEG</strong></td>
+              <td>PNG, WebP, AVIF</td>
+              <td>Upgrading photographs to WebP/AVIF to reduce bandwidth, or converting to PNG for lossless editing.</td>
+            </tr>
+            <tr>
+              <td><strong>PNG</strong></td>
+              <td>JPG, WebP, AVIF</td>
+              <td>Shrinking heavy transparent graphics to WebP, or converting screenshots to JPG for email sharing.</td>
+            </tr>
+            <tr>
+              <td><strong>WebP</strong></td>
+              <td>JPG, PNG, AVIF</td>
+              <td>Converting modern web graphics to JPG or PNG for compatibility with offline software and older OS versions.</td>
+            </tr>
+            <tr>
+              <td><strong>AVIF</strong></td>
+              <td>JPG, PNG, WebP</td>
+              <td>Converting next-generation AVIF images to universally compatible JPG, PNG, or WebP formats.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-block">
+      <h2>How to Convert Image Formats (Step-by-Step)</h2>
+      <ol class="steps-list">
+        <li><strong>Add your images:</strong> Drag and drop single or multiple JPG, PNG, WebP, or AVIF files into the upload box.</li>
+        <li><strong>Select target format:</strong> Pick your desired output format from the dropdown menu (WebP, PNG, JPG, or AVIF).</li>
+        <li><strong>Adjust compression quality:</strong> For lossy formats (JPG, WebP, AVIF), choose a quality setting between 10% and 100% (80% is optimal for web). PNG automatically uses lossless encoding.</li>
+        <li><strong>Convert and save:</strong> Click <em>Convert All Files Now</em>. Once processing finishes, download individual files or click <em>Download All (ZIP)</em> for batch exports.</li>
+      </ol>
+    </section>
+
+    <!-- Popular Conversion Links Grid -->
+    <section class="content-block">
+      <h2>Dedicated Format Converters</h2>
+      <p>Looking for a dedicated tool tailored for a specific conversion task? Choose one of our specialized converters below:</p>
+      <div class="tools-grid">
+        <a href="/jpg-to-webp" class="tool-card">
+          <h3 class="tool-card__title">JPG to WebP</h3>
+          <p class="tool-card__desc">Shrink JPEG photos by up to 40% with client-side lossy WebP compression.</p>
+          <span class="tool-card__link">Convert JPG to WebP &rarr;</span>
+        </a>
+        <a href="/png-to-webp" class="tool-card">
+          <h3 class="tool-card__title">PNG to WebP</h3>
+          <p class="tool-card__desc">Preserve transparency while reducing PNG file weight by 25–35%.</p>
+          <span class="tool-card__link">Convert PNG to WebP &rarr;</span>
+        </a>
+        <a href="/jpg-to-png" class="tool-card">
+          <h3 class="tool-card__title">JPG to PNG</h3>
+          <p class="tool-card__desc">Convert JPEG images to lossless PNG format for editing and graphics work.</p>
+          <span class="tool-card__link">Convert JPG to PNG &rarr;</span>
+        </a>
+        <a href="/png-to-jpg" class="tool-card">
+          <h3 class="tool-card__title">PNG to JPG</h3>
+          <p class="tool-card__desc">Flatten transparent PNGs onto a clean white background for universal compatibility.</p>
+          <span class="tool-card__link">Convert PNG to JPG &rarr;</span>
+        </a>
+        <a href="/webp-to-jpg" class="tool-card">
+          <h3 class="tool-card__title">WebP to JPG</h3>
+          <p class="tool-card__desc">Convert WebP web graphics to standard JPEG files for legacy viewers and print.</p>
+          <span class="tool-card__link">Convert WebP to JPG &rarr;</span>
+        </a>
+        <a href="/webp-to-png" class="tool-card">
+          <h3 class="tool-card__title">WebP to PNG</h3>
+          <p class="tool-card__desc">Extract WebP assets into full-resolution lossless PNG files with alpha channel.</p>
+          <span class="tool-card__link">Convert WebP to PNG &rarr;</span>
+        </a>
+        <a href="/jpg-to-avif" class="tool-card">
+          <h3 class="tool-card__title">JPG to AVIF</h3>
+          <p class="tool-card__desc">Encode photos in next-generation AV1 image format for superior bandwidth savings.</p>
+          <span class="tool-card__link">Convert JPG to AVIF &rarr;</span>
+        </a>
+        <a href="/png-to-avif" class="tool-card">
+          <h3 class="tool-card__title">PNG to AVIF</h3>
+          <p class="tool-card__desc">Compress PNG graphics into high-efficiency AVIF format with alpha transparency.</p>
+          <span class="tool-card__link">Convert PNG to AVIF &rarr;</span>
+        </a>
+        <a href="/avif-to-jpg" class="tool-card">
+          <h3 class="tool-card__title">AVIF to JPG</h3>
+          <p class="tool-card__desc">Turn AVIF images into standard JPG files compatible with all photo viewers.</p>
+          <span class="tool-card__link">Convert AVIF to JPG &rarr;</span>
+        </a>
+        <a href="/avif-to-png" class="tool-card">
+          <h3 class="tool-card__title">AVIF to PNG</h3>
+          <p class="tool-card__desc">Convert AVIF files into uncompressed, lossless PNG graphics with full transparency.</p>
+          <span class="tool-card__link">Convert AVIF to PNG &rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details class="faq-details">
+          <summary class="faq-summary">Is this image converter completely free to use?</summary>
+          <div class="faq-answer">
+            <p>Yes. FreeFileTools is 100% free and open-source. There are no subscriptions, paywalls, or hidden file limits.</p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">What happens to image transparency when converting to JPG?</summary>
+          <div class="faq-answer">
+            <p>Because the JPEG specification does not support an alpha channel (transparency), our converter automatically composites transparent pixels onto a solid white background, preventing black background discoloration.</p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">What is the maximum file size I can convert?</summary>
+          <div class="faq-answer">
+            <p>You can convert individual files up to 50 MB each, with a total batch ceiling of 200 MB per conversion session. This ensures optimal browser performance without excessive memory consumption.</p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">Why convert images client-side instead of using a cloud service?</summary>
+          <div class="faq-answer">
+            <p>Client-side conversion is instantaneous because you do not have to wait for large graphics to upload or download over the network. More importantly, your sensitive photos and personal documents never touch a third-party server.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Related Tools & Guides -->
+    <section class="content-block related-links">
+      <h2>Related Image Tools &amp; Guides</h2>
+      <p>Explore complementary optimization tools and in-depth performance guides:</p>
+      <ul class="related-list">
+        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Shrink image file sizes without altering dimensions.</li>
+        <li>📐 <a href="/image/resize">Resize Images</a> — Resize photo dimensions with custom width, height, and aspect-ratio locking.</li>
+        <li>🛡️ <a href="/image/strip-metadata">Strip Image Metadata</a> — Remove hidden EXIF data and GPS tags before publishing photos.</li>
+        <li>📄 <a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a> — Convert photos directly into a multi-page PDF document.</li>
+        <li>📖 <a href="/guides/image-format-converter-guide">Complete Image Format Converter Guide</a> — Learn when and how to convert between JPG, PNG, WebP, and AVIF.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical benchmark and compatibility breakdown.</li>
+      </ul>
+    </section>
+  </article>
+
+  <!-- AdSense Slot: Below article content -->
+  <div class="adsense-slot" aria-label="Advertisement"></div>
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-hero__desc {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    max-width: 58ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose);
+  }
+
+  .upload-section {
+    max-width: 680px;
+    margin-inline: auto;
+    margin-bottom: var(--space-8);
+  }
+
+  .quick-answer {
+    max-width: 680px;
+    margin: 0 auto var(--space-10);
+    padding: var(--space-5) var(--space-6);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1));
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+    border-radius: var(--radius-xl);
+  }
+
+  .quick-answer__label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .quick-answer__q {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .quick-answer__a {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin: 0;
+  }
+
+  .tool-content {
+    max-width: 760px;
+    margin-inline: auto;
+    padding-bottom: var(--space-12);
+  }
+
+  .content-block {
+    margin-bottom: var(--space-10);
+  }
+
+  .content-block h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .content-block p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .steps-list {
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .steps-list li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .steps-list strong {
+    color: var(--text-primary);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-4) 0;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    text-align: left;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-default);
+  }
+
+  .comparison-table th {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .comparison-table td {
+    background: var(--surface-1);
+    color: var(--text-secondary);
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .tool-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-base), border-color var(--transition-base);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400);
+  }
+
+  .tool-card__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .tool-card__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    flex-grow: 1;
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-card__link {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .faq-details {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .faq-details[open] {
+    border-color: var(--border-hover);
+  }
+
+  .faq-summary {
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-summary::after {
+    content: '+';
+    font-size: var(--font-size-lg);
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-bold);
+    margin-left: var(--space-3);
+    transition: transform var(--transition-base);
+  }
+
+  .faq-details[open] .faq-summary::after {
+    content: '\u2212';
+  }
+
+  .faq-answer {
+    padding: 0 var(--space-5) var(--space-5);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .faq-answer p {
+    margin: 0;
+    font-size: inherit;
+  }
+
+  .related-links {
+    border-top: 1px solid var(--border-default);
+    padding-top: var(--space-8);
+  }
+
+  .related-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .related-list li {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+
+  .related-list a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+  }
+
+  .related-list a:hover {
+    text-decoration: underline;
+  }
+</style>

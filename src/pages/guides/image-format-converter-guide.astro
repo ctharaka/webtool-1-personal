@@ -1,0 +1,394 @@
+---
+/**
+ * guides/image-format-converter-guide.astro — Complete Image Format Conversion Guide
+ * In-depth technical comparison covering JPG, PNG, WebP, and AVIF formats, compression mechanics, and best practices.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Complete Image Format Conversion Guide: JPG vs PNG vs WebP vs AVIF — FreeFileTools"
+  description="Learn when and how to convert between JPG, PNG, WebP, and AVIF image formats. Compare compression algorithms, transparency support, browser compatibility, and Core Web Vitals optimization."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Complete Image Format Conversion Guide: JPG, PNG, WebP, and AVIF",
+          "description": "A comprehensive guide to understanding image formats, compression algorithms, alpha channels, and client-side format conversion.",
+          "author": {
+            "@type": "Organization",
+            "name": "FreeFileTools"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "FreeFileTools",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://freefiletool.app/favicon.svg"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Which format is best for website images in 2026?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "WebP is the best general-purpose format for website images due to its 25%–40% file size reduction, full alpha transparency support, and universal 98%+ browser compatibility. AVIF is ideal for cutting-edge performance with up to 50% savings."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I convert an image from a lossy format back to a lossless format without quality loss?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Converting a lossy format (like JPG) to a lossless format (like PNG) stops any further quality degradation from occurring during future edits, but it cannot restore data already discarded during original compression."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is client-side image conversion safer for private photos?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Client-side conversion executes entirely inside your browser's local RAM. Your photos, documents, and graphics are never uploaded or stored on any remote server."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <article class="guide-article">
+    <!-- AdSense Slot: Above article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="meta-category">Optimization Guide</span> &middot;
+        <span class="meta-readtime">7 min read</span>
+      </div>
+      <h1 class="article-title">Complete Image Format Conversion Guide: JPG, PNG, WebP &amp; AVIF</h1>
+      <p class="article-lead">
+        Choosing the right image format is one of the most critical factors in web performance, storage efficiency, and visual fidelity. Explore how modern image codecs work and when to convert between formats.
+      </p>
+    </header>
+
+    <div class="article-content">
+      <section>
+        <h2>Understanding the Four Core Web Image Formats</h2>
+        <p>
+          Every digital image format was engineered with specific tradeoffs between byte size, visual detail, transparency support, and decoding speed. Knowing these tradeoffs helps you select the exact format for your project.
+        </p>
+
+        <div class="table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Format</th>
+                <th scope="col">Compression Type</th>
+                <th scope="col">Alpha Transparency</th>
+                <th scope="col">Relative Size</th>
+                <th scope="col">Global Browser Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>JPG / JPEG</strong></td>
+                <td>Lossy (DCT)</td>
+                <td>No</td>
+                <td>Medium (Baseline)</td>
+                <td>100% (Universal)</td>
+              </tr>
+              <tr>
+                <td><strong>PNG</strong></td>
+                <td>Lossless (DEFLATE)</td>
+                <td>Yes (8-bit alpha)</td>
+                <td>Large (3x–5x vs JPG)</td>
+                <td>100% (Universal)</td>
+              </tr>
+              <tr>
+                <td><strong>WebP</strong></td>
+                <td>Lossy &amp; Lossless (VP8)</td>
+                <td>Yes (8-bit alpha)</td>
+                <td>Small (25%–40% smaller than JPG)</td>
+                <td>98%+ (Universal)</td>
+              </tr>
+              <tr>
+                <td><strong>AVIF</strong></td>
+                <td>Lossy &amp; Lossless (AV1)</td>
+                <td>Yes (HDR / 12-bit)</td>
+                <td>Very Small (40%–50% smaller than JPG)</td>
+                <td>93%+ (Modern browsers)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>1. JPEG (Joint Photographic Experts Group)</h2>
+        <p>
+          Introduced in 1992, JPEG remains the world standard for photography and digital cameras. It uses the Discrete Cosine Transform (DCT) to discard subtle high-frequency color variations that the human visual system struggles to perceive.
+        </p>
+        <p><strong>When to use JPEG:</strong></p>
+        <ul>
+          <li>Sharing photos with users on legacy desktop operating systems or older mobile devices.</li>
+          <li>Sending attachments that must open in legacy desktop email clients and office software.</li>
+          <li>Preparing files for commercial photo printing laboratories.</li>
+        </ul>
+        <p><strong>When to convert from JPEG:</strong></p>
+        <ul>
+          <li>Convert to <a href="/jpg-to-webp">WebP</a> to shrink web photo sizes by 30%–40% for faster Core Web Vitals (LCP).</li>
+          <li>Convert to <a href="/jpg-to-avif">AVIF</a> for bleeding-edge file compression on modern platforms.</li>
+          <li>Convert to <a href="/jpg-to-png">PNG</a> if you need to edit the image repeatedly without generation loss.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. PNG (Portable Network Graphics)</h2>
+        <p>
+          PNG is an uncompressed or losslessly compressed raster format based on the DEFLATE algorithm (LZ77 combined with Huffman coding). Unlike JPEG, PNG guarantees 100% pixel-perfect fidelity and full 8-bit alpha channel transparency.
+        </p>
+        <p><strong>When to use PNG:</strong></p>
+        <ul>
+          <li>Logos, icons, UI buttons, and graphics with sharp geometric edges.</li>
+          <li>Screenshots containing crisp text where lossy compression would cause blurred halos.</li>
+          <li>Layered artwork in graphic editors like Figma, Photoshop, or GIMP.</li>
+        </ul>
+        <p><strong>When to convert from PNG:</strong></p>
+        <ul>
+          <li>Convert to <a href="/png-to-webp">WebP</a> to keep transparent backgrounds while saving up to 35% in file weight.</li>
+          <li>Convert to <a href="/png-to-jpg">JPG</a> when transparent backgrounds are not needed, saving up to 70% in byte size.</li>
+          <li>Convert to <a href="/png-to-avif">AVIF</a> for maximum compression with alpha channels.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. WebP (Google Next-Gen Format)</h2>
+        <p>
+          Developed by Google and based on the VP8 video codec, WebP provides both lossy and lossless compression with full alpha channel support. Today, WebP is supported across more than 98% of active web browsers worldwide.
+        </p>
+        <p><strong>When to use WebP:</strong></p>
+        <ul>
+          <li>All general website images, blog illustrations, and e-commerce product photos.</li>
+          <li>Replacing PNG graphics to accelerate page loading speeds.</li>
+        </ul>
+        <p><strong>When to convert from WebP:</strong></p>
+        <ul>
+          <li>Convert to <a href="/webp-to-jpg">JPG</a> if you need to insert images into older office suites, CAD software, or print workflows.</li>
+          <li>Convert to <a href="/webp-to-png">PNG</a> for lossless editing in offline graphic design applications.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. AVIF (AV1 Image File Format)</h2>
+        <p>
+          Standardized by the Alliance for Open Media, AVIF uses intra-frame compression from the AV1 video codec. It supports wider color gamuts (P3, Rec. 2020), 10-bit and 12-bit High Dynamic Range (HDR), and achieves the highest compression efficiency available today.
+        </p>
+        <p><strong>When to use AVIF:</strong></p>
+        <ul>
+          <li>High-traffic websites looking to reduce bandwidth costs to the absolute minimum.</li>
+          <li>HDR photography and rich color illustrations on supported platforms.</li>
+        </ul>
+        <p><strong>When to convert from AVIF:</strong></p>
+        <ul>
+          <li>Convert to <a href="/avif-to-jpg">JPG</a> or <a href="/avif-to-png">PNG</a> when sharing files with users whose software cannot decode AV1 containers.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why Browser-Side Conversion is Superior</h2>
+        <p>
+          FreeFileTools executes all conversions in-browser using HTML5 Canvas and <code>ImageBitmap</code> APIs. This delivers three core advantages:
+        </p>
+        <ol class="steps-list">
+          <li><strong>Zero Upload Waiting Time:</strong> Files are read directly from local memory, eliminating upload and download latency.</li>
+          <li><strong>Absolute Data Privacy:</strong> No photos, sensitive documents, or proprietary graphics ever leave your computer or phone.</li>
+          <li><strong>Free Unlimited Batch Processing:</strong> Convert dozens of files simultaneously without server queue restrictions or subscription fees.</li>
+        </ol>
+      </section>
+
+      <section class="tools-cta">
+        <h2>Ready to Convert Your Images?</h2>
+        <p>Try our suite of free, private, client-side conversion tools:</p>
+        <div class="cta-grid">
+          <a href="/image-converter" class="cta-card">
+            <strong>Universal Image Converter</strong>
+            <span>Convert between JPG, PNG, WebP, and AVIF</span>
+          </a>
+          <a href="/compress-image" class="cta-card">
+            <strong>Image Compressor</strong>
+            <span>Reduce file size with precision quality controls</span>
+          </a>
+          <a href="/image-tools" class="cta-card">
+            <strong>All Image Tools</strong>
+            <span>Explore our full image optimization suite</span>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- AdSense Slot: Below article content -->
+    <div class="adsense-slot" aria-label="Advertisement"></div>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide-article {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--space-8) 0 var(--space-16);
+  }
+
+  .article-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .article-meta {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    margin-bottom: var(--space-3);
+  }
+
+  .article-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-lead {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    max-width: 58ch;
+    margin: 0 auto;
+  }
+
+  .article-content section {
+    margin-bottom: var(--space-10);
+  }
+
+  .article-content h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-content ul,
+  .article-content ol {
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .article-content li {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+  }
+
+  .article-content a {
+    color: var(--color-brand-400);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+  }
+
+  .article-content a:hover {
+    text-decoration: underline;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin: var(--space-6) 0;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    text-align: left;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-default);
+  }
+
+  .comparison-table th {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .comparison-table td {
+    background: var(--surface-1);
+    color: var(--text-secondary);
+  }
+
+  .tools-cta {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    margin-top: var(--space-12);
+  }
+
+  .cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .cta-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    transition: transform var(--transition-base), border-color var(--transition-base);
+  }
+
+  .cta-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400);
+  }
+
+  .cta-card strong {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+
+  .cta-card span {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+</style>
