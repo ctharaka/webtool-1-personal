@@ -1,0 +1,56 @@
+---
+title: "Resize Images Online - FreeFileTool"
+description: "Resize images in your browser while preserving privacy. No uploads, batch processing, aspect-ratio lock."
+---
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UploadZone from '../../components/UploadZone.astro';
+
+<BaseLayout>
+  <section class="tool-hero py-12 text-center">
+    <h1 class="text-4xl font-bold mb-4">Resize Images</h1>
+    <p class="text-lg mb-6">Resize your images instantly in the browser – no files leave your device.</p>
+  </section>
+
+  <section class="max-w-4xl mx-auto mb-12">
+    <UploadZone
+      defaultFormat="original"
+      data-allowed-types="image/*"
+      data-max-file-bytes="52428800"
+      data-max-batch-bytes="209715200"
+      client:class="flex flex-col items-center"
+    >
+      <div class="w-full max-w-md mb-4">
+        <label class="block text-sm font-medium mb-1" for="width-input">Width (px)</label>
+        <input id="width-input" type="number" min="1" placeholder="Auto" class="w-full border rounded p-2" bind:value="width" />
+      </div>
+      <div class="w-full max-w-md mb-4">
+        <label class="block text-sm font-medium mb-1" for="height-input">Height (px)</label>
+        <input id="height-input" type="number" min="1" placeholder="Auto" class="w-full border rounded p-2" bind:value="height" />
+      </div>
+        <div class="flex items-center mb-4">
+          <input id="lock-aspect" type="checkbox" class="mr-2" bind:checked="lockAspect" />
+          <label for="lock-aspect" class="text-sm">Lock aspect ratio</label>
+        </div>
+    </UploadZone>
+  </section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Resize Images Online",
+    "step": [
+      {"@type": "HowToStep", "text": "Upload your image files by dragging them into the zone or selecting them from your device."},
+      {"@type": "HowToStep", "text": "Set the desired width and/or height. Enable the lock‑aspect‑ratio option to preserve proportions."},
+      {"@type": "HowToStep", "text": "Download the resized images individually or as a ZIP archive."}
+    ]
+  }
+  </script>
+
+  <section class="text-center mt-8">
+    <h2 class="text-2xl font-semibold mb-4">Next step</h2>
+    <a href="/image/compress" class="primary-btn inline-block mr-4">Compress Images</a>
+    <a href="/image/convert-to-avif" class="primary-btn inline-block">Convert to AVIF</a>
+  </section>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+title: "Convert Image to AVIF - FreeFileTool"
+description: "Convert images to the modern AVIF format directly in the browser – privacy‑first, no uploads."
+---
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UploadZone from '../../components/UploadZone.astro';
+
+<BaseLayout>
+  <section class="tool-hero py-12 text-center">
+    <h1 class="text-4xl font-bold mb-4">Convert to AVIF</h1>
+    <p class="text-lg mb-6">Convert your images to AVIF format for superior compression, all client‑side.</p>
+    <p class="text-sm text-muted mb-4">Note: AVIF conversion requires a modern browser with native AVIF support. If unsupported, the tool will display an error.</p>
+  </section>
+
+  <section class="max-w-4xl mx-auto mb-12">
+    <UploadZone
+      defaultFormat="avif"
+      data-allowed-types="image/*"
+      data-max-file-bytes="52428800"
+      data-max-batch-bytes="209715200"
+      client:class="flex flex-col items-center"
+    />
+  </section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Convert Image to AVIF",
+    "step": [
+      {"@type": "HowToStep", "text": "Upload your image files by dragging them into the zone or selecting them from your device."},
+      {"@type": "HowToStep", "text": "The tool converts the images to AVIF format using the browser's native support."},
+      {"@type": "HowToStep", "text": "Download the converted AVIF images individually or as a ZIP archive."}
+    ]
+  }
+  </script>
+
+  <section class="text-center mt-8">
+    <h2 class="text-2xl font-semibold mb-4">Next step</h2>
+    <a href="/image/resize" class="primary-btn inline-block mr-4">Resize Images</a>
+    <a href="/image/compress" class="primary-btn inline-block">Compress Images</a>
+  </section>
+</BaseLayout>
