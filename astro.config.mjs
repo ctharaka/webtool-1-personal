@@ -5,6 +5,7 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://freefiletool.app',
   output: 'static',
+  trailingSlash: 'ignore',
   integrations: [
     sitemap(),
     tailwind()

@@ -8,3 +8,11 @@ hash: 5559f3d4cc8f
 ---
 <!-- hash:5559f3d4cc8f -->
 The production URL /sitemap.xml was serving a stale sitemap with the legacy domain. I implemented a 301 redirect in public/_redirects to point to the Astro-generated /sitemap-index.xml. This ensures consistency between robots.txt and the actual sitemap architecture. Local dist/ verification confirms all canonical URLs are correct.
+---
+type: decision
+summary: Fix MetaTags/Breadcrumbs imports in word-counter.astro
+stored: 2026-09-15T09:03:23.251Z
+hash: b6a3a4264d45
+---
+<!-- hash:b6a3a4264d45 -->
+Fixed build error in src/pages/word-counter.astro by importing missing MetaTags and Breadcrumbs components and removing redundant MetaTags usage.

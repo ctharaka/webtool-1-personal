@@ -1,0 +1,43 @@
+---
+/**
+ * TargetKBSelector component for Image Compressor.
+ * Provides preset buttons (100KB, 200KB, 500KB) and a custom numeric input.
+ * Uses 1KB = 1,000 bytes.
+ */
+export interface Props {
+  /** Preset values in kilobytes */
+  presets?: number[];
+  /** Current target in kilobytes */
+  targetKB?: number;
+  /** Callback when target changes */
+  onChange?: (kb: number) => void;
+}
+
+const { presets = [100, 200, 500], targetKB = 0, onChange } = Astro.props as Props;
+---
+<div class="target-kb-selector space-y-2">
+  <div class="flex flex-wrap gap-2">
+    {presets.map((p) => (
+      <button
+        type="button"
+        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+        on:click={() => onChange?.(p)}
+      >
+        {p} KB
+      </button>
+    ))}
+  </div>
+  <div class="flex items-center gap-2 mt-2">
+    <label for="customKB" class="font-medium">Custom KB:</label>
+    <input
+      id="customKB"
+      type="number"
+      min="1"
+      placeholder="Enter KB"
+      class="border rounded px-2 py-1 w-24"
+      value={targetKB > 0 ? targetKB : ''}
+      on:input={(e) => onChange?.(parseInt(e.currentTarget.value) || 0)}
+    />
+    <span class="text-sm text-gray-600">1 KB = 1,000 bytes</span>
+  </div>
+</div>

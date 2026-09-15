@@ -1,15 +1,16 @@
 ---
 /**
- * word-counter.astro — Client-Side Word & Character Counter
+ * word-counter.astro â€” Client-Side Word & Character Counter
  * Real-time text analytics, word counts, sentence analysis, and reading time estimation.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MetaTags from '../components/MetaTags.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 ---
 
-<BaseLayout
-  title="Free Word Counter & Character Count Online — Text Analyzer"
-  description="Count words, characters, sentences, paragraphs, and estimate reading time in real-time. 100% private text analytics computed directly in your browser."
->
+<BaseLayout title="Word & Character Counter Online - Accurate Stats | FreeFileTools" description="Free online word counter and character counter tool. Instant text analysis, reading time estimation, and sentence count with 100% privacy.">
+  
+  <Breadcrumbs />
   <script type="application/ld+json" is:inline>
     {
       "@context": "https://schema.org",
@@ -117,7 +118,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
-      <span>Runs entirely in your browser — nothing is uploaded</span>
+      <span>Runs entirely in your browser â€” nothing is uploaded</span>
     </div>
   </div>
 
@@ -164,65 +165,86 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <script>
-    const textInput = document.getElementById('text-input');
-    const statWords = document.getElementById('stat-words');
-    const statChars = document.getElementById('stat-chars');
-    const statCharsNoSpaces = document.getElementById('stat-chars-no-spaces');
-    const statSentences = document.getElementById('stat-sentences');
-    const statParagraphs = document.getElementById('stat-paragraphs');
-    const statReadingTime = document.getElementById('stat-reading-time');
-    const btnCopy = document.getElementById('btn-copy');
-    const btnClear = document.getElementById('btn-clear');
+    <script>
+    // Word Counter enhancements
+    if (!(window as any).__wordCounterInitialized) {
+      (window as any).__wordCounterInitialized = true;
+      const initWordCounter = () => {
+        const textInput = document.getElementById('text-input') as HTMLTextAreaElement | null;
+        const statWords = document.getElementById('stat-words');
+        const statChars = document.getElementById('stat-chars');
+        const statCharsNoSpaces = document.getElementById('stat-chars-no-spaces');
+        const statSentences = document.getElementById('stat-sentences');
+        const statParagraphs = document.getElementById('stat-paragraphs');
+        const statReadingTime = document.getElementById('stat-reading-time');
+        const btnCopy = document.getElementById('btn-copy');
+        const btnClear = document.getElementById('btn-clear');
 
-    function updateStats() {
-      const text = textInput.value;
+        if (!textInput || !statWords || !statChars || !statCharsNoSpaces || !statSentences || !statParagraphs || !statReadingTime || !btnCopy || !btnClear) {
+          return;
+        }
 
-      // Characters
-      const charCount = text.length;
-      const charNoSpacesCount = text.replace(/\s/g, '').length;
+        function updateStats() {
+          const text = textInput!.value;
 
-      // Words
-      const trimmed = text.trim();
-      const wordsArray = trimmed ? trimmed.split(/\s+/).filter(Boolean) : [];
-      const wordCount = wordsArray.length;
+          // Characters
+          const charCount = text.length;
+          const charNoSpacesCount = text.replace(/\s/g, '').length;
 
-      // Sentences
-      const sentencesArray = trimmed ? trimmed.split(/[.!?]+/).filter(s => s.trim().length > 0) : [];
-      const sentenceCount = sentencesArray.length;
+          // Words
+          const trimmed = text.trim();
+          const wordsArray = trimmed ? trimmed.split(/\s+/).filter(Boolean) : [];
+          const wordCount = wordsArray.length;
 
-      // Paragraphs
-      const paragraphsArray = trimmed ? trimmed.split(/\n+/).filter(p => p.trim().length > 0) : [];
-      const paragraphCount = paragraphsArray.length;
+          // Sentences
+          const sentencesArray = trimmed ? trimmed.split(/[.!?]+/).filter(s => s.trim().length > 0) : [];
+          const sentenceCount = sentencesArray.length;
 
-      // Reading Time (~200 wpm)
-      const readingMinutes = Math.ceil(wordCount / 200);
-      const readingTimeStr = wordCount === 0 ? '0 min' : `${readingMinutes} min`;
+          // Paragraphs
+          const paragraphsArray = trimmed ? trimmed.split(/\n+/).filter(p => p.trim().length > 0) : [];
+          const paragraphCount = paragraphsArray.length;
 
-      statWords.textContent = wordCount.toLocaleString();
-      statChars.textContent = charCount.toLocaleString();
-      statCharsNoSpaces.textContent = charNoSpacesCount.toLocaleString();
-      statSentences.textContent = sentenceCount.toLocaleString();
-      statParagraphs.textContent = paragraphCount.toLocaleString();
-      statReadingTime.textContent = readingTimeStr;
+          // Reading Time (~200 wpm)
+          const readingMinutes = Math.ceil(wordCount / 200);
+          const readingTimeStr = wordCount === 0 ? '0 min' : `${readingMinutes} min`;
+
+          statWords!.textContent = wordCount.toLocaleString();
+          statChars!.textContent = charCount.toLocaleString();
+          statCharsNoSpaces!.textContent = charNoSpacesCount.toLocaleString();
+          statSentences!.textContent = sentenceCount.toLocaleString();
+          statParagraphs!.textContent = paragraphCount.toLocaleString();
+          statReadingTime!.textContent = readingTimeStr;
+        }
+
+        textInput.addEventListener('input', updateStats);
+
+        btnCopy.addEventListener('click', async () => {
+          if (!textInput.value) return;
+          try {
+            await navigator.clipboard.writeText(textInput.value);
+            btnCopy.textContent = 'Copied!';
+            setTimeout(() => { btnCopy.textContent = 'Copy Text'; }, 2000);
+          } catch (e) {
+            console.error('Clipboard write failed', e);
+            alert('Unable to copy to clipboard. Please allow clipboard permissions.');
+          }
+        });
+
+        btnClear.addEventListener('click', () => {
+          textInput.value = '';
+          updateStats();
+        });
+
+        // Initial update
+        updateStats();
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWordCounter);
+      } else {
+        initWordCounter();
+      }
     }
-
-    textInput.addEventListener('input', updateStats);
-
-    btnCopy.addEventListener('click', async () => {
-      if (!textInput.value) return;
-      await navigator.clipboard.writeText(textInput.value);
-      btnCopy.textContent = 'Copied!';
-      setTimeout(() => { btnCopy.textContent = 'Copy Text'; }, 2000);
-    });
-
-    btnClear.addEventListener('click', () => {
-      textInput.value = '';
-      updateStats();
-    });
-
-    // Initial update
-    updateStats();
   </script>
 
   <style>
@@ -457,3 +479,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   </style>
 </BaseLayout>
+
+
+
+

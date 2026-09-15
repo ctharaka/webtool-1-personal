@@ -1,0 +1,14 @@
+<!-- src/components/ToolCard.astro -->
+---
+export interface Props {
+  title: string;
+  description: string;
+  href: string;
+  icon?: string;
+}
+---
+<a href={Astro.props.href} class="block p-4 border rounded-lg hover:shadow-lg transition bg-surface-0">
+  {Astro.props.icon && <div class="mb-2" innerHTML={Astro.props.icon} />}
+  <h3 class="text-lg font-medium text-primary-600 mb-1">{Astro.props.title}</h3>
+  <p class="text-sm text-muted-foreground">{Astro.props.description}</p>
+</a>

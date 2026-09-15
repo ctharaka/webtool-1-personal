@@ -1,0 +1,23 @@
+<!-- src/components/SearchBar.astro -->
+---
+// No frontmatter needed
+---
+<div class="flex items-center justify-center my-8">
+  <input id="search-input" type="text" placeholder="Search tools..." class="px-4 py-2 border rounded w-64 focus:outline-none" />
+  <button id="search-btn" class="ml-2 px-4 py-2 bg-brand-500 text-white rounded hover:bg-brand-400 transition">Search</button>
+</div>
+
+<script>
+  const input = document.getElementById('search-input');
+  const btn = document.getElementById('search-btn');
+  const go = () => {
+    const q = encodeURIComponent(input.value.trim());
+    if (q) {
+      window.location.href = `/?q=${q}`;
+    }
+  };
+  btn.addEventListener('click', go);
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') go();
+  });
+</script>

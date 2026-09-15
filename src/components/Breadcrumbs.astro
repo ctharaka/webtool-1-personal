@@ -1,0 +1,35 @@
+---
+/**
+ * Breadcrumbs component – renders a clean breadcrumb trail based on the current URL.
+ */
+const pathname = Astro.url.pathname;
+const segments = pathname.split('/').filter(Boolean);
+---
+{segments.length > 0 && (
+  <nav aria-label="breadcrumb" class="breadcrumb mb-6 text-sm">
+    <ol class="flex flex-wrap items-center gap-2 text-gray-400">
+      <li>
+        <a href="/" class="hover:text-primary-400 transition-colors">Home</a>
+      </li>
+      {segments.map((segment, index) => {
+        const href = '/' + segments.slice(0, index + 1).join('/') + '/';
+        const isLast = index === segments.length - 1;
+        const label = decodeURIComponent(segment).replace(/-/g, ' ');
+        return (
+          <li class="flex items-center gap-2">
+            <span class="text-gray-600">/</span>
+            {isLast ? (
+              <span class="text-gray-200 capitalize font-medium" aria-current="page">
+                {label}
+              </span>
+            ) : (
+              <a href={href} class="hover:text-primary-400 transition-colors capitalize">
+                {label}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+)}

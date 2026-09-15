@@ -1,0 +1,25 @@
+---
+/**
+ * Component to inject SEO meta tags.
+ */
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+}
+
+const { title, description, canonicalURL: propCanonicalURL } = Astro.props;
+const baseCanonical = propCanonicalURL ?? Astro.url.href;
+const currentUrl = baseCanonical.endsWith('/') ? baseCanonical : `${baseCanonical}/`;
+---
+{title && <title>{title}</title>}
+{title && <meta name="title" content={title} />}
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={currentUrl} />
+<meta property="og:type" content="website" />
+{title && <meta property="og:title" content={title} />}
+{description && <meta property="og:description" content={description} />}
+<meta property="og:url" content={currentUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+{title && <meta name="twitter:title" content={title} />}
+{description && <meta name="twitter:description" content={description} />}
