@@ -1,0 +1,164 @@
+---
+/**
+ * ExifStripZone.astro
+ * 
+ * Simple, privacy-focused drag-and-drop zone to strip EXIF data from images.
+ * Uses off-screen canvas to re-export images without metadata.
+ */
+export interface Props {
+  id?: string;
+}
+
+const { id = 'exif-strip-zone' } = Astro.props;
+---
+
+<div class="exif-strip-zone" id={id} data-state="idle">
+  <input type="file" class="upload-zone__input" id={`${id}-input`} accept="image/png,image/jpeg,image/webp" multiple aria-hidden="true" tabindex="-1" />
+
+  <!-- STATE 1: Idle -->
+  <div class="upload-zone__state upload-zone__idle" role="button" tabindex="0">
+    <p class="upload-zone__heading">Drop photos to remove EXIF data</p>
+    <p class="upload-zone__sub">JPG, PNG, WebP supported &middot; Your files never leave your device.</p>
+  </div>
+
+  <!-- STATE 2: Queue/Processing -->
+  <div class="upload-zone__state upload-zone__options">
+    <h3 class="batch-title">Queued Files (<span class="upload-zone__file-count">0</span>)</h3>
+    <div class="upload-zone__queue-list"></div>
+    <button type="button" class="primary-btn exif-strip-btn">Strip EXIF Data</button>
+  </div>
+
+  <!-- STATE 3: Download -->
+  <div class="upload-zone__state upload-zone__download">
+    <p class="upload-zone__heading">EXIF Data Stripped!</p>
+    <div class="upload-zone__converted-list"></div>
+    <div class="download-actions">
+      <button type="button" class="primary-btn download-zip-btn">Download All (.zip)</button>
+      <button type="button" class="secondary-btn reset-btn">Process More</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import JSZip from 'jszip';
+  import { formatBytes } from '../lib/shared/validator.js';
+
+  document.querySelectorAll('.exif-strip-zone').forEach((zone) => {
+    const input = /** @type {HTMLInputElement} */ (zone.querySelector('.upload-zone__input'));
+    const idleArea = zone.querySelector('.upload-zone__idle');
+    const queueListEl = zone.querySelector('.upload-zone__queue-list');
+    const convertedList = zone.querySelector('.upload-zone__converted-list');
+    const fileCountEl = zone.querySelector('.upload-zone__file-count');
+    const stripBtn = zone.querySelector('.exif-strip-btn');
+    const downloadZipBtn = zone.querySelector('.download-zip-btn');
+    const resetBtn = zone.querySelector('.reset-btn');
+
+    /** @type {File[]} */
+    let queuedFiles = [];
+    let processedResults = [];
+
+    function setState(state) {
+      zone.setAttribute('data-state', state);
+    }
+
+    idleArea?.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', (e) => {
+      const files = Array.from(/** @type {HTMLInputElement} */(e.target).files || []);
+      queuedFiles = [...queuedFiles, ...files];
+      renderQueueList();
+      setState('options');
+    });
+
+    function renderQueueList() {
+      if (!queueListEl || !fileCountEl) return;
+      fileCountEl.textContent = String(queuedFiles.length);
+      queueListEl.innerHTML = '';
+      queuedFiles.forEach((file) => {
+        const item = document.createElement('div');
+        item.className = 'queue-item';
+        item.textContent = `${file.name} (${formatBytes(file.size)})`;
+        queueListEl.appendChild(item);
+      });
+    }
+
+    stripBtn?.addEventListener('click', async () => {
+      setState('processing'); // Needs CSS class for this state
+      processedResults = [];
+      for (const file of queuedFiles) {
+        const result = await stripExif(file);
+        processedResults.push(result);
+      }
+      renderDownloadList();
+      setState('download');
+    });
+
+    async function stripExif(file) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            resolve({
+              filename: file.name,
+              originalSize: file.size,
+              blob: blob,
+              size: blob.size,
+              url: URL.createObjectURL(blob)
+            });
+          }, file.type);
+        };
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    function renderDownloadList() {
+      if (!convertedList) return;
+      convertedList.innerHTML = '';
+      processedResults.forEach((res) => {
+        const item = document.createElement('div');
+        item.className = 'converted-item-row';
+        item.innerHTML = `<span>${res.filename} (${formatBytes(res.size)})</span> <a href="${res.url}" download="${res.filename}">Download</a>`;
+        convertedList.appendChild(item);
+      });
+    }
+
+    downloadZipBtn?.addEventListener('click', async () => {
+      const zip = new JSZip();
+      processedResults.forEach(r => zip.file(r.filename, r.blob));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stripped-images.zip';
+      a.click();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      queuedFiles = [];
+      setState('idle');
+    });
+  });
+</script>
+
+<style>
+  /* Simplified styles based on UploadZone.astro */
+  .exif-strip-zone {
+    border: 2px dashed var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    background: var(--surface-1);
+    text-align: center;
+  }
+  .upload-zone__state { display: none; flex-direction: column; align-items: center; gap: var(--space-4); }
+  .exif-strip-zone[data-state='idle'] .upload-zone__idle,
+  .exif-strip-zone[data-state='options'] .upload-zone__options,
+  .exif-strip-zone[data-state='download'] .upload-zone__download { display: flex; }
+  .upload-zone__input { display: none; }
+  .primary-btn { padding: var(--space-3) var(--space-6); background: var(--color-brand-500); color: white; border-radius: var(--radius-md); cursor: pointer; }
+  .secondary-btn { padding: var(--space-2.5) var(--space-5); background: var(--surface-2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer; }
+</style>

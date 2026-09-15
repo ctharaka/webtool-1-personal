@@ -69,6 +69,47 @@ import UploadZone from '../components/UploadZone.astro';
         <p class="tool-card__desc">Reduce file size of PNG, JPG, and WebP files with precision lossy and lossless quality tuning options.</p>
         <span class="tool-card__link">Launch Tool &rarr;</span>
       </a>
+
+      <a href="/privacy-tools/exif-remover" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--privacy">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="tool-card__title">Free EXIF Remover</h3>
+        <p class="tool-card__desc">Strip camera metadata, GPS location, and timestamps from JPG, PNG, and WebP images client-side.</p>
+        <span class="tool-card__link">Remove EXIF Data &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Privacy & Security Tools Section -->
+  <section class="hub-section" aria-label="Privacy & Security Tools">
+    <h2 class="section-title">Privacy &amp; Security Tools</h2>
+    <p class="section-subtitle">Clean, protect, and prepare your files without sending them to a server. 100% browser-based processing.</p>
+    <div class="tools-grid">
+      <a href="/privacy-tools/exif-remover" class="tool-card">
+        <div class="tool-card__icon tool-card__icon--privacy">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="tool-card__title">Free EXIF Remover</h3>
+        <p class="tool-card__desc">Remove hidden metadata from images before sharing them online. Strip GPS coordinates, device info, and timestamps.</p>
+        <span class="tool-card__link">Remove EXIF Data &rarr;</span>
+      </a>
+
+      <div class="tool-card" style="opacity: 0.65;">
+        <div class="tool-card__icon tool-card__icon--privacy">PDF</div>
+        <h3 class="tool-card__title">PDF Metadata Remover</h3>
+        <p class="tool-card__desc">Strip author info, creation timestamps, and software metadata from documents. Coming soon to FreeFileTools.</p>
+        <span class="tool-card__link" style="color: var(--color-accent-400);">Coming Soon</span>
+      </div>
+    </div>
+    <div style="text-align: center; margin-top: var(--space-6);">
+      <a href="/privacy-tools" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore Privacy &amp; Security Tools &rarr;</a>
     </div>
   </section>
 
@@ -395,6 +436,12 @@ import UploadZone from '../components/UploadZone.astro';
     background: color-mix(in srgb, var(--color-error-500) 15%, transparent);
     color: var(--color-error-400);
     border: 1px solid var(--color-error-400);
+  }
+
+  .tool-card__icon--privacy {
+    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
+    color: var(--color-brand-300);
+    border: 1px solid var(--color-brand-400);
   }
 
   .tool-card__title {

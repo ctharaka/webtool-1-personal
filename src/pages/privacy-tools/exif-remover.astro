@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExifStripZone from '../../components/ExifStripZone.astro';
+---
+
+<BaseLayout
+  title="Free Online EXIF Remover — Strip Metadata from Images | FreeFileTools"
+  description="Instantly remove EXIF camera data, GPS coordinates, and timestamps from your photos online. 100% private, browser-based, no uploads."
+>
+  <header class="tool-hero">
+    <h1 class="tool-title">Free EXIF Remover</h1>
+    <p class="tool-desc">Protect your privacy by removing hidden tracking metadata from your photos instantly in your browser.</p>
+    <div class="privacy-badge">Your photos never leave your device.</div>
+  </header>
+
+  <ExifStripZone />
+
+  <section class="content-sections">
+    <h2>Why Use an EXIF Remover?</h2>
+    <p>When you take a photo with a smartphone or digital camera, it saves more than just the image. It embeds hidden metadata, known as EXIF data, which can include:</p>
+    <ul>
+      <li>Precise GPS location coordinates</li>
+      <li>Camera model and settings</li>
+      <li>Date and time the photo was taken</li>
+      <li>Software used for editing</li>
+    </ul>
+    <p>Sharing these images online can accidentally reveal your home address, workplace, or travel habits. Our EXIF Remover strips this metadata permanently.</p>
+
+    <h2>How It Works</h2>
+    <ol>
+      <li><strong>Drop</strong> your photos into the secure zone above.</li>
+      <li><strong>Click</strong> "Strip EXIF Data" to process files locally.</li>
+      <li><strong>Download</strong> your cleaned, metadata-free images.</li>
+    </ol>
+  </section>
+
+  <section class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-accordion">
+      <details class="faq-details"><summary class="faq-summary">Is my data uploaded to a server?</summary><div class="faq-answer"><p>No. All processing happens entirely in your browser using local canvas APIs. No files are ever sent to any server.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">What kind of files are supported?</summary><div class="faq-answer"><p>We currently support JPG, JPEG, PNG, and WebP image formats.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Will stripping EXIF data reduce image quality?</summary><div class="faq-answer"><p>No. Stripping metadata does not affect the actual pixel data of the image. The image quality remains exactly the same.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Is this EXIF remover free to use?</summary><div class="faq-answer"><p>Yes, all tools on FreeFileTools are 100% free to use.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Do I need to install any software?</summary><div class="faq-answer"><p>No, this is a web-based tool. Nothing needs to be installed.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Is this tool safe for sensitive documents?</summary><div class="faq-answer"><p>Since no files leave your computer, it is very safe, even for sensitive personal photos.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Can I process multiple files at once?</summary><div class="faq-answer"><p>Yes, the tool supports batch processing. You can drag and drop multiple files to strip them all at once.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Are my original photos deleted?</summary><div class="faq-answer"><p>We do not delete your photos. Your original files remain on your device. The tool creates new, cleaned copies for you to download.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Is this tool mobile-compatible?</summary><div class="faq-answer"><p>Yes, the tool is designed to work in mobile browsers.</p></div></details>
+      <details class="faq-details"><summary class="faq-summary">Can I batch-download the cleaned photos?</summary><div class="faq-answer"><p>Yes, after processing, you can download all stripped photos at once in a single ZIP file.</p></div></details>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tool-hero { text-align: center; padding: var(--space-10) 0; }
+  .tool-title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); }
+  .tool-desc { font-size: var(--font-size-lg); color: var(--text-secondary); margin-top: var(--space-3); }
+  .privacy-badge { margin-top: var(--space-4); display: inline-block; padding: var(--space-2) var(--space-4); background: var(--surface-2); border-radius: var(--radius-full); font-size: var(--font-size-sm); color: var(--color-brand-400); font-weight: var(--font-weight-semibold); }
+  .content-sections { max-width: 60ch; margin: var(--space-12) auto; line-height: 1.6; }
+  .faq { max-width: 60ch; margin: var(--space-12) auto; }
+</style>
