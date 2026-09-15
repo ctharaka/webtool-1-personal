@@ -207,9 +207,9 @@ const labelList = allowedTypes.map((t) => t.toUpperCase()).join(', ');
 </div>
 
 <script>
-  import JSZip from 'jszip';
   import { validateFile, formatBytes } from '../lib/shared/validator.js';
   import { convertImage, convertBatch, sanitizeFilename, triggerDownload } from '../lib/converter.js';
+  import { addHistoryItem } from '../lib/history';
 
   document.querySelectorAll('.upload-zone').forEach((zone) => {
     const input          = /** @type {HTMLInputElement} */ (zone.querySelector('.upload-zone__input'));
@@ -566,12 +566,23 @@ const labelList = allowedTypes.map((t) => t.toUpperCase()).join(', ');
 
       setState('download');
       announce(`Batch conversion complete. ${queuedFiles.length} file(s) converted.`);
+
+      try {
+        addHistoryItem({
+          toolName: 'Image Converter',
+          toolUrl: window.location.pathname,
+          filename: queuedFiles.length === 1 ? queuedFiles[0].name : `${queuedFiles.length} files`,
+          summary: `${batchRes.totalSavings} saved`,
+        });
+      } catch (e) {}
     }
 
     // ── JSZip Export Handler ────────────────────────────────
     downloadZipBtn?.addEventListener('click', async () => {
       if (!lastBatchResults || !lastBatchResults.results.length) return;
 
+      const JSZipModule = await import('jszip');
+      const JSZip = JSZipModule.default || JSZipModule;
       const zip = new JSZip();
       let addedCount = 0;
 

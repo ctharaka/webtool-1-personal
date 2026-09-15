@@ -101,28 +101,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <div class="tools-directory-grid">
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/merge-pdf">Merge PDF</a></h3>
+          <h3><a href="/pdf/merge">Merge PDF</a></h3>
           <p>Combines multiple PDF files into one sequential document with drag-and-drop reordering.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/split-pdf">Split PDF</a></h3>
+          <h3><a href="/pdf/split">Split PDF</a></h3>
           <p>Splits documents into custom page ranges (e.g. 1-3, 5) or extracts every page into a ZIP archive.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/compress-pdf">Compress PDF</a></h3>
+          <h3><a href="/pdf/compress">Compress PDF</a></h3>
           <p>Optimizes binary object streams and strips redundant metadata without blurring vector fonts.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/pdf-to-images">PDF to Images</a></h3>
+          <h3><a href="/pdf/pdf-to-jpg">PDF to JPG</a></h3>
           <p>Renders PDF pages to high-resolution PNG or JPG graphics via HTML5 Canvas with custom DPI.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/images-to-pdf">Images to PDF</a></h3>
+          <h3><a href="/pdf/jpg-to-pdf">JPG to PDF</a></h3>
           <p>Embeds collections of JPG and PNG images into a clean multi-page PDF with A4 margin presets.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf-tools/pdf-page-extractor">PDF Page Extractor</a></h3>
-          <p>Isolates any single page from a PDF document and instantly downloads it as a new PDF.</p>
+          <h3><a href="/pdf/pdf-to-png">PDF to PNG</a></h3>
+          <p>Isolates pages from a PDF document as lossless PNG graphics.</p>
         </div>
       </div>
 
@@ -140,14 +140,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <ol>
         <li><strong>For Printing:</strong> Choose the High-Res (144 DPI) option when converting PDF pages to images.</li>
         <li><strong>For Archival:</strong> Use PNG output when converting technical documents to preserve vector clarity and transparent backgrounds.</li>
-        <li><strong>For Single Pages:</strong> Use the <a href="/pdf-tools/pdf-page-extractor">PDF Page Extractor</a> rather than splitting the whole document when you only need one certificate or invoice.</li>
+        <li><strong>For Single Pages:</strong> Use the <a href="/pdf/split">Split PDF Page Extractor</a> rather than splitting the whole document when you only need one certificate or invoice.</li>
       </ol>
     </div>
 
     <footer class="guide-footer">
       <h3>Ready to work with your PDFs?</h3>
       <p>Choose a free, private tool to get started immediately.</p>
-      <a href="/pdf-tools" class="primary-btn">Explore All PDF Tools &rarr;</a>
+      <a href="/pdf" class="primary-btn">Explore All PDF Tools &rarr;</a>
     </footer>
   </article>
 </BaseLayout>

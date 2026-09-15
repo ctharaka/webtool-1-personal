@@ -1,0 +1,22 @@
+# Pre-Freeze Production Checklist — FreeFileTool
+
+- [x] **Production build passes**: `npm run build` generates 55 static routes with 0 errors.
+- [x] **No legacy domain references**: Repository search for `freefiletools.pages.dev` and `freefiletool.pages.dev` returned 0 active code references.
+- [x] **Homepage works & redesigned**: Lightweight static landing page with live search, scannable cards, category hubs, privacy guarantees, and zero heavy pre-loaded JS.
+- [x] **Navigation works**: Mobile nav drawer verified with keyboard accessibility (`Enter`/`Space`), `aria-expanded`, and escape key listener.
+- [x] **Mobile layout checked**: Grid layouts collapse cleanly down to 320px viewports with zero horizontal scrollbars.
+- [x] **File selection works**: Click, tap, drag & drop, and mobile file pickers functional across all tools.
+- [x] **Existing tools work**: Image converters, PDF suite, audio tools, text utilities, and privacy tools tested.
+- [x] **Downloads work**: Object URLs created with 60s deferred revocation and instant reset cleanup.
+- [x] **Errors are understandable**: Contextual alerts surface file size limits, corrupted inputs, and encrypted PDF warnings.
+- [x] **No console errors**: Clean production runtime without unhandled rejections.
+- [x] **Accessibility focus works**: Skip link, heading hierarchy, visible focus rings, screen reader announcers.
+- [x] **Sitemap works**: `@astrojs/sitemap` generates `dist/sitemap-index.xml`.
+- [x] **Robots works**: `public/robots.txt` points to `https://freefiletool.app/sitemap-index.xml`.
+- [x] **Canonical URLs correct**: All canonical URLs point to `https://freefiletool.app/...`.
+- [x] **No accidental large homepage bundles**: Initial homepage JS bundle is only 0.59 kB.
+- [x] **Heavy libraries deferred**: `JSZip`, `pdf-lib`, `pdfjs-dist`, and `lamejs` loaded dynamically on demand.
+- [x] **Dead files removed safely**: Deleted obsolete duplicate routes in `src/pages/pdf-tools/` and temporary scratch files (`refactor.js`, `test_cmd.txt`).
+- [x] **No accidental secrets committed**: Security audit confirmed zero credentials or private tokens.
+- [x] **Git diff reviewed**: Clean commit history ready for freeze.
+- [x] **Known issues documented**: Included in `PRE_FREEZE_REPORT.md`.

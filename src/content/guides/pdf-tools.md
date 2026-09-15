@@ -23,42 +23,39 @@ FreeFileTools uses modern browser capabilities to eliminate the server entirely:
 
 ---
 
-## 2. Deep Dive: The 6 Native PDF Tools
+## 2. Deep Dive: The Native PDF Suite
 
-### Tool 1: Merge PDF (`/pdf-tools/merge-pdf`)
+### Tool 1: Merge PDF (`/pdf/merge`)
 - **Use Case**: Combining multiple chapter PDFs, appending signed addenda to contracts, or creating unified portfolios.
 - **Under the Hood**: `pdf-lib` creates a new `PDFDocument` in memory, loads each queued file sequentially, copies page references with `mergedDoc.copyPages(srcDoc, pageIndices)`, and adds them to the new document tree.
 - **Pro Tip**: Use the queue controls (▲ and ▼) to order your files before clicking "Merge".
 
-### Tool 2: Split PDF (`/pdf-tools/split-pdf`)
+### Tool 2: Split PDF (`/pdf/split`)
 - **Use Case**: Dividing a large 50-page packet into separate sections or extracting relevant pages for an email attachment.
 - **Modes**:
   - *Page Range Mode*: Accepts intervals like `1-5, 8, 11-15` and writes the matching pages into a single consolidated PDF.
   - *All Pages Mode*: Clones each page into an individual PDF file and packages the entire batch into a `.zip` archive using `jszip`.
 
-### Tool 3: Compress PDF (`/pdf-tools/compress-pdf`)
+### Tool 3: Compress PDF (`/pdf/compress`)
 - **Use Case**: Reducing email attachment size or meeting strict upload limits on government portals.
 - **Under the Hood**: Rather than performing lossy downsampling that blurs text, our compressor compacts internal PDF Cross-Reference (XRef) tables, merges loose objects into compressed object streams (`useObjectStreams: true`), and strips orphaned metadata.
 - **Preserved Quality**: Vector curves, embedded TTF/OTF fonts, and mathematical diagrams remain 100% sharp.
 
-### Tool 4: PDF to Images (`/pdf-tools/pdf-to-images`)
-- **Use Case**: Converting slide presentations into graphics, creating web thumbnails, or extracting architectural diagrams.
+### Tool 4: PDF to JPG (`/pdf/pdf-to-jpg`)
+- **Use Case**: Converting slide presentations into graphics, creating web thumbnails, or extracting architectural diagrams to JPEG images.
 - **Rendering Technology**: Pages are rasterized to an off-screen HTML5 Canvas via `pdfjs-dist`.
-- **Formats**:
-  - **PNG**: Lossless rendering with crisp typography and clean transparency.
-  - **JPG**: Compact lossy compression with adjustable quality (30% to 100%).
+- **Formats**: Compact lossy compression with adjustable quality (30% to 100%).
 - **Resolution Options**: Standard (108 DPI / 1.5x), High-Res (144 DPI / 2.0x), and Compact (72 DPI / 1.0x).
 
-### Tool 5: Images to PDF (`/pdf-tools/images-to-pdf`)
+### Tool 5: JPG / PNG to PDF (`/pdf/jpg-to-pdf` and `/pdf/png-to-pdf`)
 - **Use Case**: Converting smartphone receipts, scanned ID cards, or photo sets into a multi-page PDF document.
-- **Mixed Formats**: Seamlessly mix JPG and PNG images in the same queue.
+- **Mixed Formats**: Seamlessly convert JPG and PNG images into print-ready PDF pages.
 - **Sizing Options**:
   - *Fit to Image*: Each page dimension matches image pixel aspect ratio exactly.
   - *Standard A4*: Scales and centers images onto 8.27 × 11.69 inch pages with print-ready margins in either Portrait or Landscape mode.
 
-### Tool 6: PDF Page Extractor (`/pdf-tools/pdf-page-extractor`)
-- **Use Case**: Instantly isolating a single certificate, invoice page, or chart from a multi-page document with one click.
-- **Efficiency**: Directly targets the single page object without processing or rendering the rest of the document.
+### Tool 6: PDF to PNG (`/pdf/pdf-to-png`)
+- **Use Case**: Extracting vector diagrams, blueprints, or text pages as lossless PNG graphics.
 
 ---
 

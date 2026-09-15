@@ -1,558 +1,846 @@
 ---
 /**
- * index.astro — FreeFileTools Home Page
- * Authoritative software hub featuring browser-side conversion & rich SEO section.
+ * index.astro — FreeFileTool Landing Page Redesign
+ * Modern, ultra-fast, mobile-first product hub for client-side file tools.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import UploadZone from '../components/UploadZone.astro';
 ---
 
-<BaseLayout title="Free Online Image Tools — FreeFileTools">
-  <script type="application/ld+json">
+<BaseLayout
+  title="FreeFileTool — Free Browser-Side Image, PDF, Audio & Text Utilities"
+  description="Fast, free, and private online file tools. Convert images, merge & compress PDFs, trim audio, and format code 100% inside your browser. No file uploads."
+  canonicalURL="https://freefiletool.app/"
+>
+  <script type="application/ld+json" is:inline>
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "FreeFileTools",
-    "url": "https://freefiletool.app/"
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "FreeFileTool",
+        "url": "https://freefiletool.app/",
+        "description": "Free browser-based file conversion, compression, and utility tools running 100% client-side."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "FreeFileTool Suite",
+        "operatingSystem": "Any (Browser-based)",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    ]
   }
   </script>
 
-  <section class="hero">
-    <h1 class="hero__title">
-      Free Online <span class="hero__accent">Image Tools</span>
+  <!-- ── HERO SECTION ──────────────────────────────────────── -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <span class="hero-badge__dot"></span>
+      100% Private Client-Side Processing
+    </div>
+    <h1 class="hero-title">
+      Simple file tools.<br />
+      <span class="hero-title__accent">Right in your browser.</span>
     </h1>
-    <p class="hero__subtitle">
-      Convert, compress, resize, and optimize your images directly in your browser. Your files are processed locally on your device—no server uploads required.
+    <p class="hero-desc">
+      Convert images, manage PDFs, edit audio, and format data locally. Your files never touch a remote server—processing happens entirely in device memory.
     </p>
-  </section>
 
-  <!-- AdSense Slot: Above the main tool card -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
-
-  <section class="upload-section" aria-label="File upload zone">
-    <UploadZone defaultFormat="webp" />
-  </section>
-
-  <!-- Popular Tools Grid Section -->
-  <section class="hub-section" aria-label="Popular Tools">
-    <h2 class="section-title">Popular Image Optimization Tools</h2>
-    <p class="section-subtitle">Select one of our dedicated browser-side utilities to optimize your web assets.</p>
-    <div class="tools-grid">
-      <a href="/image-converter" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--png">ALL</div>
-        <h3 class="tool-card__title">Image Converter (All Formats)</h3>
-        <p class="tool-card__desc">Convert between JPG, PNG, WebP, and AVIF formats with custom quality controls and batch processing.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/png-to-webp" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--png">PNG</div>
-        <h3 class="tool-card__title">PNG to WebP Converter</h3>
-        <p class="tool-card__desc">Convert transparent and high-resolution PNGs into modern WebP images to speed up page load speeds.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/jpg-to-webp" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--jpg">JPG</div>
-        <h3 class="tool-card__title">JPG to WebP Converter</h3>
-        <p class="tool-card__desc">Re-encode JPEG graphics and photos into lightweight WebP format to save up to 40% in page file size.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/compress-image" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--compress">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3 class="tool-card__title">Image Compressor</h3>
-        <p class="tool-card__desc">Reduce file size of PNG, JPG, and WebP files with precision lossy and lossless quality tuning options.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/privacy-tools/exif-remover" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--privacy">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3 class="tool-card__title">Free EXIF Remover</h3>
-        <p class="tool-card__desc">Strip camera metadata, GPS location, and timestamps from JPG, PNG, and WebP images client-side.</p>
-        <span class="tool-card__link">Remove EXIF Data &rarr;</span>
-      </a>
+    <div class="hero-actions">
+      <a href="#popular-tools" class="btn-hero primary">Choose a Tool &rarr;</a>
+      <a href="#categories" class="btn-hero secondary">Browse Categories</a>
     </div>
   </section>
 
-  <!-- Privacy & Security Tools Section -->
-  <section class="hub-section" aria-label="Privacy & Security Tools">
-    <h2 class="section-title">Privacy &amp; Security Tools</h2>
-    <p class="section-subtitle">Clean, protect, and prepare your files without sending them to a server. 100% browser-based processing.</p>
-    <div class="tools-grid">
-      <a href="/privacy-tools/exif-remover" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--privacy">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3 class="tool-card__title">Free EXIF Remover</h3>
-        <p class="tool-card__desc">Remove hidden metadata from images before sharing them online. Strip GPS coordinates, device info, and timestamps.</p>
-        <span class="tool-card__link">Remove EXIF Data &rarr;</span>
-      </a>
-
-      <div class="tool-card" style="opacity: 0.65;">
-        <div class="tool-card__icon tool-card__icon--privacy">PDF</div>
-        <h3 class="tool-card__title">PDF Metadata Remover</h3>
-        <p class="tool-card__desc">Strip author info, creation timestamps, and software metadata from documents. Coming soon to FreeFileTools.</p>
-        <span class="tool-card__link" style="color: var(--color-accent-400);">Coming Soon</span>
-      </div>
-    </div>
-    <div style="text-align: center; margin-top: var(--space-6);">
-      <a href="/privacy-tools" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore Privacy &amp; Security Tools &rarr;</a>
+  <!-- ── SEARCH / FILTER BAR ───────────────────────────────── -->
+  <section class="search-section" aria-label="Tool search">
+    <div class="search-box">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        type="search"
+        id="tool-search-input"
+        class="search-input"
+        placeholder="Search tools (e.g., 'PDF merge', 'WebP', 'trim audio', 'EXIF', 'JSON')..."
+        aria-label="Search tools by name or format"
+      />
     </div>
   </section>
 
-  <!-- Popular PDF Tools Grid Section -->
-  <section class="hub-section" aria-label="PDF Tools">
-    <h2 class="section-title">Browser-Side PDF Tools</h2>
-    <p class="section-subtitle">Merge, compress, and convert documents locally in your browser with zero server uploads.</p>
-    <div class="tools-grid">
-      <a href="/pdf/merge" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--pdf">PDF</div>
-        <h3 class="tool-card__title">Merge PDF</h3>
-        <p class="tool-card__desc">Combine multiple PDF documents into a single organized file with easy page reordering.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
+  <!-- ── POPULAR FEATURED TOOLS ────────────────────────────── -->
+  <section class="hub-section" id="popular-tools" aria-label="Popular Tools">
+    <div class="section-header">
+      <h2 class="section-title">Popular Tools</h2>
+      <p class="section-subtitle">Our most frequently used client-side file utilities.</p>
+    </div>
+
+    <div class="tools-grid" id="popular-tools-grid">
+      <!-- 1. Image Converter -->
+      <a href="/image-converter" class="tool-card" data-keywords="image convert jpg png webp avif batch">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-image">IMG</div>
+          <span class="tool-card__tag">Batch</span>
+        </div>
+        <h3 class="tool-card__title">Image Converter</h3>
+        <p class="tool-card__desc">Convert between JPG, PNG, WebP, and AVIF formats with custom quality controls.</p>
+        <span class="tool-card__action">Launch Tool &rarr;</span>
       </a>
 
-      <a href="/pdf/compress" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--compress">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+      <!-- 2. Merge PDF -->
+      <a href="/pdf/merge" class="tool-card" data-keywords="pdf merge combine join document split">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-pdf">PDF</div>
+          <span class="tool-card__tag">Reorder</span>
+        </div>
+        <h3 class="tool-card__title">Merge PDF Files</h3>
+        <p class="tool-card__desc">Combine multiple PDF documents into a single organized file in seconds.</p>
+        <span class="tool-card__action">Launch Tool &rarr;</span>
+      </a>
+
+      <!-- 3. Compress PDF -->
+      <a href="/pdf/compress" class="tool-card" data-keywords="pdf compress shrink size optimize shrink">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-pdf">PDF</div>
+          <span class="tool-card__tag">Optimize</span>
         </div>
         <h3 class="tool-card__title">Compress PDF</h3>
-        <p class="tool-card__desc">Reduce PDF file size for email sharing using client-side object stream optimization.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
+        <p class="tool-card__desc">Reduce PDF byte weight while maintaining sharp vector fonts and layout clarity.</p>
+        <span class="tool-card__action">Launch Tool &rarr;</span>
       </a>
 
-      <a href="/pdf/jpg-to-pdf" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--jpg">JPG</div>
-        <h3 class="tool-card__title">JPG to PDF</h3>
-        <p class="tool-card__desc">Convert JPEG photos and scans into a clean multi-page PDF document with A4 layout options.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
+      <!-- 4. Image Compressor -->
+      <a href="/compress-image" class="tool-card" data-keywords="image compress shrink jpg png webp size">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-compress">⚡</div>
+          <span class="tool-card__tag">Size Tuning</span>
+        </div>
+        <h3 class="tool-card__title">Image Compressor</h3>
+        <p class="tool-card__desc">Shrink PNG, JPG, and WebP files with side-by-side quality and target KB controls.</p>
+        <span class="tool-card__action">Launch Tool &rarr;</span>
       </a>
 
-      <a href="/pdf/pdf-to-jpg" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--pdf">IMG</div>
-        <h3 class="tool-card__title">PDF to JPG</h3>
-        <p class="tool-card__desc">Extract PDF pages as high-resolution JPEG images with one-click multi-page ZIP export.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
+      <!-- 5. Free EXIF Remover -->
+      <a href="/privacy-tools/exif-remover" class="tool-card" data-keywords="exif metadata gps privacy location strip clean camera">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-privacy">🛡️</div>
+          <span class="tool-card__tag">Privacy</span>
+        </div>
+        <h3 class="tool-card__title">Free EXIF Remover</h3>
+        <p class="tool-card__desc">Strip camera metadata, GPS location, device models, and timestamps from photos.</p>
+        <span class="tool-card__action">Remove EXIF &rarr;</span>
+      </a>
+
+      <!-- 6. Audio Trimmer -->
+      <a href="/audio-trimmer" class="tool-card" data-keywords="audio trim cut mp3 wav m4a sound clip editor">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-audio">🎵</div>
+          <span class="tool-card__tag">WebAudio</span>
+        </div>
+        <h3 class="tool-card__title">Audio Trimmer</h3>
+        <p class="tool-card__desc">Cut and trim MP3 and WAV sound files directly in browser memory with visual waveform sliders.</p>
+        <span class="tool-card__action">Trim Audio &rarr;</span>
+      </a>
+
+      <!-- 7. JPG to WebP -->
+      <a href="/jpg-to-webp" class="tool-card" data-keywords="jpg jpeg webp image convert reencode">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-image">JPG</div>
+          <span class="tool-card__tag">WebP</span>
+        </div>
+        <h3 class="tool-card__title">JPG to WebP</h3>
+        <p class="tool-card__desc">Convert legacy JPEG graphics into lightweight WebP format to save up to 40% bandwidth.</p>
+        <span class="tool-card__action">Convert JPG &rarr;</span>
+      </a>
+
+      <!-- 8. JSON Formatter -->
+      <a href="/json-formatter" class="tool-card" data-keywords="json format prettify minify validate developer text">
+        <div class="tool-card__header">
+          <div class="tool-card__icon icon-text">{ }</div>
+          <span class="tool-card__tag">Developer</span>
+        </div>
+        <h3 class="tool-card__title">JSON Formatter</h3>
+        <p class="tool-card__desc">Prettify, validate, and minify JSON data instantly with syntax error detection.</p>
+        <span class="tool-card__action">Format JSON &rarr;</span>
       </a>
     </div>
-    <div style="text-align: center; margin-top: var(--space-6);">
-      <a href="/pdf" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore All 7 PDF Tools &rarr;</a>
+
+    <!-- Hidden search empty state -->
+    <div id="search-empty-state" class="search-empty-state" style="display: none;">
+      <p>No tools matched your search. Try searching for "PDF", "image", "audio", "convert", or "compress".</p>
     </div>
   </section>
 
-  <!-- Data & Text Tools Section -->
-  <section class="hub-section" aria-label="Text Tools">
-    <h2 class="section-title">Browser-Side Data &amp; Text Tools</h2>
-    <p class="section-subtitle">Generate QR codes, format JSON, compute cryptographic hashes, and convert text case locally with zero tracking.</p>
-    <div class="tools-grid">
-      <a href="/qr-code-generator" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--png">QR</div>
-        <h3 class="tool-card__title">QR Code Generator</h3>
-        <p class="tool-card__desc">Create custom vector SVG and high-res PNG QR codes with customizable colors and error correction.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/json-formatter" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--pdf">JSON</div>
-        <h3 class="tool-card__title">JSON Formatter &amp; Validator</h3>
-        <p class="tool-card__desc">Pretty-print, validate syntax, and minify JSON data with exact line and column error reporting.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/hash-generator" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--jpg">HASH</div>
-        <h3 class="tool-card__title">Cryptographic Hash Generator</h3>
-        <p class="tool-card__desc">Compute MD5, SHA-1, SHA-256, and SHA-512 checksums for text and files using native Web Crypto.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/base64-encoder-decoder" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--compress">B64</div>
-        <h3 class="tool-card__title">Base64 Encoder &amp; Decoder</h3>
-        <p class="tool-card__desc">Convert text and binary files to Base64 and back with complete international UTF-8 character support.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
+  <!-- ── ALL CATEGORIES BREAKDOWN ──────────────────────────── -->
+  <section class="hub-section" id="categories" aria-label="All Tool Categories">
+    <div class="section-header">
+      <h2 class="section-title">All Categories</h2>
+      <p class="section-subtitle">Explore our complete collection of browser-based utilities.</p>
     </div>
-    <div style="text-align: center; margin-top: var(--space-6);">
-      <a href="/text-tools" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore All 6 Text &amp; Data Tools &rarr;</a>
-    </div>
-  </section>
 
-  <!-- Audio Tools Section -->
-  <section class="hub-section" aria-label="Audio Tools">
-    <h2 class="section-title">Client-Side Audio Tools</h2>
-    <p class="section-subtitle">Convert sound files between WAV and MP3, trim audio clips, and compress bitrates directly in browser memory.</p>
-    <div class="tools-grid">
-      <a href="/audio-converter" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--png">AUD</div>
-        <h3 class="tool-card__title">Universal Audio Converter</h3>
-        <p class="tool-card__desc">Convert audio files between WAV and MP3 with customizable bitrates from 128 kbps to 320 kbps.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/wav-to-mp3" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--jpg">MP3</div>
-        <h3 class="tool-card__title">WAV to MP3 Converter</h3>
-        <p class="tool-card__desc">Compress large studio WAV files into lightweight MP3 format to save up to 90% in disk space.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/audio-trimmer" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--compress">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="6" cy="6" r="3"/>
-            <circle cx="6" cy="18" r="3"/>
-            <line x1="20" y1="4" x2="8.12" y2="15.88"/>
-            <line x1="14.47" y1="14.48" x2="20" y2="20"/>
-            <line x1="8.12" y1="8.12" x2="12" y2="12"/>
-          </svg>
+    <div class="category-grid">
+      <!-- Category 1: Image Tools -->
+      <div class="category-card" data-keywords="image photo graphics png jpg webp avif resize convert compress">
+        <div class="category-card__header">
+          <span class="category-card__icon">🖼️</span>
+          <h3 class="category-card__title">Image Tools</h3>
         </div>
-        <h3 class="tool-card__title">Audio Trimmer &amp; Cutter</h3>
-        <p class="tool-card__desc">Cut audio clips with millisecond-accurate start and end points and live in-browser preview.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-
-      <a href="/compress-audio" class="tool-card">
-        <div class="tool-card__icon tool-card__icon--pdf">OPT</div>
-        <h3 class="tool-card__title">Audio Compressor</h3>
-        <p class="tool-card__desc">Optimize voice notes and audio tracks by re-encoding to 64 kbps, 96 kbps, or 128 kbps.</p>
-        <span class="tool-card__link">Launch Tool &rarr;</span>
-      </a>
-    </div>
-    <div style="text-align: center; margin-top: var(--space-6);">
-      <a href="/audio-tools" class="tool-card__link" style="font-size: var(--font-size-base); text-decoration: underline;">Explore All 5 Audio Tools &rarr;</a>
-    </div>
-  </section>
-
-  <!-- Why FreeFileTools? Section -->
-  <section class="hub-section features-section" aria-label="Features">
-    <h2 class="section-title">Why Optimize with FreeFileTools?</h2>
-    <p class="section-subtitle">Unlike cloud utilities, all operations execute locally inside your browser memory.</p>
-    <div class="features-list">
-      <div class="feature-item">
-        <div class="feature-item__icon" aria-hidden="true">🔒</div>
-        <div class="feature-item__content">
-          <h3 class="feature-item__title">Browser-Based Processing</h3>
-          <p class="feature-item__desc">Your graphics and private photos never leave your device. File validation, re-encoding, and bundling happen locally in your web browser.</p>
-        </div>
+        <p class="category-card__desc">Convert, compress, resize, and strip metadata from images.</p>
+        <ul class="category-card__links">
+          <li><a href="/image-converter">Image Converter (All Formats)</a></li>
+          <li><a href="/jpg-to-webp">JPG to WebP Converter</a></li>
+          <li><a href="/png-to-webp">PNG to WebP Converter</a></li>
+          <li><a href="/compress-image">Image Compressor</a></li>
+          <li><a href="/optimization-lab">Visual Quality Compare Lab</a></li>
+          <li><a href="/image/resize">Image Resizer</a></li>
+        </ul>
+        <a href="/image-tools" class="category-card__more">Browse all Image Tools &rarr;</a>
       </div>
 
-      <div class="feature-item">
-        <div class="feature-item__icon" aria-hidden="true">⚡</div>
-        <div class="feature-item__content">
-          <h3 class="feature-item__title">Fast Processing</h3>
-          <p class="feature-item__desc">Conversions are powered by your device's native CPU and GPU capability, eliminating upload/download network delays entirely.</p>
+      <!-- Category 2: PDF Suite -->
+      <div class="category-card" data-keywords="pdf merge split compress jpg png pages pdf-to-jpg pdf-to-png">
+        <div class="category-card__header">
+          <span class="category-card__icon">📑</span>
+          <h3 class="category-card__title">PDF Suite</h3>
         </div>
+        <p class="category-card__desc">Merge, split, compress, and convert PDF documents in your browser.</p>
+        <ul class="category-card__links">
+          <li><a href="/pdf/merge">Merge PDF Files</a></li>
+          <li><a href="/pdf/split">Split PDF Pages</a></li>
+          <li><a href="/pdf/compress">Compress PDF</a></li>
+          <li><a href="/pdf/jpg-to-pdf">JPG to PDF</a></li>
+          <li><a href="/pdf/png-to-pdf">PNG to PDF</a></li>
+          <li><a href="/pdf/pdf-to-jpg">PDF to JPG</a></li>
+          <li><a href="/pdf/pdf-to-png">PDF to PNG</a></li>
+        </ul>
+        <a href="/pdf" class="category-card__more">Browse complete PDF Suite &rarr;</a>
       </div>
 
-      <div class="feature-item">
-        <div class="feature-item__icon" aria-hidden="true">📦</div>
-        <div class="feature-item__content">
-          <h3 class="feature-item__title">Batch Conversion</h3>
-          <p class="feature-item__desc">Add up to 50 files in a single batch. Queue files in parallel and convert them into your choice of next-generation file format.</p>
+      <!-- Category 3: Audio Tools -->
+      <div class="category-card" data-keywords="audio sound mp3 wav m4a aac trim convert compress">
+        <div class="category-card__header">
+          <span class="category-card__icon">🎵</span>
+          <h3 class="category-card__title">Audio Tools</h3>
         </div>
+        <p class="category-card__desc">Convert formats, trim clips, and compress audio files locally.</p>
+        <ul class="category-card__links">
+          <li><a href="/audio-converter">Universal Audio Converter</a></li>
+          <li><a href="/wav-to-mp3">WAV to MP3 Converter</a></li>
+          <li><a href="/mp3-to-wav">MP3 to WAV Converter</a></li>
+          <li><a href="/audio-trimmer">Audio Trimmer &amp; Cutter</a></li>
+          <li><a href="/compress-audio">Compress Audio</a></li>
+        </ul>
+        <a href="/audio-tools" class="category-card__more">Browse all Audio Tools &rarr;</a>
       </div>
 
-      <div class="feature-item">
-        <div class="feature-item__icon" aria-hidden="true">🎚️</div>
-        <div class="feature-item__content">
-          <h3 class="feature-item__title">Quality Control</h3>
-          <p class="feature-item__desc">Adjust lossy quality sliders from 10% to 100% to find the exact target compression balance for your specific application requirements.</p>
+      <!-- Category 4: Privacy & Security -->
+      <div class="category-card" data-keywords="privacy security exif metadata gps location photo clean">
+        <div class="category-card__header">
+          <span class="category-card__icon">🛡️</span>
+          <h3 class="category-card__title">Privacy &amp; Security</h3>
         </div>
+        <p class="category-card__desc">Clean file metadata and protect sensitive personal information.</p>
+        <ul class="category-card__links">
+          <li><a href="/privacy-tools/exif-remover">Free EXIF Remover</a></li>
+          <li><a href="/about">Privacy Architecture Guide</a></li>
+        </ul>
+        <a href="/privacy-tools" class="category-card__more">Browse Privacy Tools &rarr;</a>
       </div>
 
-      <div class="feature-item">
-        <div class="feature-item__icon" aria-hidden="true">📥</div>
-        <div class="feature-item__content">
-          <h3 class="feature-item__title">ZIP Downloads</h3>
-          <p class="feature-item__desc">Once your batch conversion is complete, download individual optimized files or export all of them together in a single zip archive.</p>
+      <!-- Category 5: Developer & Text Tools -->
+      <div class="category-card" data-keywords="developer text json base64 hash qr code word counter case">
+        <div class="category-card__header">
+          <span class="category-card__icon">🛠️</span>
+          <h3 class="category-card__title">Developer &amp; Text</h3>
         </div>
+        <p class="category-card__desc">Format JSON, generate QR codes, encode base64, and compute hashes.</p>
+        <ul class="category-card__links">
+          <li><a href="/qr-code-generator">QR Code Generator</a></li>
+          <li><a href="/json-formatter">JSON Formatter &amp; Validator</a></li>
+          <li><a href="/base64-encoder-decoder">Base64 Encoder / Decoder</a></li>
+          <li><a href="/hash-generator">Hash Generator (MD5 / SHA-256)</a></li>
+          <li><a href="/word-counter">Word Counter</a></li>
+          <li><a href="/case-converter">Case Converter</a></li>
+        </ul>
+        <a href="/text-tools" class="category-card__more">Browse Text Tools &rarr;</a>
       </div>
     </div>
   </section>
 
-  <!-- Recent Guides Section -->
-  <section class="hub-section guides-section" aria-label="Recent Guides">
-    <h2 class="section-title">Educational Guides &amp; Insights</h2>
-    <p class="section-subtitle">Deep dives on browser mechanics, image formats, and search engine optimization.</p>
-    <div class="guides-grid">
-      <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use" class="guide-card">
-        <span class="guide-card__tag">Web Standards</span>
-        <h3 class="guide-card__title">WebP vs PNG vs JPEG: Which Format to Use?</h3>
-        <p class="guide-card__desc">A detailed comparison of alpha transparency, compression algorithms, load speeds, and browser support rules.</p>
-        <span class="guide-card__read">Read Article &rarr;</span>
-      </a>
+  <!-- ── TRUST & PRIVACY VALUE PROPOSITION ──────────────────── -->
+  <section class="trust-section" aria-label="Privacy guarantee">
+    <div class="trust-container">
+      <h2 class="trust-title">Your files stay in your browser.</h2>
+      <p class="trust-subtitle">
+        Unlike traditional online file converters that upload your documents to remote cloud servers, FreeFileTool processes your files locally using browser WebAssembly and JavaScript APIs.
+      </p>
 
-      <a href="/guides/how-to-reduce-image-size-without-losing-quality" class="guide-card">
-        <span class="guide-card__tag">Optimization</span>
-        <h3 class="guide-card__title">How to Reduce Image Size Without Losing Quality</h3>
-        <p class="guide-card__desc">Master lossy quantization levels, visual perception metrics, and find the perfect 80% compression sweet spot.</p>
-        <span class="guide-card__read">Read Article &rarr;</span>
-      </a>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-card__icon">🔒</div>
+          <h3 class="trust-card__title">100% Client-Side</h3>
+          <p class="trust-card__desc">
+            Your files remain strictly inside your browser's RAM memory. No network uploads, no cloud storage, zero telemetry.
+          </p>
+        </div>
 
-      <a href="/guides/how-browser-based-image-compression-works" class="guide-card">
-        <span class="guide-card__tag">Architecture</span>
-        <h3 class="guide-card__title">How Browser-Based Image Compression Works</h3>
-        <p class="guide-card__desc">A detailed look at HTML5 Canvas buffer mechanics, local object memory, and why client-side processing keeps data safe.</p>
-        <span class="guide-card__read">Read Article &rarr;</span>
-      </a>
+        <div class="trust-card">
+          <div class="trust-card__icon">⚡</div>
+          <h3 class="trust-card__title">Instant Execution</h3>
+          <p class="trust-card__desc">
+            Skip file upload wait times. Operations process at native hardware speeds directly on your computer, tablet, or phone.
+          </p>
+        </div>
+
+        <div class="trust-card">
+          <div class="trust-card__icon">🆓</div>
+          <h3 class="trust-card__title">Free &amp; Unlimited</h3>
+          <p class="trust-card__desc">
+            No registration, no accounts, no daily conversion caps, and no hidden subscriptions.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- AdSense Slot: Below the layout -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+  <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+  <section class="hub-section" aria-label="How it works">
+    <div class="section-header">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Three quick steps to process your files safely.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-card__num">1</span>
+        <h3 class="step-card__title">Choose a Tool</h3>
+        <p class="step-card__desc">Select an image, PDF, audio, or text tool from our catalog.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-card__num">2</span>
+        <h3 class="step-card__title">Select Your File</h3>
+        <p class="step-card__desc">Drag &amp; drop or tap to pick files from your computer or phone.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-card__num">3</span>
+        <h3 class="step-card__title">Process &amp; Download</h3>
+        <p class="step-card__desc">Export your converted or compressed file instantly to your device.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ SECTION ───────────────────────────────────────── -->
+  <section class="hub-section faq-section" aria-label="Frequently Asked Questions">
+    <div class="section-header">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-accordion">
+      <details class="faq-item" open>
+        <summary class="faq-summary">Are my files uploaded to FreeFileTool servers?</summary>
+        <div class="faq-answer">
+          <p>
+            No. FreeFileTool is built with a zero-backend architecture. All processing is executed 100% locally inside your web browser using HTML5 Canvas, Web Audio API, and JavaScript libraries. Your files never touch a remote server.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">Is FreeFileTool completely free?</summary>
+        <div class="faq-answer">
+          <p>
+            Yes. All tools on FreeFileTool are 100% free to use without mandatory user sign-ups, accounts, daily usage limits, or hidden fees.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">Can I use FreeFileTool on my phone or tablet?</summary>
+        <div class="faq-answer">
+          <p>
+            Yes! FreeFileTool is designed mobile-first. All tool file pickers, options, and download buttons are fully responsive and touch-optimized for iOS Safari, Android Chrome, and mobile browsers.
+          </p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-summary">What is the maximum supported file size?</summary>
+        <div class="faq-answer">
+          <p>
+            We support file processing up to 50 MB per file (and 200 MB for batch queues). Because processing runs in your device's memory (RAM), modern smartphones and computers can comfortably handle standard files.
+          </p>
+        </div>
+      </details>
+    </div>
+  </section>
 </BaseLayout>
 
+<script>
+  // Instant search & filter for homepage tool cards
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = /** @type {HTMLInputElement} */ (document.getElementById('tool-search-input'));
+    const toolCards = document.querySelectorAll('.tools-grid .tool-card, .category-grid .category-card');
+    const emptyState = document.getElementById('search-empty-state');
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim().toLowerCase();
+      let matchCount = 0;
+
+      toolCards.forEach((card) => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        const text = card.textContent?.toLowerCase() || '';
+
+        if (!query || keywords.toLowerCase().includes(query) || text.includes(query)) {
+          (/** @type {HTMLElement} */ (card)).style.display = '';
+          matchCount++;
+        } else {
+          (/** @type {HTMLElement} */ (card)).style.display = 'none';
+        }
+      });
+
+      if (emptyState) {
+        emptyState.style.display = matchCount === 0 && query !== '' ? 'block' : 'none';
+      }
+    });
+  });
+</script>
+
 <style>
-  /* ── Hero ───────────────────────────────────────────────── */
-  .hero {
+  /* ── Hero Section ──────────────────────────────────────── */
+  .hero-section {
     text-align: center;
-    padding: var(--space-12) 0 var(--space-8);
+    padding: var(--space-8) 0 var(--space-6);
+    max-width: 48rem;
+    margin: 0 auto;
   }
 
-  .hero__title {
-    font-size: clamp(var(--font-size-3xl), 6vw, var(--font-size-5xl));
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-3.5);
+    background: color-mix(in srgb, var(--color-brand-500) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-300);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-badge__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-brand-400);
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
     font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-tight);
-    letter-spacing: var(--letter-spacing-tight);
     color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: var(--space-4);
   }
 
-  .hero__accent {
-    background: linear-gradient(135deg, var(--color-brand-400), var(--color-accent-400));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .hero-title__accent {
+    color: var(--color-brand-400);
   }
 
-  .hero__subtitle {
-    margin-top: var(--space-4);
-    font-size: var(--font-size-lg);
+  .hero-desc {
+    font-size: var(--font-size-base);
     color: var(--text-secondary);
-    max-width: 46ch;
-    margin-inline: auto;
     line-height: var(--line-height-loose);
+    margin-bottom: var(--space-6);
   }
 
-  /* ── Upload Section ────────────────────────────────────── */
-  .upload-section {
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .btn-hero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition: transform var(--transition-fast), filter var(--transition-fast);
+  }
+
+  .btn-hero.primary {
+    background: var(--color-brand-500);
+    color: #ffffff;
+    box-shadow: var(--shadow-md);
+  }
+  .btn-hero.primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  .btn-hero.secondary {
+    background: var(--surface-2);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+  }
+  .btn-hero.secondary:hover {
+    background: var(--surface-3);
+    border-color: var(--color-brand-400);
+  }
+
+  /* ── Search Section ────────────────────────────────────── */
+  .search-section {
     max-width: 40rem;
-    margin: 0 auto var(--space-16);
+    margin: 0 auto var(--space-8);
   }
 
-  /* ── Hub Sections ───────────────────────────────────────── */
-  .hub-section {
-    padding: var(--space-12) 0;
-    border-top: 1px solid var(--border-default);
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: var(--space-4);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-3-5) var(--space-4) var(--space-3-5) var(--space-11);
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .search-input:focus {
+    border-color: var(--color-brand-400);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-400) 25%, transparent);
+  }
+
+  /* ── Section Header ────────────────────────────────────── */
+  .section-header {
+    margin-bottom: var(--space-6);
   }
 
   .section-title {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
-    text-align: center;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
   }
 
   .section-subtitle {
-    font-size: var(--font-size-base);
-    color: var(--text-secondary);
-    text-align: center;
-    margin-bottom: var(--space-8);
-    max-width: 60ch;
-    margin-inline: auto;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
   }
 
-  /* ── Tools Grid ─────────────────────────────────────────── */
+  /* ── Popular Tools Grid ────────────────────────────────── */
+  .hub-section {
+    margin-bottom: var(--space-12);
+  }
+
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-5);
   }
 
   .tool-card {
     background: var(--surface-1);
     border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400);
+  }
+
+  .tool-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+  }
+
+  .tool-card__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: grid;
+    place-items: center;
+    font-weight: var(--font-weight-bold);
+    font-size: 13px;
+  }
+
+  .icon-image   { background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); color: var(--color-brand-300); border: 1px solid var(--color-brand-400); }
+  .icon-pdf     { background: color-mix(in srgb, var(--color-error-500) 15%, transparent); color: var(--color-error-400); border: 1px solid var(--color-error-400); }
+  .icon-compress{ background: color-mix(in srgb, var(--color-success-500) 15%, transparent); color: var(--color-success-300); border: 1px solid var(--color-success-400); }
+  .icon-privacy { background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); color: var(--color-brand-300); border: 1px solid var(--color-brand-400); }
+  .icon-audio   { background: color-mix(in srgb, var(--color-accent-500) 15%, transparent); color: var(--color-accent-400); border: 1px solid var(--color-accent-400); }
+  .icon-text    { background: var(--surface-3); color: var(--text-primary); border: 1px solid var(--border-subtle); }
+
+  .tool-card__tag {
+    font-size: 11px;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+  }
+
+  .tool-card__title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1-5);
+  }
+
+  .tool-card__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    line-height: var(--line-height-loose);
+    flex-grow: 1;
+    margin-bottom: var(--space-4);
+  }
+
+  .tool-card__action {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+  }
+
+  .search-empty-state {
+    padding: var(--space-8);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+  }
+
+  /* ── Category Cards Grid ────────────────────────────────── */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .category-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
     border-radius: var(--radius-xl);
     padding: var(--space-6);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    transition: transform var(--transition-base), border-color var(--transition-base);
-    text-decoration: none;
-    color: inherit;
   }
 
-  .tool-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-brand-400);
+  .category-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
   }
 
-  .tool-card__icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-lg);
-    display: grid;
-    place-items: center;
+  .category-card__icon {
+    font-size: 1.5rem;
+  }
+
+  .category-card__title {
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+
+  .category-card__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
     margin-bottom: var(--space-4);
   }
 
-  .tool-card__icon--png {
-    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
-    color: var(--color-brand-300);
-    border: 1px solid var(--color-brand-400);
+  .category-card__links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex-grow: 1;
   }
 
-  .tool-card__icon--jpg {
-    background: color-mix(in srgb, var(--color-accent-500) 15%, transparent);
-    color: var(--color-accent-300);
-    border: 1px solid var(--color-accent-400);
+  .category-card__links a {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
   }
 
-  .tool-card__icon--compress {
-    background: color-mix(in srgb, var(--color-success-500) 15%, transparent);
-    color: var(--color-success-300);
-    border: 1px solid var(--color-success-400);
+  .category-card__links a:hover {
+    color: var(--color-brand-400);
   }
 
-  .tool-card__icon--pdf {
-    background: color-mix(in srgb, var(--color-error-500) 15%, transparent);
-    color: var(--color-error-400);
-    border: 1px solid var(--color-error-400);
+  .category-card__more {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-400);
+    text-decoration: none;
   }
 
-  .tool-card__icon--privacy {
-    background: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
-    color: var(--color-brand-300);
-    border: 1px solid var(--color-brand-400);
+  /* ── Trust Section ─────────────────────────────────────── */
+  .trust-section {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-6);
+    margin-bottom: var(--space-12);
   }
 
-  .tool-card__title {
-    font-size: var(--font-size-lg);
+  .trust-container {
+    max-width: 52rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .trust-title {
+    font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
     margin-bottom: var(--space-2);
   }
 
-  .tool-card__desc {
+  .trust-subtitle {
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     line-height: var(--line-height-loose);
-    margin-bottom: var(--space-6);
-    flex-grow: 1;
+    margin-bottom: var(--space-8);
   }
 
-  .tool-card__link {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-brand-400);
-  }
-
-  /* ── Features List ──────────────────────────────────────── */
-  .features-list {
+  .trust-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: var(--space-6);
+    text-align: left;
   }
 
-  .feature-item {
-    display: flex;
-    gap: var(--space-4);
-    background: var(--surface-1);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-xl);
+  .trust-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     padding: var(--space-5);
   }
 
-  .feature-item__icon {
-    font-size: var(--font-size-2xl);
-    line-height: 1;
-    user-select: none;
+  .trust-card__icon {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
   }
 
-  .feature-item__title {
+  .trust-card__title {
     font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--text-primary);
     margin-bottom: var(--space-1);
   }
 
-  .feature-item__desc {
+  .trust-card__desc {
     font-size: var(--font-size-xs);
     color: var(--text-muted);
     line-height: var(--line-height-loose);
   }
 
-  /* ── Guides Grid ────────────────────────────────────────── */
-  .guides-grid {
+  /* ── How It Works ──────────────────────────────────────── */
+  .steps-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-5);
   }
 
-  .guide-card {
+  .step-card {
     background: var(--surface-1);
     border: 1px solid var(--border-default);
-    border-radius: var(--radius-xl);
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    transition: transform var(--transition-base), border-color var(--transition-base);
-    text-decoration: none;
-    color: inherit;
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    position: relative;
   }
 
-  .guide-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-accent-400);
-  }
-
-  .guide-card__tag {
-    font-size: var(--font-size-xs);
+  .step-card__num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-brand-500);
+    color: #ffffff;
+    font-size: 13px;
     font-weight: var(--font-weight-bold);
-    color: var(--color-accent-400);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
     margin-bottom: var(--space-3);
   }
 
-  .guide-card__title {
+  .step-card__title {
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
-    margin-bottom: var(--space-2);
-    line-height: var(--line-height-tight);
+    margin-bottom: var(--space-1);
   }
 
-  .guide-card__desc {
+  .step-card__desc {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    line-height: var(--line-height-loose);
+  }
+
+  /* ── FAQ Section ───────────────────────────────────────── */
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 48rem;
+  }
+
+  .faq-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .faq-summary {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .faq-answer {
+    margin-top: var(--space-3);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     line-height: var(--line-height-loose);
-    margin-bottom: var(--space-4);
-    flex-grow: 1;
-  }
-
-  .guide-card__read {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-accent-400);
   }
 </style>

@@ -4,6 +4,7 @@
  * High-utility index for FreeFileTools' client-side PDF tool cluster.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RecentHistory from '../../components/RecentHistory.astro';
 ---
 
 <BaseLayout
@@ -234,6 +235,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </details>
     </div>
   </section>
+
+  <!-- Recent History Widget -->
+  <RecentHistory />
 
   <!-- AdSense Slot: Below content -->
   <div class="adsense-slot" aria-label="Advertisement"></div>
