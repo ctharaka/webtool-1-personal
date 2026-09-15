@@ -369,6 +369,8 @@ const {
 <style>
   .audio-zone {
     width: 100%;
+    max-width: 48rem;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
@@ -378,7 +380,7 @@ const {
     background: var(--surface-card);
     border: 2px dashed var(--border-default);
     border-radius: var(--radius-xl);
-    padding: var(--space-10) var(--space-6);
+    padding: clamp(var(--space-6), 4vw, var(--space-10)) var(--space-4);
     text-align: center;
     transition: all var(--transition-base);
     cursor: pointer;
@@ -424,6 +426,7 @@ const {
     color: #000000;
     font-size: var(--font-size-sm);
     font-weight: 600;
+    min-height: 44px;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
     border: none;

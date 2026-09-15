@@ -113,23 +113,29 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
         </a>
 
         <nav class="site-nav" aria-label="Main Navigation">
-<div class="flex items-center w-full md:w-auto">
-  <!-- Mobile menu button -->
-  <button id="mobile-menu-toggle" class="md:hidden mr-4 text-primary-400" aria-label="Toggle navigation" aria-controls="mobile-nav" aria-expanded="false">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-  </button>
-  <ul id="mobile-nav" class="nav-list hidden flex-col md:flex md:flex-row md:items-center md:space-x-4">
-    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-    <li class="nav-item"><a href="/image-tools" class="nav-link">Image Tools</a></li>
-    <li class="nav-item"><a href="/pdf" class="nav-link">PDF Tools</a></li>
-    <li class="nav-item"><a href="/text-tools" class="nav-link">Text Tools</a></li>
-    <li class="nav-item"><a href="/audio-tools" class="nav-link">Audio Tools</a></li>
-    <li class="nav-item"><a href="/optimization-lab" class="nav-link nav-link--highlight">Optimization Lab</a></li>
-    <li class="nav-item"><a href="/guides" class="nav-link">Guides</a></li>
-    <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
-    <li class="nav-item"><a href="/privacy-tools" class="nav-link">Privacy &amp; Security</a></li>
-  </ul>
-</div>
+          <!-- Mobile menu toggle button (min 44px touch target) -->
+          <button
+            id="mobile-menu-toggle"
+            class="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg text-secondary hover:text-primary hover:bg-surface-2 focus:outline-none focus:ring-2 focus:ring-brand-400"
+            aria-label="Toggle navigation"
+            aria-controls="mobile-nav"
+            aria-expanded="false"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+          <ul id="mobile-nav" class="nav-list hidden md:flex md:flex-row md:items-center md:space-x-4">
+            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="/image-tools" class="nav-link">Image Tools</a></li>
+            <li class="nav-item"><a href="/pdf" class="nav-link">PDF Tools</a></li>
+            <li class="nav-item"><a href="/text-tools" class="nav-link">Text Tools</a></li>
+            <li class="nav-item"><a href="/audio-tools" class="nav-link">Audio Tools</a></li>
+            <li class="nav-item"><a href="/optimization-lab" class="nav-link nav-link--highlight">Optimization Lab</a></li>
+            <li class="nav-item"><a href="/guides" class="nav-link">Guides</a></li>
+            <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+            <li class="nav-item"><a href="/privacy-tools" class="nav-link">Privacy &amp; Security</a></li>
+          </ul>
         </nav>
       </div>
     </header>
@@ -247,37 +253,72 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
       </div>
     </footer>
   <script>
-    // Mobile navigation accessibility enhancements
+    // Mobile navigation interaction & accessibility enhancements
     document.addEventListener('DOMContentLoaded', () => {
       const toggle = document.getElementById('mobile-menu-toggle');
       const nav = document.getElementById('mobile-nav');
       if (!toggle || !nav) return;
 
-      // Toggle via click (existing behavior) and keyboard (Enter/Space)
-      const activateMenu = () => {
-        const expanded = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', !expanded);
-        nav.classList.toggle('hidden');
-        // When opened, move focus to first link for better keyboard flow
-        if (!expanded) {
-          const firstLink = nav.querySelector('a');
-          firstLink && firstLink.focus();
-        }
-      };
+      const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+      const navLinks = nav.querySelectorAll('.nav-link');
 
-      toggle.addEventListener('click', activateMenu);
-      toggle.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          activateMenu();
+      // Highlight active link matching current path
+      navLinks.forEach((link) => {
+        const href = (link.getAttribute('href') || '').replace(/\/$/, '') || '/';
+        if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+          link.classList.add('nav-link--active');
+          link.setAttribute('aria-current', 'page');
         }
       });
 
-      // Close menu with Escape key when open
+      const toggleMenu = (show?: boolean) => {
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        const targetState = typeof show === 'boolean' ? show : !isExpanded;
+        
+        toggle.setAttribute('aria-expanded', String(targetState));
+        if (targetState) {
+          nav.classList.remove('hidden');
+          const firstLink = nav.querySelector('a');
+          firstLink && firstLink.focus();
+        } else {
+          nav.classList.add('hidden');
+        }
+      };
+
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleMenu();
+        }
+      });
+
+      // Auto-close menu when clicking a link inside
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (toggle.getAttribute('aria-expanded') === 'true') {
+            toggleMenu(false);
+          }
+        });
+      });
+
+      // Close when clicking outside header navigation
+      document.addEventListener('click', (e) => {
+        if (toggle.getAttribute('aria-expanded') === 'true' && !nav.contains(e.target as Node) && !toggle.contains(e.target as Node)) {
+          toggleMenu(false);
+        }
+      });
+
+      // Close menu on Escape key press
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
           e.preventDefault();
-          activateMenu(); // toggles closed
+          toggleMenu(false);
+          toggle.focus();
         }
       });
     });
@@ -365,6 +406,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   }
 
   .header-inner {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -381,6 +423,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
     font-weight: var(--font-weight-normal);
     letter-spacing: var(--letter-spacing-tight);
     transition: opacity var(--transition-fast);
+    white-space: nowrap;
   }
 
   .logo:hover {
@@ -410,7 +453,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   .nav-list {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-5);
     list-style: none;
   }
 
@@ -422,12 +465,13 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     color: var(--text-secondary);
-    transition: color var(--transition-fast);
+    transition: color var(--transition-fast), background var(--transition-fast);
     padding: var(--space-2) 0;
     cursor: pointer;
   }
 
-  .nav-link:hover {
+  .nav-link:hover,
+  .nav-link.nav-link--active {
     color: var(--text-primary);
   }
 
@@ -439,6 +483,68 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   .nav-link--highlight:hover {
     color: var(--color-accent-400);
     opacity: 0.8;
+  }
+
+  /* Mobile Dropdown Panel */
+  @media (max-width: 767px) {
+    .header-inner {
+      padding: var(--space-2.5) var(--space-4);
+    }
+
+    #mobile-nav {
+      list-style: none;
+      margin: 0;
+    }
+
+    #mobile-nav:not(.hidden) {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: calc(100% + var(--space-2));
+      left: var(--space-4);
+      right: var(--space-4);
+      background: var(--surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: var(--space-3);
+      gap: var(--space-1);
+      box-shadow: var(--shadow-xl);
+      max-height: calc(100vh - 80px);
+      max-height: calc(100dvh - 80px);
+      overflow-y: auto;
+      z-index: 500;
+    }
+
+    #mobile-nav .nav-item {
+      width: 100%;
+    }
+
+    #mobile-nav .nav-link {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-secondary);
+    }
+
+    #mobile-nav .nav-link:hover,
+    #mobile-nav .nav-link:focus,
+    #mobile-nav .nav-link.nav-link--active {
+      background: var(--surface-3);
+      color: var(--text-primary);
+    }
+
+    #mobile-nav .nav-link--highlight {
+      color: var(--color-accent-400);
+      background: color-mix(in srgb, var(--color-accent-500) 10%, transparent);
+    }
+
+    .breadcrumb-container {
+      padding: var(--space-3) var(--space-4) 0 !important;
+    }
   }
 
   /* Dropdown Menu */
@@ -489,7 +595,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
     width: 100%;
     max-width: 72rem;
     margin: 0 auto;
-    padding: var(--space-8) var(--space-6);
+    padding: clamp(var(--space-5), 3vw, var(--space-8)) clamp(var(--space-4), 3vw, var(--space-6));
   }
 
   /* ── Footer ────────────────────────────────────────────── */

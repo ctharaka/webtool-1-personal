@@ -148,9 +148,12 @@ const { id = 'exif-strip-zone' } = Astro.props;
 <style>
   /* Simplified styles based on UploadZone.astro */
   .exif-strip-zone {
+    width: 100%;
+    max-width: 48rem;
+    margin: 0 auto;
     border: 2px dashed var(--border-subtle);
     border-radius: var(--radius-xl);
-    padding: var(--space-8);
+    padding: clamp(var(--space-4), 4vw, var(--space-8));
     background: var(--surface-1);
     text-align: center;
   }

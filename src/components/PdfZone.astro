@@ -982,8 +982,11 @@ if (mode === 'split') {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 320px;
-    padding: var(--space-8);
+    min-height: 260px;
+    width: 100%;
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: clamp(var(--space-4), 4vw, var(--space-8));
     border: 2px dashed var(--border-subtle);
     border-radius: var(--radius-xl);
     background: var(--surface-1);
