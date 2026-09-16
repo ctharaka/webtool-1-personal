@@ -141,9 +141,11 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
     </header>
 
     <main id="main-content">
-      <div class="breadcrumb-container" style="max-width: 72rem; margin: 0 auto; padding: var(--space-4) var(--space-6) 0;">
-        <Breadcrumbs />
-      </div>
+      {Astro.url.pathname !== '/' && (
+        <div class="breadcrumb-container" style="max-width: 88rem; margin: 0 auto; padding: var(--space-4) var(--space-6) 0;">
+          <Breadcrumbs />
+        </div>
+      )}
       <slot />
     </main>
 
@@ -410,7 +412,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 72rem;
+    max-width: 88rem;
     margin: 0 auto;
     padding: var(--space-3) var(--space-6);
   }
@@ -593,7 +595,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   #main-content {
     flex: 1;
     width: 100%;
-    max-width: 72rem;
+    max-width: 88rem;
     margin: 0 auto;
     padding: clamp(var(--space-5), 3vw, var(--space-8)) clamp(var(--space-4), 3vw, var(--space-6));
   }
@@ -607,7 +609,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   }
 
   .footer-inner {
-    max-width: 72rem;
+    max-width: 88rem;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -693,7 +695,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
   }
 
   .footer-bottom {
-    max-width: 72rem;
+    max-width: 88rem;
     margin: var(--space-10) auto 0;
     padding-top: var(--space-6);
     border-top: 1px solid var(--border-default);
