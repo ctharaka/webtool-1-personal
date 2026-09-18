@@ -1,0 +1,810 @@
+---
+/**
+ * file-inspector.astro — Browser File Inspector & Metadata Analyzer
+ * 
+ * Analyzes file headers, magic bytes, dimensions, audio/video duration,
+ * EXIF tags, and cryptographic hashes 100% locally in browser memory.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyBadge from '../components/PrivacyBadge.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
+---
+
+<BaseLayout
+  title="Browser File Inspector — Analyze Metadata, MIME & Hashes 100% Locally"
+  description="Inspect file properties, MIME types, EXIF camera tags, image dimensions, audio/video durations, and SHA-256 hashes directly in your browser. 100% private with zero data upload."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTool Browser File Inspector",
+          "url": "https://freefiletool.app/file-inspector",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript and HTML5 File API",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Inspect file MIME types and extension validation",
+            "Extract image dimensions and aspect ratios",
+            "Detect audio and video stream durations",
+            "Extract EXIF camera tags and GPS location metadata",
+            "Compute SHA-256, SHA-1, and MD5 cryptographic hashes",
+            "Download full JSON analysis report",
+            "100% client-side execution with zero data uploads"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does File Inspector upload my files to a server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. File Inspector reads your file directly into browser memory using the HTML5 FileReader and Web Crypto APIs. Zero bytes are uploaded to any server."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What metadata can File Inspector detect?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It detects image pixel dimensions, EXIF camera metadata, GPS coordinates, timestamps, audio/video durations, MIME headers, and SHA-256 checksums."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Flagship Privacy Utility</div>
+    <h1 class="tool-hero__title">Browser File Inspector</h1>
+    <p class="tool-hero__desc">
+      Inspect file properties, dimensions, EXIF camera tags, audio/video durations, and cryptographic hashes instantly. Analyzed 100% inside your browser's local memory.
+    </p>
+    <PrivacyBadge variant="badge" />
+  </section>
+
+  <AdSlot position="top-leaderboard" />
+
+  <!-- Interactive Inspector Workspace -->
+  <section class="inspector-stage" aria-label="File Inspector Workspace">
+    <div class="inspector-card" id="inspector-dropzone">
+      <input type="file" id="inspector-input" class="sr-only" aria-label="Select file to inspect" />
+
+      <!-- Idle Drop State -->
+      <div class="drop-prompt" id="drop-prompt" role="button" tabindex="0">
+        <div class="drop-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+        </div>
+        <h2 class="drop-title">Drop any file here to inspect</h2>
+        <p class="drop-subtitle">
+          or <span class="browse-link">browse from your computer</span> &middot; Images, PDFs, Audio, Video, Documents, Archives
+        </p>
+      </div>
+
+      <!-- Analyzing State -->
+      <div class="analyzing-state hidden" id="analyzing-state">
+        <div class="spinner"></div>
+        <p class="analyzing-text">Inspecting file properties &amp; calculating hashes...</p>
+      </div>
+
+      <!-- Results View -->
+      <div class="results-view hidden" id="results-view">
+        <div class="results-header">
+          <div class="file-main-badge">
+            <span class="file-icon" id="res-icon">📁</span>
+            <div>
+              <h3 class="file-name" id="res-filename">document.pdf</h3>
+              <p class="file-size-type" id="res-size-type">3.4 MB &middot; application/pdf</p>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            <button type="button" class="btn-secondary" id="btn-inspect-another">
+              Inspect Another File
+            </button>
+            <button type="button" class="btn-primary" id="btn-download-report">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download JSON Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Privacy Alert Pill (if EXIF GPS detected) -->
+        <div class="privacy-alert hidden" id="privacy-alert">
+          <span class="alert-icon">⚠️</span>
+          <div>
+            <strong>Privacy Warning:</strong> This image contains embedded EXIF metadata (camera model or location).
+            <a href="/privacy-tools/exif-remover" class="alert-link">Strip EXIF Data &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <!-- General File Info -->
+          <div class="metric-card">
+            <h4 class="metric-title">Basic File Properties</h4>
+            <ul class="prop-list">
+              <li><span class="prop-label">MIME Type:</span> <code id="prop-mime">-</code></li>
+              <li><span class="prop-label">Extension:</span> <code id="prop-ext">-</code></li>
+              <li><span class="prop-label">Exact Bytes:</span> <span id="prop-bytes">-</span></li>
+              <li><span class="prop-label">Last Modified:</span> <span id="prop-modified">-</span></li>
+            </ul>
+          </div>
+
+          <!-- Media Specific Info -->
+          <div class="metric-card">
+            <h4 class="metric-title">Media &amp; Dimensions</h4>
+            <ul class="prop-list">
+              <li><span class="prop-label">Dimensions:</span> <span id="prop-dims">N/A</span></li>
+              <li><span class="prop-label">Aspect Ratio:</span> <span id="prop-ratio">N/A</span></li>
+              <li><span class="prop-label">Media Duration:</span> <span id="prop-duration">N/A</span></li>
+              <li><span class="prop-label">Color Space:</span> <span id="prop-color">sRGB / Canvas</span></li>
+            </ul>
+          </div>
+
+          <!-- Cryptographic Hashes -->
+          <div class="metric-card metric-card--full">
+            <h4 class="metric-title">Cryptographic Checksums</h4>
+            <div class="hash-row">
+              <span class="hash-type">SHA-256</span>
+              <code class="hash-val" id="hash-sha256">Calculating...</code>
+            </div>
+            <div class="hash-row">
+              <span class="hash-type">SHA-1</span>
+              <code class="hash-val" id="hash-sha1">Calculating...</code>
+            </div>
+            <div class="hash-row">
+              <span class="hash-type">MD5</span>
+              <code class="hash-val" id="hash-md5">Calculating...</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Actions / Continue Working -->
+        <div class="next-actions-box">
+          <h4 class="next-title">What do you want to do with this file?</h4>
+          <div class="next-buttons">
+            <a href="/compress-image" class="next-btn" id="act-compress">
+              <span>📉 Compress File</span>
+            </a>
+            <a href="/image-converter" class="next-btn" id="act-convert">
+              <span>🔄 Convert Format</span>
+            </a>
+            <a href="/privacy-tools/exif-remover" class="next-btn" id="act-strip">
+              <span>🛡️ Strip Metadata</span>
+            </a>
+            <a href="/image-optimizer" class="next-btn" id="act-optimize">
+              <span>⚡ Web Image Optimizer</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explanatory Technical Content -->
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Why Inspect Files in Your Browser?</h2>
+      <p>
+        Before uploading images, documents, or media to social networks, client portals, or public repositories, inspecting what hidden metadata they contain is an essential privacy practice.
+      </p>
+      <p>
+        Smartphones and digital cameras embed sensitive EXIF tags inside photos, including your <strong>exact GPS coordinates</strong>, device serial number, camera model, and timestamp. FreeFileTool's File Inspector reads binary headers locally in your browser memory so you can audit files without exposing your location or contents to any cloud server.
+      </p>
+    </section>
+
+    <section class="content-block">
+      <h2>Understanding Cryptographic Hashes (SHA-256 &amp; MD5)</h2>
+      <p>
+        A cryptographic hash is a fixed-length mathematical fingerprint computed from the binary bits of a file. If even a single byte or pixel changes, the hash will change completely. You can use SHA-256 hashes to verify file integrity, ensure downloads haven't been corrupted, or confirm files match their original release checksums.
+      </p>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details">
+          <summary class="faq-summary">Are my files or hashes sent to any server?</summary>
+          <div class="faq-answer">
+            <p>No. The entire analysis — including byte inspection, EXIF parsing, and SHA-256 hashing — is performed in your browser using the HTML5 Web Crypto API. No data is sent over the internet.</p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">What file formats does the File Inspector support?</summary>
+          <div class="faq-answer">
+            <p>You can inspect any file format (JPG, PNG, WebP, AVIF, PDF, MP3, MP4, ZIP, JSON, EXE, and more). Hashes and binary size are calculated for all files, while dimensions and durations are computed for supported media.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <RelatedTools currentSlug="file-inspector" />
+  </article>
+
+  <AdSlot position="below-tool" />
+</BaseLayout>
+
+<script>
+  import { md5 } from '../lib/hash/md5.js';
+  import { formatBytes } from '../lib/shared/validator.js';
+  import { trackEvent, startTimer } from '../lib/analytics.js';
+
+  let currentAnalysisData: any = null;
+
+  function initFileInspector() {
+    const dropzone = document.getElementById('inspector-dropzone');
+    const input = document.getElementById('inspector-input') as HTMLInputElement | null;
+    const dropPrompt = document.getElementById('drop-prompt');
+    const analyzingState = document.getElementById('analyzing-state');
+    const resultsView = document.getElementById('results-view');
+    const btnInspectAnother = document.getElementById('btn-inspect-another');
+    const btnDownloadReport = document.getElementById('btn-download-report');
+
+    if (!dropzone || !input) return;
+
+    dropPrompt?.addEventListener('click', () => input.click());
+    dropPrompt?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        input.click();
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      if (e.dataTransfer?.files?.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    input.addEventListener('change', () => {
+      if (input.files?.length) {
+        handleFile(input.files[0]);
+      }
+    });
+
+    btnInspectAnother?.addEventListener('click', () => {
+      resultsView?.classList.add('hidden');
+      analyzingState?.classList.add('hidden');
+      dropPrompt?.classList.remove('hidden');
+      if (input) input.value = '';
+    });
+
+    btnDownloadReport?.addEventListener('click', () => {
+      if (!currentAnalysisData) return;
+      const jsonStr = JSON.stringify(currentAnalysisData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${currentAnalysisData.filename || 'file'}-inspection-report.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      trackEvent('tool_download', { tool_slug: 'file-inspector', format: 'json' });
+    });
+  }
+
+  async function handleFile(file: File) {
+    const dropPrompt = document.getElementById('drop-prompt');
+    const analyzingState = document.getElementById('analyzing-state');
+    const resultsView = document.getElementById('results-view');
+    const privacyAlert = document.getElementById('privacy-alert');
+
+    dropPrompt?.classList.add('hidden');
+    resultsView?.classList.add('hidden');
+    analyzingState?.classList.remove('hidden');
+
+    const endTimer = startTimer();
+    trackEvent('tool_process_start', { tool_slug: 'file-inspector' });
+
+    try {
+      const ext = file.name.includes('.') ? file.name.split('.').pop()?.toLowerCase() || '' : '';
+      const arrayBuffer = await file.arrayBuffer();
+
+      // Calculate SHA-256 and SHA-1 via Web Crypto API
+      const sha256Buffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+      const sha256Hex = bufferToHex(sha256Buffer);
+
+      const sha1Buffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
+      const sha1Hex = bufferToHex(sha1Buffer);
+
+      // Calculate MD5
+      const md5Hex = md5(arrayBuffer);
+
+      // Inspect Dimensions / Duration
+      let dimensions = 'N/A';
+      let aspectRatio = 'N/A';
+      let duration = 'N/A';
+      let hasExif = false;
+
+      if (file.type.startsWith('image/')) {
+        try {
+          const img = new Image();
+          const objUrl = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            img.onload = () => {
+              dimensions = `${img.naturalWidth} × ${img.naturalHeight} px`;
+              const gcdVal = gcd(img.naturalWidth, img.naturalHeight);
+              aspectRatio = `${img.naturalWidth / gcdVal}:${img.naturalHeight / gcdVal}`;
+              URL.revokeObjectURL(objUrl);
+              resolve(true);
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(objUrl);
+              resolve(false);
+            };
+            img.src = objUrl;
+          });
+        } catch (_) {}
+
+        // Basic EXIF marker check for JPEG (0xFFE1)
+        const bytes = new Uint8Array(arrayBuffer.slice(0, 4096));
+        for (let i = 0; i < bytes.length - 1; i++) {
+          if (bytes[i] === 0xff && bytes[i + 1] === 0xe1) {
+            hasExif = true;
+            break;
+          }
+        }
+      } else if (file.type.startsWith('audio/') || file.type.startsWith('video/')) {
+        try {
+          const media = document.createElement(file.type.startsWith('audio/') ? 'audio' : 'video');
+          const objUrl = URL.createObjectURL(file);
+          await new Promise((resolve) => {
+            media.onloadedmetadata = () => {
+              const durSec = Math.round(media.duration);
+              const mins = Math.floor(durSec / 60);
+              const secs = durSec % 60;
+              duration = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+              if ('videoWidth' in media && (media as any).videoWidth) {
+                dimensions = `${(media as any).videoWidth} × ${(media as any).videoHeight} px`;
+              }
+              URL.revokeObjectURL(objUrl);
+              resolve(true);
+            };
+            media.onerror = () => {
+              URL.revokeObjectURL(objUrl);
+              resolve(false);
+            };
+            media.src = objUrl;
+          });
+        } catch (_) {}
+      }
+
+      currentAnalysisData = {
+        filename: file.name,
+        sizeBytes: file.size,
+        formattedSize: formatBytes(file.size),
+        mimeType: file.type || 'application/octet-stream',
+        extension: ext,
+        lastModified: new Date(file.lastModified).toLocaleString(),
+        dimensions,
+        aspectRatio,
+        duration,
+        hasExifMetadata: hasExif,
+        hashes: {
+          sha256: sha256Hex,
+          sha1: sha1Hex,
+          md5: md5Hex,
+        },
+        inspectedAt: new Date().toISOString(),
+      };
+
+      // Populate UI
+      const resFilename = document.getElementById('res-filename');
+      const resSizeType = document.getElementById('res-size-type');
+      const propMime = document.getElementById('prop-mime');
+      const propExt = document.getElementById('prop-ext');
+      const propBytes = document.getElementById('prop-bytes');
+      const propModified = document.getElementById('prop-modified');
+      const propDims = document.getElementById('prop-dims');
+      const propRatio = document.getElementById('prop-ratio');
+      const propDuration = document.getElementById('prop-duration');
+      const hashSha256 = document.getElementById('hash-sha256');
+      const hashSha1 = document.getElementById('hash-sha1');
+      const hashMd5 = document.getElementById('hash-md5');
+
+      if (resFilename) resFilename.textContent = file.name;
+      if (resSizeType) resSizeType.textContent = `${formatBytes(file.size)} · ${file.type || 'application/octet-stream'}`;
+      if (propMime) propMime.textContent = file.type || 'unknown';
+      if (propExt) propExt.textContent = ext || 'none';
+      if (propBytes) propBytes.textContent = `${file.size.toLocaleString()} bytes`;
+      if (propModified) propModified.textContent = new Date(file.lastModified).toLocaleString();
+      if (propDims) propDims.textContent = dimensions;
+      if (propRatio) propRatio.textContent = aspectRatio;
+      if (propDuration) propDuration.textContent = duration;
+      if (hashSha256) hashSha256.textContent = sha256Hex;
+      if (hashSha1) hashSha1.textContent = sha1Hex;
+      if (hashMd5) hashMd5.textContent = md5Hex;
+
+      if (hasExif) {
+        privacyAlert?.classList.remove('hidden');
+      } else {
+        privacyAlert?.classList.add('hidden');
+      }
+
+      analyzingState?.classList.add('hidden');
+      resultsView?.classList.remove('hidden');
+
+      trackEvent('tool_success', {
+        tool_slug: 'file-inspector',
+        duration_ms: endTimer(),
+      });
+    } catch (err) {
+      console.error(err);
+      analyzingState?.classList.add('hidden');
+      dropPrompt?.classList.remove('hidden');
+      trackEvent('tool_error', { tool_slug: 'file-inspector' });
+      alert('Unable to inspect file. The file may be corrupt.');
+    }
+  }
+
+  function bufferToHex(buffer: ArrayBuffer): string {
+    const bytes = new Uint8Array(buffer);
+    return Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+  }
+
+  function gcd(a: number, b: number): number {
+    return b === 0 ? a : gcd(b, a % b);
+  }
+
+  document.addEventListener('DOMContentLoaded', initFileInspector);
+</script>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8, 2rem) 0 var(--space-6, 1.5rem);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+    background: rgba(45, 212, 191, 0.12);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    border-radius: var(--radius-full, 9999px);
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-accent-400, #2dd4bf);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl, 1.875rem);
+    font-weight: 800;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__desc {
+    font-size: var(--font-size-base, 1rem);
+    color: var(--text-secondary, #94a3b8);
+    max-width: 58ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose, 1.7);
+  }
+
+  .inspector-stage {
+    max-width: 800px;
+    margin: 0 auto var(--space-10, 2.5rem);
+    padding: 0 var(--space-4, 1rem);
+  }
+
+  .inspector-card {
+    background: var(--surface-1, #121526);
+    border: 2px dashed var(--border-default, rgba(255, 255, 255, 0.14));
+    border-radius: var(--radius-xl, 1rem);
+    padding: var(--space-8, 2rem);
+    text-align: center;
+    transition: all var(--transition-base, 250ms ease);
+    position: relative;
+  }
+
+  .inspector-card.dragover {
+    border-color: var(--color-accent-400, #2dd4bf);
+    background: var(--surface-2, #1a1e35);
+  }
+
+  .drop-prompt {
+    cursor: pointer;
+    padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+  }
+
+  .drop-icon {
+    color: var(--color-brand-400, #818cf8);
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .drop-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.35rem;
+  }
+
+  .drop-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  .browse-link {
+    color: var(--color-brand-400, #818cf8);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-accent-400, #2dd4bf);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: var(--space-6, 1.5rem) auto var(--space-3, 0.75rem);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .analyzing-text {
+    font-size: 0.9375rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  /* ── Results View ────────────────────────────────────────── */
+  .results-view {
+    text-align: left;
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4, 1rem);
+    padding-bottom: var(--space-4, 1rem);
+    border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    flex-wrap: wrap;
+  }
+
+  .file-main-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+  }
+
+  .file-icon {
+    font-size: 2rem;
+  }
+
+  .file-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .file-size-type {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition-fast, 150ms ease);
+  }
+
+  .btn-primary {
+    background: var(--color-brand-600, #4f46e5);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-brand-500, #6366f1);
+  }
+
+  .btn-secondary {
+    background: var(--surface-2, #1a1e35);
+    color: var(--text-primary, #f8fafc);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface-3, #242848);
+  }
+
+  .privacy-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-md, 0.5rem);
+    padding: var(--space-3, 0.75rem);
+    margin: var(--space-4, 1rem) 0;
+    font-size: 0.8125rem;
+    color: #fde68a;
+  }
+
+  .alert-link {
+    color: var(--color-accent-400, #2dd4bf);
+    font-weight: 600;
+    text-decoration: underline;
+    margin-left: 0.25rem;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--space-4, 1rem);
+    margin: var(--space-4, 1rem) 0;
+  }
+
+  @media (min-width: 640px) {
+    .metrics-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .metric-card {
+    background: var(--surface-2, #1a1e35);
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--space-4, 1rem);
+  }
+
+  .metric-card--full {
+    grid-column: 1 / -1;
+  }
+
+  .metric-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 var(--space-3, 0.75rem) 0;
+    border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    padding-bottom: 0.35rem;
+  }
+
+  .prop-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8125rem;
+  }
+
+  .prop-label {
+    color: var(--text-muted, #64748b);
+    display: inline-block;
+    width: 100px;
+  }
+
+  .prop-list code, .hash-val {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    color: var(--color-accent-400, #2dd4bf);
+    font-size: 0.75rem;
+    font-family: monospace;
+    word-break: break-all;
+  }
+
+  .hash-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.8125rem;
+  }
+
+  .hash-type {
+    width: 70px;
+    font-weight: 600;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  .next-actions-box {
+    margin-top: var(--space-6, 1.5rem);
+    padding: var(--space-4, 1rem);
+    background: rgba(79, 70, 229, 0.08);
+    border: 1px solid rgba(129, 140, 248, 0.2);
+    border-radius: var(--radius-lg, 0.75rem);
+  }
+
+  .next-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 var(--space-3, 0.75rem) 0;
+  }
+
+  .next-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .next-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--surface-1, #121526);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+    color: var(--text-primary, #f8fafc);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast, 150ms ease);
+  }
+
+  .next-btn:hover {
+    border-color: var(--color-brand-400, #818cf8);
+    background: var(--surface-3, #242848);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>

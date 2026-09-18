@@ -1,0 +1,30 @@
+---
+/**
+ * AdContainer.astro — Responsive Wrapper for Ad Slots
+ * 
+ * Provides consistent margin spacing, isolation, and CLS protection.
+ */
+import { AD_CONFIG, type AdSlotPosition } from './ad-config';
+import AdSlot from './AdSlot.astro';
+
+export interface Props {
+  position: AdSlotPosition;
+  className?: string;
+}
+
+const { position, className = '' } = Astro.props;
+---
+
+{AD_CONFIG.enabled && (
+  <div class={`ad-container-shell ${className}`}>
+    <AdSlot position={position} />
+  </div>
+)}
+
+<style>
+  .ad-container-shell {
+    width: 100%;
+    margin-top: var(--space-8, 2rem);
+    margin-bottom: var(--space-8, 2rem);
+  }
+</style>

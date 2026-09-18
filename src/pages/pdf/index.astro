@@ -5,6 +5,8 @@
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecentHistory from '../../components/RecentHistory.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
@@ -75,10 +77,10 @@ import RecentHistory from '../../components/RecentHistory.astro';
     <p class="hub-desc">
       Merge, split, compress, and convert documents locally in your browser. All file processing occurs directly on your device—your private documents are never uploaded to any cloud server.
     </p>
+    <PrivacyBadge variant="badge" />
   </header>
 
-  <!-- AdSense Slot: Above tools list -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+  <AdSlot position="top-leaderboard" />
 
   <section class="tools-hub" aria-label="Available PDF Tools">
     <!-- Category 1: Organize & Manage -->

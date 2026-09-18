@@ -1,0 +1,195 @@
+---
+/**
+ * RelatedTools.astro — Automated Bidirectional Related-Tool Engine
+ * 
+ * Injects contextual related tools from the central registry to power
+ * the "Continue Working" growth loop and strengthen internal linking.
+ */
+import { getRelatedTools, getToolsByCategory, type ToolCategory, type ToolMetadata } from '../lib/tools/registry';
+
+export interface Props {
+  currentSlug?: string;
+  category?: ToolCategory;
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+}
+
+const { 
+  currentSlug, 
+  category, 
+  title = "Related File Utilities", 
+  subtitle = "Continue working with other tools in this workspace", 
+  limit = 4 
+} = Astro.props;
+
+let toolsToDisplay: ToolMetadata[] = [];
+
+if (currentSlug) {
+  toolsToDisplay = getRelatedTools(currentSlug, limit);
+} else if (category) {
+  toolsToDisplay = getToolsByCategory(category).slice(0, limit);
+}
+---
+
+{toolsToDisplay.length > 0 && (
+  <section class="related-tools-section" aria-label="Related tools">
+    <div class="related-tools-header">
+      <div class="related-title-wrap">
+        <span class="related-sparkle-icon" aria-hidden="true">✨</span>
+        <h2 class="related-tools-title">{title}</h2>
+      </div>
+      <p class="related-tools-subtitle">{subtitle}</p>
+    </div>
+
+    <div class="related-tools-grid">
+      {toolsToDisplay.map((tool) => (
+        <a href={tool.route} class="related-tool-card group" data-tool-slug={tool.slug}>
+          <div class="related-card-top">
+            <span class="related-card-icon" aria-hidden="true">{tool.icon}</span>
+            <span class="related-card-badge">{tool.category.toUpperCase()}</span>
+          </div>
+          <h3 class="related-card-name group-hover:text-brand-400">{tool.name}</h3>
+          <p class="related-card-desc">{tool.oneLiner}</p>
+          <div class="related-card-action">
+            <span class="action-text">Launch tool</span>
+            <svg class="action-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .related-tools-section {
+    margin: var(--space-10, 2.5rem) 0;
+    padding-top: var(--space-8, 2rem);
+    border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  }
+
+  .related-tools-header {
+    margin-bottom: var(--space-6, 1.5rem);
+  }
+
+  .related-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .related-sparkle-icon {
+    font-size: 1.25rem;
+  }
+
+  .related-tools-title {
+    font-size: var(--font-size-xl, 1.25rem);
+    font-weight: 700;
+    color: var(--text-primary, #f8fafc);
+    margin: 0;
+  }
+
+  .related-tools-subtitle {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-secondary, #94a3b8);
+    margin: 0;
+  }
+
+  .related-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--space-4, 1rem);
+  }
+
+  @media (min-width: 640px) {
+    .related-tools-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .related-tools-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .related-tool-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-1, #121526);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--space-4, 1rem);
+    transition: all var(--transition-base, 250ms ease);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .related-tool-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-brand-400, #818cf8);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(129, 140, 248, 0.15);
+    background: var(--surface-2, #1a1e35);
+  }
+
+  .related-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2, 0.5rem);
+  }
+
+  .related-card-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .related-card-badge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.4rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted, #64748b);
+    border-radius: var(--radius-sm, 0.375rem);
+  }
+
+  .related-card-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: 0.35rem;
+    transition: color var(--transition-fast, 150ms ease);
+  }
+
+  .related-card-desc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+    line-height: 1.4;
+    margin-bottom: var(--space-4, 1rem);
+    flex-grow: 1;
+  }
+
+  .related-card-action {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent-400, #2dd4bf);
+    margin-top: auto;
+  }
+
+  .action-arrow {
+    transition: transform var(--transition-fast, 150ms ease);
+  }
+
+  .related-tool-card:hover .action-arrow {
+    transform: translateX(4px);
+  }
+</style>

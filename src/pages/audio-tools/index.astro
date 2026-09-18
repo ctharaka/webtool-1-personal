@@ -4,6 +4,8 @@
  * Index for client-side audio converters, trimmers, and compressors.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
@@ -34,7 +36,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <p class="hub-desc">
       All audio decoding, trimming, and MP3 encoding runs locally inside your browser memory using the Web Audio API. Your private voice memos, music, and recordings are never uploaded to any server.
     </p>
+    <PrivacyBadge variant="badge" />
   </header>
+
+  <AdSlot position="top-leaderboard" />
 
   <section class="tools-hub" aria-label="Available Audio Tools">
     <!-- Category: Convert Formats -->

@@ -1,0 +1,153 @@
+---
+/**
+ * optimize-file.astro — Alias & Recommendation Hub for File Optimization
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyBadge from '../components/PrivacyBadge.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
+---
+
+<BaseLayout
+  title="Optimize File — Browser-Side Optimization & Compression Recommendations"
+  description="Analyze and optimize your files for the web. Get instant recommendations for WebP/AVIF conversion, PDF compression, and metadata stripping with 100% browser privacy."
+>
+  <section class="tool-hero">
+    <div class="tool-hero__badge">File Optimization Hub</div>
+    <h1 class="tool-hero__title">Optimize Your Files</h1>
+    <p class="tool-hero__desc">
+      Choose what type of file you want to optimize or inspect. All processing happens 100% locally in your browser.
+    </p>
+    <PrivacyBadge variant="badge" />
+  </section>
+
+  <AdSlot position="top-leaderboard" />
+
+  <section class="options-grid">
+    <a href="/image-optimizer" class="opt-choice-card group">
+      <span class="opt-choice-icon">⚡</span>
+      <h2 class="opt-choice-title group-hover:text-brand-400">Web Image Optimizer</h2>
+      <p class="opt-choice-desc">Convert to WebP/AVIF, compress file size, resize dimensions, and batch download as ZIP.</p>
+      <span class="opt-choice-cta">Launch Image Optimizer &rarr;</span>
+    </a>
+
+    <a href="/file-inspector" class="opt-choice-card group">
+      <span class="opt-choice-icon">🔍</span>
+      <h2 class="opt-choice-title group-hover:text-accent-400">Browser File Inspector</h2>
+      <p class="opt-choice-desc">Inspect MIME types, EXIF GPS tags, dimensions, audio durations, and SHA-256 checksums.</p>
+      <span class="opt-choice-cta">Launch File Inspector &rarr;</span>
+    </a>
+
+    <a href="/pdf/compress" class="opt-choice-card group">
+      <span class="opt-choice-icon">📦</span>
+      <h2 class="opt-choice-title group-hover:text-brand-400">Compress PDF</h2>
+      <p class="opt-choice-desc">Optimize PDF object streams and structure to shrink document size for email sharing.</p>
+      <span class="opt-choice-cta">Compress PDF Now &rarr;</span>
+    </a>
+
+    <a href="/privacy-tools/exif-remover" class="opt-choice-card group">
+      <span class="opt-choice-icon">🛡️</span>
+      <h2 class="opt-choice-title group-hover:text-accent-400">EXIF Metadata Remover</h2>
+      <p class="opt-choice-desc">Strip camera model, GPS coordinates, and private EXIF tags from photos before uploading.</p>
+      <span class="opt-choice-cta">Strip Metadata &rarr;</span>
+    </a>
+  </section>
+
+  <RelatedTools category="image" title="More Optimization Utilities" />
+  <AdSlot position="below-tool" />
+</BaseLayout>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8, 2rem) 0 var(--space-6, 1.5rem);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+    background: rgba(129, 140, 248, 0.12);
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    border-radius: var(--radius-full, 9999px);
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-brand-300, #a5b4fc);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl, 1.875rem);
+    font-weight: 800;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__desc {
+    font-size: var(--font-size-base, 1rem);
+    color: var(--text-secondary, #94a3b8);
+    max-width: 58ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose, 1.7);
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--space-4, 1rem);
+    max-width: 800px;
+    margin: 0 auto var(--space-10, 2.5rem);
+    padding: 0 var(--space-4, 1rem);
+  }
+
+  @media (min-width: 640px) {
+    .options-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .opt-choice-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-1, #121526);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+    border-radius: var(--radius-xl, 1rem);
+    padding: var(--space-6, 1.5rem);
+    text-decoration: none;
+    transition: all var(--transition-base, 250ms ease);
+  }
+
+  .opt-choice-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-brand-400, #818cf8);
+    background: var(--surface-2, #1a1e35);
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(129, 140, 248, 0.15);
+  }
+
+  .opt-choice-icon {
+    font-size: 2.25rem;
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .opt-choice-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.35rem 0;
+    transition: color var(--transition-fast, 150ms ease);
+  }
+
+  .opt-choice-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #94a3b8);
+    line-height: 1.5;
+    margin-bottom: var(--space-4, 1rem);
+    flex-grow: 1;
+  }
+
+  .opt-choice-cta {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent-400, #2dd4bf);
+    margin-top: auto;
+  }
+</style>

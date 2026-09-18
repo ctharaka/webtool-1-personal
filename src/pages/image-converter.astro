@@ -5,6 +5,9 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import UploadZone from '../components/UploadZone.astro';
+import PrivacyBadge from '../components/PrivacyBadge.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
@@ -98,10 +101,10 @@ import UploadZone from '../components/UploadZone.astro';
     <p class="tool-hero__desc">
       Convert photos and graphics between JPG, PNG, WebP, and AVIF formats instantly in your browser. Batch processing, transparency preservation, and custom quality controls with zero server uploads.
     </p>
+    <PrivacyBadge variant="badge" />
   </section>
 
-  <!-- AdSense Slot: Above main tool card -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+  <AdSlot position="top-leaderboard" />
 
   <section class="upload-section">
     <UploadZone
@@ -275,23 +278,23 @@ import UploadZone from '../components/UploadZone.astro';
       </div>
     </section>
 
-    <!-- Related Tools & Guides -->
+    <!-- Related Tools & Next Actions -->
+    <RelatedTools currentSlug="image-converter" />
+
+    <!-- Contextual Guides Section -->
     <section class="content-block related-links">
-      <h2>Related Image Tools &amp; Guides</h2>
-      <p>Explore complementary optimization tools and in-depth performance guides:</p>
+      <h2>Performance &amp; Format Optimization Guides</h2>
+      <p>Explore complementary tutorials and deep-dives:</p>
       <ul class="related-list">
-        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Shrink image file sizes without altering dimensions.</li>
-        <li>📐 <a href="/image/resize">Resize Images</a> — Resize photo dimensions with custom width, height, and aspect-ratio locking.</li>
-        <li>🛡️ <a href="/image/strip-metadata">Strip Image Metadata</a> — Remove hidden EXIF data and GPS tags before publishing photos.</li>
-        <li>📄 <a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a> — Convert photos directly into a multi-page PDF document.</li>
         <li>📖 <a href="/guides/image-format-converter-guide">Complete Image Format Converter Guide</a> — Learn when and how to convert between JPG, PNG, WebP, and AVIF.</li>
         <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical benchmark and compatibility breakdown.</li>
+        <li>📖 <a href="/guides/how-to-reduce-image-size-without-losing-quality">How to Reduce Image Size</a> — Compression techniques without visible distortion.</li>
       </ul>
     </section>
   </article>
 
   <!-- AdSense Slot: Below article content -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+  <AdSlot position="below-tool" />
 </BaseLayout>
 
 <style>

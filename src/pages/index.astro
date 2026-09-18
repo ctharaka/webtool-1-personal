@@ -144,8 +144,10 @@ import RecentHistory from '../components/RecentHistory.astro';
           <div class="quick-chips-row">
             <span class="chips-label">Quick Jump:</span>
             <div class="chips-scrollable">
+              <button type="button" class="quick-chip" data-search-term="Image Optimizer">⚡ Image Optimizer</button>
+              <button type="button" class="quick-chip" data-search-term="File Inspector">🔍 File Inspector</button>
               <button type="button" class="quick-chip" data-search-term="Merge PDF">📑 Merge PDF</button>
-              <button type="button" class="quick-chip" data-search-term="Compress Image">⚡ Compress Image</button>
+              <button type="button" class="quick-chip" data-search-term="Compress Image">📉 Compress Image</button>
               <button type="button" class="quick-chip" data-search-term="JPG to WebP">🖼️ JPG to WebP</button>
               <button type="button" class="quick-chip" data-search-term="Audio Trimmer">🎵 Audio Trimmer</button>
               <button type="button" class="quick-chip" data-search-term="EXIF Remover">🛡️ EXIF Remover</button>
@@ -204,9 +206,9 @@ import RecentHistory from '../components/RecentHistory.astro';
             </div>
 
             <div class="bento-actions-row">
-              <a href="/image-converter" class="bento-btn primary">Universal Converter &rarr;</a>
-              <a href="/compress-image" class="bento-btn secondary">Compress Image</a>
-              <a href="/optimization-lab" class="bento-btn tertiary">Visual Compare Lab</a>
+              <a href="/image-optimizer" class="bento-btn primary">Image Optimizer &rarr;</a>
+              <a href="/image-converter" class="bento-btn secondary">Universal Converter</a>
+              <a href="/compress-image" class="bento-btn tertiary">Compress Image</a>
             </div>
           </div>
         </article>
@@ -305,8 +307,9 @@ import RecentHistory from '../components/RecentHistory.astro';
             </div>
 
             <div class="bento-actions-row">
-              <a href="/privacy-tools/exif-remover" class="bento-btn primary">Remove EXIF &rarr;</a>
-              <a href="/about" class="bento-btn secondary">Security Spec</a>
+              <a href="/file-inspector" class="bento-btn primary">File Inspector &rarr;</a>
+              <a href="/privacy-tools/exif-remover" class="bento-btn secondary">Remove EXIF</a>
+              <a href="/hash-generator" class="bento-btn tertiary">Hash Generator</a>
             </div>
           </div>
         </article>
@@ -357,6 +360,36 @@ import RecentHistory from '../components/RecentHistory.astro';
       </div>
 
       <div class="catalog-grid" id="full-catalog-grid">
+        <!-- Flagship 1. Web Image Optimizer -->
+        <a href="/image-optimizer" class="tool-tile tool-tile--highlight" data-category="image" data-keywords="web image optimizer compress convert webp avif resize strip metadata quality">
+          <div class="tool-tile__icon icon-emerald">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Web Image Optimizer</h3>
+              <span class="tool-tile__tag tag-emerald">Flagship</span>
+            </div>
+            <p class="tool-tile__desc">Convert to WebP/AVIF, compress, resize dimensions, and batch download as ZIP.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- Flagship 2. Browser File Inspector -->
+        <a href="/file-inspector" class="tool-tile tool-tile--highlight" data-category="privacy" data-keywords="file inspector properties metadata mime exif camera gps dimensions sha256 md5 hashes verify">
+          <div class="tool-tile__icon icon-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Browser File Inspector</h3>
+              <span class="tool-tile__tag tag-purple">Flagship</span>
+            </div>
+            <p class="tool-tile__desc">Inspect MIME types, EXIF GPS tags, dimensions, audio durations, and SHA-256 hashes.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
         <!-- 1. Universal Image Converter -->
         <a href="/image-converter" class="tool-tile" data-category="image" data-keywords="image convert jpg png webp avif batch formats photo picture resize">
           <div class="tool-tile__icon icon-emerald">

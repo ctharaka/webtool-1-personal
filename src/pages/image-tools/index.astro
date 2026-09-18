@@ -5,6 +5,8 @@
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecentHistory from '../../components/RecentHistory.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
@@ -12,24 +14,34 @@ import RecentHistory from '../../components/RecentHistory.astro';
   description="Explore our suite of 100% private browser-side image conversion, compression, and editing tools. Convert JPG, PNG, WebP, and AVIF locally without cloud uploads."
 >
   <header class="hub-hero">
+    <div class="hub-hero__badge">Image Studio</div>
     <h1 class="hub-title">Online Image Optimization &amp; Conversion Tools</h1>
     <p class="hub-desc">
       All conversion, compression, and editing processes occur locally inside your browser memory. Your files are never uploaded to any remote server.
     </p>
+    <PrivacyBadge variant="badge" />
   </header>
 
-  <!-- AdSense Slot: Above tools list -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+  <AdSlot position="top-leaderboard" />
 
   <section class="tools-hub" aria-label="Available Image Tools">
     <!-- Category: Convert Formats -->
     <div class="category-block">
       <h2 class="category-title">
-        <span class="category-icon">🔄</span> Format Converters
+        <span class="category-icon">🔄</span> Format Converters &amp; Optimizers
       </h2>
-      <p class="category-desc">Convert between JPG, PNG, WebP, and AVIF formats with custom quality controls and batch processing.</p>
+      <p class="category-desc">Convert between JPG, PNG, WebP, and AVIF formats with custom quality controls, dimension scaling, and batch processing.</p>
       
       <div class="category-grid">
+        <div class="tool-card tool-card--featured">
+          <div class="tool-badge">Flagship</div>
+          <h3 class="tool-title"><a href="/image-optimizer">Web Image Optimizer</a></h3>
+          <p class="tool-desc">
+            All-in-one optimizer: convert to WebP/AVIF, compress file size, resize dimensions, and batch download as ZIP with live savings metrics.
+          </p>
+          <a href="/image-optimizer" class="tool-link">Launch Image Optimizer &rarr;</a>
+        </div>
+
         <div class="tool-card tool-card--featured">
           <div class="tool-badge">Hub</div>
           <h3 class="tool-title"><a href="/image-converter">Universal Image Converter</a></h3>

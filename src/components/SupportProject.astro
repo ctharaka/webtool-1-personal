@@ -1,0 +1,116 @@
+---
+/**
+ * SupportProject.astro — Ethical Project Support / Donation Component
+ * 
+ * Non-manipulative, voluntary support section positioned in the footer or about page.
+ */
+export interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<div class={`support-project-shell ${compact ? 'support--compact' : ''}`}>
+  <div class="support-inner">
+    <div class="support-content">
+      <span class="support-heart" aria-hidden="true">☕</span>
+      <div class="support-text-wrap">
+        <h3 class="support-title">Support FreeFileTool</h3>
+        <p class="support-desc">
+          FreeFileTool is 100% free and processes your files locally without servers. If these tools save you time, consider supporting future development.
+        </p>
+      </div>
+    </div>
+    <div class="support-actions">
+      <a 
+        href="https://buymeacoffee.com" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="support-btn"
+        aria-label="Buy a coffee to support FreeFileTool"
+      >
+        <span>Buy Us a Coffee</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .support-project-shell {
+    background: var(--surface-1, #121526);
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+    margin: var(--space-6, 1.5rem) 0;
+  }
+
+  .support-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4, 1rem);
+    flex-wrap: wrap;
+  }
+
+  .support-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    max-width: 42rem;
+  }
+
+  .support-heart {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .support-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary, #f8fafc);
+    margin: 0 0 0.15rem 0;
+  }
+
+  .support-desc {
+    font-size: 0.8125rem;
+    color: var(--text-secondary, #94a3b8);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .support-actions {
+    flex-shrink: 0;
+  }
+
+  .support-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--surface-2, #1a1e35);
+    color: var(--text-primary, #f8fafc);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-fast, 150ms ease);
+  }
+
+  .support-btn:hover {
+    background: var(--color-brand-600, #4f46e5);
+    border-color: var(--color-brand-500, #6366f1);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .support--compact {
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  }
+</style>

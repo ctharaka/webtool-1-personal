@@ -4,6 +4,8 @@
  * Index for client-side text converters, generators, developer formatters, and analyzers.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
@@ -34,7 +36,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <p class="hub-desc">
       All encoding, formatting, cryptographic hashing, and text conversions run locally in your browser memory. Your text and data are never sent to any server.
     </p>
+    <PrivacyBadge variant="badge" />
   </header>
+
+  <AdSlot position="top-leaderboard" />
 
   <section class="tools-hub" aria-label="Available Data and Text Tools">
     <!-- Category: Generators -->

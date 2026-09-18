@@ -1,0 +1,722 @@
+/**
+ * registry.ts — Central Tool Registry for FreeFileTool
+ * 
+ * Single source of truth for all tools, categories, routes, capabilities,
+ * metadata, SEO descriptions, and bidirectional related-tool relationships.
+ */
+
+export type ToolCategory = 
+  | 'image'
+  | 'pdf'
+  | 'audio'
+  | 'text'
+  | 'developer'
+  | 'privacy';
+
+export interface ToolMetadata {
+  slug: string;
+  name: string;
+  shortName?: string;
+  category: ToolCategory;
+  description: string;
+  oneLiner: string;
+  icon: string;
+  inputFormats: string[];
+  outputFormats: string[];
+  route: string;
+  popular?: boolean;
+  featured?: boolean;
+  relatedSlugs: string[];
+  seoTitle: string;
+  seoDescription: string;
+  faq?: Array<{ question: string; answer: string }>;
+}
+
+export const TOOL_CATEGORIES: Record<ToolCategory, { name: string; description: string; icon: string; hubRoute: string }> = {
+  image: {
+    name: 'Image Tools',
+    description: 'Convert, compress, resize, and optimize raster images directly in your browser.',
+    icon: '🖼️',
+    hubRoute: '/image-tools',
+  },
+  pdf: {
+    name: 'PDF Tools',
+    description: 'Merge, split, compress, and convert PDF documents with 100% client-side privacy.',
+    icon: '📄',
+    hubRoute: '/pdf',
+  },
+  audio: {
+    name: 'Audio Tools',
+    description: 'Transcode audio formats, trim start/end times, and adjust bitrates locally.',
+    icon: '🎵',
+    hubRoute: '/audio-tools',
+  },
+  text: {
+    name: 'Text Tools',
+    description: 'Count words, transform text cases, generate QR codes, and clean strings.',
+    icon: '📝',
+    hubRoute: '/text-tools',
+  },
+  developer: {
+    name: 'Developer Tools',
+    description: 'Format JSON, decode Base64, generate cryptographic hashes, and inspect data.',
+    icon: '⚡',
+    hubRoute: '/text-tools',
+  },
+  privacy: {
+    name: 'Privacy & Security',
+    description: 'Strip EXIF metadata, calculate file checksums, and sanitize media before sharing.',
+    icon: '🛡️',
+    hubRoute: '/privacy-tools',
+  },
+};
+
+export const TOOLS_REGISTRY: Record<string, ToolMetadata> = {
+  // ── IMAGE TOOLS ─────────────────────────────────────────────────
+  'image-converter': {
+    slug: 'image-converter',
+    name: 'Universal Image Converter',
+    shortName: 'Image Converter',
+    category: 'image',
+    description: 'Batch convert images between WebP, PNG, JPG, and AVIF formats with custom quality settings.',
+    oneLiner: 'Convert image formats with quality control and batch ZIP download.',
+    icon: '🔄',
+    inputFormats: ['png', 'jpg', 'jpeg', 'webp', 'avif'],
+    outputFormats: ['webp', 'png', 'jpg', 'avif'],
+    route: '/image-converter',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['compress-image', 'jpg-to-webp', 'png-to-webp', 'image-resize', 'strip-metadata'],
+    seoTitle: 'Universal Image Converter — Free Online Browser Image Conversion',
+    seoDescription: 'Convert PNG, JPG, WebP, and AVIF images directly in your browser. 100% private, client-side batch processing with instant download.',
+  },
+  'compress-image': {
+    slug: 'compress-image',
+    name: 'Image Compressor',
+    shortName: 'Compress Image',
+    category: 'image',
+    description: 'Reduce image file sizes with visual quality preservation and target size selectors.',
+    oneLiner: 'Reduce file size while preserving crisp visual fidelity.',
+    icon: '📉',
+    inputFormats: ['png', 'jpg', 'jpeg', 'webp', 'avif'],
+    outputFormats: ['webp', 'jpg', 'png'],
+    route: '/compress-image',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['image-converter', 'optimization-lab', 'jpg-to-webp', 'png-to-webp'],
+    seoTitle: 'Image Compressor — Reduce Image Size in Browser Free',
+    seoDescription: 'Compress JPG, PNG, and WebP images locally in your browser. Fast, private compression with custom quality controls and zero uploads.',
+  },
+  'image-optimizer': {
+    slug: 'image-optimizer',
+    name: 'Web Image Optimizer',
+    shortName: 'Image Optimizer',
+    category: 'image',
+    description: 'All-in-one web image optimizer: convert to WebP/AVIF, compress, resize dimensions, and strip metadata with live savings stats.',
+    oneLiner: 'Convert, compress, and resize images for maximum website page speed.',
+    icon: '⚡',
+    inputFormats: ['png', 'jpg', 'jpeg', 'webp', 'avif'],
+    outputFormats: ['webp', 'avif', 'jpg', 'png'],
+    route: '/image-optimizer',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['compress-image', 'image-converter', 'file-inspector', 'strip-metadata', 'optimization-lab'],
+    seoTitle: 'Web Image Optimizer — Compress & Convert Images for Web Free',
+    seoDescription: 'Optimize images for website performance. Convert to WebP & AVIF, resize dimensions, compress file size, and strip EXIF data 100% locally.',
+  },
+  'file-inspector': {
+    slug: 'file-inspector',
+    name: 'Browser File Inspector',
+    shortName: 'File Inspector',
+    category: 'privacy',
+    description: 'Inspect file MIME types, dimensions, EXIF camera tags, audio/video duration, and binary checksums locally without uploading.',
+    oneLiner: 'Inspect metadata, MIME types, dimensions, and cryptographic hashes in memory.',
+    icon: '🔍',
+    inputFormats: ['any'],
+    outputFormats: ['json', 'txt'],
+    route: '/file-inspector',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['strip-metadata', 'hash-generator', 'image-optimizer', 'base64-encoder-decoder'],
+    seoTitle: 'Browser File Inspector — Analyze File Metadata & Hashes Privately',
+    seoDescription: 'Inspect file properties, MIME types, EXIF metadata, dimensions, and SHA-256 hashes directly in your browser with zero data upload.',
+  },
+  'optimization-lab': {
+    slug: 'optimization-lab',
+    name: 'Image Optimization Lab',
+    shortName: 'Optimization Lab',
+    category: 'image',
+    description: 'Interactive visual compression comparison lab across WebP, AVIF, and JPEG.',
+    oneLiner: 'Multi-format real-time image comparison and optimization studio.',
+    icon: '🔬',
+    inputFormats: ['png', 'jpg', 'jpeg', 'webp', 'avif'],
+    outputFormats: ['webp', 'avif', 'jpg', 'png'],
+    route: '/optimization-lab',
+    popular: false,
+    featured: true,
+    relatedSlugs: ['compress-image', 'image-converter', 'jpg-to-avif'],
+    seoTitle: 'Image Optimization Lab — Real-Time Browser Image Compression Studio',
+    seoDescription: 'Compare image quality and compression ratios across AVIF, WebP, and JPEG in real time. 100% private browser processing.',
+  },
+  'jpg-to-webp': {
+    slug: 'jpg-to-webp',
+    name: 'JPG to WebP Converter',
+    shortName: 'JPG → WebP',
+    category: 'image',
+    description: 'Convert JPG images into lightweight WebP format for faster web page load speeds.',
+    oneLiner: 'Convert JPG photos to modern lightweight WebP images.',
+    icon: '🚀',
+    inputFormats: ['jpg', 'jpeg'],
+    outputFormats: ['webp'],
+    route: '/jpg-to-webp',
+    popular: true,
+    relatedSlugs: ['png-to-webp', 'compress-image', 'image-converter', 'jpg-to-avif'],
+    seoTitle: 'JPG to WebP Converter — Free Online Batch Image Conversion',
+    seoDescription: 'Convert JPG images to modern WebP format online for free. Reduce file size up to 80% without quality loss. 100% private browser conversion.',
+  },
+  'png-to-webp': {
+    slug: 'png-to-webp',
+    name: 'PNG to WebP Converter',
+    shortName: 'PNG → WebP',
+    category: 'image',
+    description: 'Convert PNG graphics with transparency preservation into modern WebP files.',
+    oneLiner: 'Convert PNG graphics to WebP while preserving transparency.',
+    icon: '⚡',
+    inputFormats: ['png'],
+    outputFormats: ['webp'],
+    route: '/png-to-webp',
+    popular: true,
+    relatedSlugs: ['jpg-to-webp', 'png-to-jpg', 'compress-image', 'image-converter'],
+    seoTitle: 'PNG to WebP Converter — Convert PNG with Transparency Free',
+    seoDescription: 'Convert PNG to WebP with alpha transparency preservation. 100% private in-browser conversion, batch processing, zero uploads.',
+  },
+  'png-to-jpg': {
+    slug: 'png-to-jpg',
+    name: 'PNG to JPG Converter',
+    shortName: 'PNG → JPG',
+    category: 'image',
+    description: 'Convert transparent or large PNG images to standard JPEG format.',
+    oneLiner: 'Convert PNG images to standard JPEG format.',
+    icon: '🖼️',
+    inputFormats: ['png'],
+    outputFormats: ['jpg'],
+    route: '/png-to-jpg',
+    popular: false,
+    relatedSlugs: ['jpg-to-png', 'png-to-webp', 'compress-image'],
+    seoTitle: 'PNG to JPG Converter — Free Online Image Conversion',
+    seoDescription: 'Convert PNG images to JPG format directly in your browser. Clean background handling, custom quality, fast batch conversion.',
+  },
+  'jpg-to-png': {
+    slug: 'jpg-to-png',
+    name: 'JPG to PNG Converter',
+    shortName: 'JPG → PNG',
+    category: 'image',
+    description: 'Convert JPEG photos into lossless PNG format.',
+    oneLiner: 'Convert JPG photos to lossless PNG format.',
+    icon: '✨',
+    inputFormats: ['jpg', 'jpeg'],
+    outputFormats: ['png'],
+    route: '/jpg-to-png',
+    popular: false,
+    relatedSlugs: ['png-to-jpg', 'jpg-to-webp', 'image-converter'],
+    seoTitle: 'JPG to PNG Converter — Free Online Lossless Image Conversion',
+    seoDescription: 'Convert JPG photos to lossless PNG images online. Fast, secure, and processed completely inside your browser.',
+  },
+  'webp-to-jpg': {
+    slug: 'webp-to-jpg',
+    name: 'WebP to JPG Converter',
+    shortName: 'WebP → JPG',
+    category: 'image',
+    description: 'Convert WebP images to universally compatible JPEG format.',
+    oneLiner: 'Convert modern WebP images to standard JPG format.',
+    icon: '🔄',
+    inputFormats: ['webp'],
+    outputFormats: ['jpg'],
+    route: '/webp-to-jpg',
+    popular: false,
+    relatedSlugs: ['webp-to-png', 'jpg-to-webp', 'image-converter'],
+    seoTitle: 'WebP to JPG Converter — Free Online Image Tool',
+    seoDescription: 'Convert WebP to JPG format for universal compatibility. Batch convert multiple WebP files in your browser with zero data upload.',
+  },
+  'webp-to-png': {
+    slug: 'webp-to-png',
+    name: 'WebP to PNG Converter',
+    shortName: 'WebP → PNG',
+    category: 'image',
+    description: 'Convert WebP images to high-quality PNG with alpha transparency.',
+    oneLiner: 'Convert WebP images to lossless PNG format.',
+    icon: '🎨',
+    inputFormats: ['webp'],
+    outputFormats: ['png'],
+    route: '/webp-to-png',
+    popular: false,
+    relatedSlugs: ['webp-to-jpg', 'png-to-webp', 'image-converter'],
+    seoTitle: 'WebP to PNG Converter — Free Lossless Browser Tool',
+    seoDescription: 'Convert WebP images to PNG format while maintaining transparency. Free, private, batch processing directly in your browser.',
+  },
+  'jpg-to-avif': {
+    slug: 'jpg-to-avif',
+    name: 'JPG to AVIF Converter',
+    shortName: 'JPG → AVIF',
+    category: 'image',
+    description: 'Convert JPG photos to next-generation AVIF format for cutting-edge compression.',
+    oneLiner: 'Convert JPG to next-generation AVIF for extreme file size reduction.',
+    icon: '🔮',
+    inputFormats: ['jpg', 'jpeg'],
+    outputFormats: ['avif'],
+    route: '/jpg-to-avif',
+    popular: false,
+    relatedSlugs: ['jpg-to-webp', 'png-to-avif', 'optimization-lab'],
+    seoTitle: 'JPG to AVIF Converter — Next-Gen Image Compression Free',
+    seoDescription: 'Convert JPG to AVIF format for next-generation web performance. 100% private in-browser image conversion.',
+  },
+  'png-to-avif': {
+    slug: 'png-to-avif',
+    name: 'PNG to AVIF Converter',
+    shortName: 'PNG → AVIF',
+    category: 'image',
+    description: 'Convert PNG graphics to next-generation AVIF format.',
+    oneLiner: 'Convert PNG graphics to ultra-compressed AVIF format.',
+    icon: '💎',
+    inputFormats: ['png'],
+    outputFormats: ['avif'],
+    route: '/png-to-avif',
+    popular: false,
+    relatedSlugs: ['jpg-to-avif', 'png-to-webp', 'image-converter'],
+    seoTitle: 'PNG to AVIF Converter — Convert PNG to Next-Gen AVIF',
+    seoDescription: 'Convert PNG to AVIF online with maximum compression efficiency and full browser privacy.',
+  },
+  'avif-to-jpg': {
+    slug: 'avif-to-jpg',
+    name: 'AVIF to JPG Converter',
+    shortName: 'AVIF → JPG',
+    category: 'image',
+    description: 'Convert AVIF images into standard JPG for broad compatibility.',
+    oneLiner: 'Convert AVIF images to standard JPG format.',
+    icon: '🔄',
+    inputFormats: ['avif'],
+    outputFormats: ['jpg'],
+    route: '/avif-to-jpg',
+    popular: false,
+    relatedSlugs: ['avif-to-png', 'jpg-to-avif', 'image-converter'],
+    seoTitle: 'AVIF to JPG Converter — Free Online Image Tool',
+    seoDescription: 'Convert next-generation AVIF images to standard JPG files online. Processed 100% locally in your browser.',
+  },
+  'avif-to-png': {
+    slug: 'avif-to-png',
+    name: 'AVIF to PNG Converter',
+    shortName: 'AVIF → PNG',
+    category: 'image',
+    description: 'Convert AVIF images into lossless PNG format.',
+    oneLiner: 'Convert AVIF images to lossless PNG format.',
+    icon: '🎨',
+    inputFormats: ['avif'],
+    outputFormats: ['png'],
+    route: '/avif-to-png',
+    popular: false,
+    relatedSlugs: ['avif-to-jpg', 'png-to-avif', 'image-converter'],
+    seoTitle: 'AVIF to PNG Converter — Free Online Image Tool',
+    seoDescription: 'Convert AVIF images to PNG format with full transparency preservation. Fast, private in-browser conversion.',
+  },
+  'image-resize': {
+    slug: 'image-resize',
+    name: 'Image Resizer',
+    shortName: 'Resize Image',
+    category: 'image',
+    description: 'Resize image pixel dimensions and aspect ratios with high-quality bicubic resampling.',
+    oneLiner: 'Resize image dimensions with custom width, height, and aspect ratio.',
+    icon: '📐',
+    inputFormats: ['png', 'jpg', 'jpeg', 'webp', 'avif'],
+    outputFormats: ['png', 'jpg', 'webp'],
+    route: '/image/resize',
+    popular: true,
+    relatedSlugs: ['compress-image', 'image-converter', 'strip-metadata'],
+    seoTitle: 'Image Resizer — Resize Dimensions Online Free in Browser',
+    seoDescription: 'Resize image dimensions online. Maintain aspect ratio, set exact pixel dimensions, and download optimized images with zero server upload.',
+  },
+  'strip-metadata': {
+    slug: 'strip-metadata',
+    name: 'EXIF Metadata Remover',
+    shortName: 'Remove EXIF',
+    category: 'privacy',
+    description: 'Strip GPS location, camera model, timestamp, and sensitive EXIF tags from photos before sharing.',
+    oneLiner: 'Remove GPS coordinates and private camera metadata from photos.',
+    icon: '🛡️',
+    inputFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    outputFormats: ['jpg', 'png', 'webp'],
+    route: '/privacy-tools/exif-remover',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['compress-image', 'image-converter', 'hash-generator'],
+    seoTitle: 'EXIF Metadata Remover — Strip Photo Location & Tags Free',
+    seoDescription: 'Remove EXIF metadata, GPS locations, and camera tags from photos online for free. 100% private in-browser cleaning.',
+  },
+
+  // ── PDF TOOLS ───────────────────────────────────────────────────
+  'pdf-merge': {
+    slug: 'pdf-merge',
+    name: 'Merge PDF Documents',
+    shortName: 'Merge PDF',
+    category: 'pdf',
+    description: 'Combine multiple PDF documents into a single organized PDF file.',
+    oneLiner: 'Combine multiple PDF files into a single unified document.',
+    icon: '📑',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    route: '/pdf/merge',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['pdf-split', 'pdf-compress', 'pdf-to-jpg', 'jpg-to-pdf'],
+    seoTitle: 'Merge PDF Files Online — Combine Multiple PDFs Free & Private',
+    seoDescription: 'Merge PDF documents in your browser. Rearrange pages, combine files, zero file uploads, 100% private client-side processing.',
+  },
+  'pdf-split': {
+    slug: 'pdf-split',
+    name: 'Split PDF Pages',
+    shortName: 'Split PDF',
+    category: 'pdf',
+    description: 'Extract specific page ranges or split a multi-page PDF into individual documents.',
+    oneLiner: 'Extract specific pages or split PDF documents into separate files.',
+    icon: '✂️',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf', 'zip'],
+    route: '/pdf/split',
+    popular: true,
+    relatedSlugs: ['pdf-merge', 'pdf-compress', 'pdf-to-png'],
+    seoTitle: 'Split PDF Online — Extract PDF Pages Free & Privately',
+    seoDescription: 'Split PDF files by page ranges or extract single pages directly in your browser. Fast, secure, zero file uploads.',
+  },
+  'pdf-compress': {
+    slug: 'pdf-compress',
+    name: 'Compress PDF Document',
+    shortName: 'Compress PDF',
+    category: 'pdf',
+    description: 'Optimize PDF structure and object streams to reduce file size for email and sharing.',
+    oneLiner: 'Reduce PDF file size while maintaining document formatting.',
+    icon: '📦',
+    inputFormats: ['pdf'],
+    outputFormats: ['pdf'],
+    route: '/pdf/compress',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['pdf-merge', 'pdf-split', 'pdf-to-jpg'],
+    seoTitle: 'Compress PDF Online — Reduce PDF File Size Free in Browser',
+    seoDescription: 'Compress PDF documents directly in your browser without uploading to any server. Reduce file size safely and privately.',
+  },
+  'pdf-to-jpg': {
+    slug: 'pdf-to-jpg',
+    name: 'PDF to JPG Converter',
+    shortName: 'PDF → JPG',
+    category: 'pdf',
+    description: 'Convert PDF document pages into high-resolution JPG images.',
+    oneLiner: 'Rasterize PDF pages to high-resolution JPG images.',
+    icon: '🖼️',
+    inputFormats: ['pdf'],
+    outputFormats: ['jpg', 'zip'],
+    route: '/pdf/pdf-to-jpg',
+    popular: true,
+    relatedSlugs: ['pdf-to-png', 'jpg-to-pdf', 'pdf-compress'],
+    seoTitle: 'PDF to JPG Converter — Convert PDF Pages to Images Free',
+    seoDescription: 'Convert PDF pages to JPG images in your browser. Download individual images or batch ZIP archive. 100% private.',
+  },
+  'pdf-to-png': {
+    slug: 'pdf-to-png',
+    name: 'PDF to PNG Converter',
+    shortName: 'PDF → PNG',
+    category: 'pdf',
+    description: 'Convert PDF pages into crystal-clear PNG images with crisp text rendering.',
+    oneLiner: 'Convert PDF pages to lossless PNG images.',
+    icon: '💎',
+    inputFormats: ['pdf'],
+    outputFormats: ['png', 'zip'],
+    route: '/pdf/pdf-to-png',
+    popular: false,
+    relatedSlugs: ['pdf-to-jpg', 'png-to-pdf', 'pdf-merge'],
+    seoTitle: 'PDF to PNG Converter — High Resolution PDF Extraction Free',
+    seoDescription: 'Extract PDF pages as lossless PNG images online. Client-side rendering, zero uploads, instant download.',
+  },
+  'jpg-to-pdf': {
+    slug: 'jpg-to-pdf',
+    name: 'JPG to PDF Converter',
+    shortName: 'JPG → PDF',
+    category: 'pdf',
+    description: 'Combine multiple JPG photos into a clean, formatted multi-page PDF document.',
+    oneLiner: 'Convert JPG photos into a multi-page PDF document.',
+    icon: '📄',
+    inputFormats: ['jpg', 'jpeg'],
+    outputFormats: ['pdf'],
+    route: '/pdf/jpg-to-pdf',
+    popular: true,
+    relatedSlugs: ['png-to-pdf', 'pdf-merge', 'pdf-to-jpg'],
+    seoTitle: 'JPG to PDF Converter — Combine Images into PDF Free',
+    seoDescription: 'Convert JPG images to PDF document online. Combine multiple photos into a single PDF with custom page orientation.',
+  },
+  'png-to-pdf': {
+    slug: 'png-to-pdf',
+    name: 'PNG to PDF Converter',
+    shortName: 'PNG → PDF',
+    category: 'pdf',
+    description: 'Combine PNG images and diagrams into a clean multi-page PDF document.',
+    oneLiner: 'Convert PNG images and diagrams into a PDF document.',
+    icon: '📑',
+    inputFormats: ['png'],
+    outputFormats: ['pdf'],
+    route: '/pdf/png-to-pdf',
+    popular: false,
+    relatedSlugs: ['jpg-to-pdf', 'pdf-merge', 'pdf-to-png'],
+    seoTitle: 'PNG to PDF Converter — Convert PNG Images to PDF Free',
+    seoDescription: 'Convert PNG graphics to PDF documents in your browser. Fast, private batch conversion with zero file uploads.',
+  },
+
+  // ── AUDIO TOOLS ─────────────────────────────────────────────────
+  'audio-converter': {
+    slug: 'audio-converter',
+    name: 'Universal Audio Converter',
+    shortName: 'Audio Converter',
+    category: 'audio',
+    description: 'Transcode audio between MP3, WAV, and OGG formats with customizable bitrates.',
+    oneLiner: 'Convert audio files between MP3, WAV, and OGG formats.',
+    icon: '🎵',
+    inputFormats: ['mp3', 'wav', 'ogg', 'aac', 'm4a'],
+    outputFormats: ['mp3', 'wav'],
+    route: '/audio-converter',
+    popular: true,
+    relatedSlugs: ['wav-to-mp3', 'mp3-to-wav', 'audio-trimmer', 'compress-audio'],
+    seoTitle: 'Universal Audio Converter — Free Online Browser Audio Tool',
+    seoDescription: 'Convert audio files online in your browser. Transcode MP3, WAV, and OGG with custom bitrate controls and zero server uploads.',
+  },
+  'audio-trimmer': {
+    slug: 'audio-trimmer',
+    name: 'Audio Trimmer & Cutter',
+    shortName: 'Audio Trimmer',
+    category: 'audio',
+    description: 'Trim start and end times of songs and audio recordings with interactive waveform controls.',
+    oneLiner: 'Cut and trim audio files with precision visual waveform controls.',
+    icon: '✂️',
+    inputFormats: ['mp3', 'wav', 'ogg', 'aac', 'm4a'],
+    outputFormats: ['wav', 'mp3'],
+    route: '/audio-trimmer',
+    popular: true,
+    relatedSlugs: ['audio-converter', 'compress-audio', 'wav-to-mp3'],
+    seoTitle: 'Audio Trimmer Online — Cut Audio Files Free in Browser',
+    seoDescription: 'Trim MP3 and audio files directly in your browser. Set start and end markers, preview waveforms, download instantly.',
+  },
+  'compress-audio': {
+    slug: 'compress-audio',
+    name: 'Audio Compressor',
+    shortName: 'Compress Audio',
+    category: 'audio',
+    description: 'Reduce audio file sizes by adjusting sample rates and encoding bitrates.',
+    oneLiner: 'Reduce audio file sizes by optimizing bitrates and channels.',
+    icon: '📉',
+    inputFormats: ['mp3', 'wav', 'ogg', 'aac', 'm4a'],
+    outputFormats: ['mp3'],
+    route: '/compress-audio',
+    popular: false,
+    relatedSlugs: ['audio-converter', 'audio-trimmer', 'wav-to-mp3'],
+    seoTitle: 'Audio Compressor — Reduce MP3 & Audio File Size Free',
+    seoDescription: 'Compress audio files online in your browser. Adjust bitrates to reduce audio file sizes without server uploads.',
+  },
+  'wav-to-mp3': {
+    slug: 'wav-to-mp3',
+    name: 'WAV to MP3 Converter',
+    shortName: 'WAV → MP3',
+    category: 'audio',
+    description: 'Convert uncompressed WAV audio into lightweight, compatible MP3 format.',
+    oneLiner: 'Convert large WAV audio files into lightweight MP3 format.',
+    icon: '🎧',
+    inputFormats: ['wav'],
+    outputFormats: ['mp3'],
+    route: '/wav-to-mp3',
+    popular: true,
+    relatedSlugs: ['mp3-to-wav', 'audio-converter', 'audio-trimmer'],
+    seoTitle: 'WAV to MP3 Converter — Free Fast Audio Conversion in Browser',
+    seoDescription: 'Convert WAV audio files to MP3 online for free. In-browser hardware encoding using LAME MP3, zero uploads.',
+  },
+  'mp3-to-wav': {
+    slug: 'mp3-to-wav',
+    name: 'MP3 to WAV Converter',
+    shortName: 'MP3 → WAV',
+    category: 'audio',
+    description: 'Decode MP3 files into uncompressed 16-bit PCM WAV audio.',
+    oneLiner: 'Decode MP3 files into uncompressed 16-bit PCM WAV format.',
+    icon: '🔊',
+    inputFormats: ['mp3'],
+    outputFormats: ['wav'],
+    route: '/mp3-to-wav',
+    popular: false,
+    relatedSlugs: ['wav-to-mp3', 'audio-converter', 'audio-trimmer'],
+    seoTitle: 'MP3 to WAV Converter — Free Online Audio Decoder',
+    seoDescription: 'Convert MP3 audio to uncompressed WAV format directly in your browser. 100% private, instant decoding.',
+  },
+
+  // ── DEVELOPER & TEXT TOOLS ──────────────────────────────────────
+  'json-formatter': {
+    slug: 'json-formatter',
+    name: 'JSON Formatter & Validator',
+    shortName: 'JSON Formatter',
+    category: 'developer',
+    description: 'Format, prettify, validate, and minify JSON with syntax highlighting and error inspection.',
+    oneLiner: 'Prettify, validate, and minify JSON data with instant syntax checks.',
+    icon: '💻',
+    inputFormats: ['json', 'txt'],
+    outputFormats: ['json'],
+    route: '/json-formatter',
+    popular: true,
+    featured: true,
+    relatedSlugs: ['base64-encoder-decoder', 'hash-generator', 'word-counter'],
+    seoTitle: 'JSON Formatter & Validator — Free Online Code Tool',
+    seoDescription: 'Format and validate JSON online. Clean indentation, error detection, minification, 100% client-side data privacy.',
+  },
+  'base64-encoder-decoder': {
+    slug: 'base64-encoder-decoder',
+    name: 'Base64 Encoder & Decoder',
+    shortName: 'Base64 Tool',
+    category: 'developer',
+    description: 'Encode and decode plain text, binary files, and data URLs to and from Base64 format.',
+    oneLiner: 'Encode and decode text, strings, and binary files to Base64.',
+    icon: '🔤',
+    inputFormats: ['txt', 'bin', 'any'],
+    outputFormats: ['txt'],
+    route: '/base64-encoder-decoder',
+    popular: true,
+    relatedSlugs: ['json-formatter', 'hash-generator', 'qr-code-generator'],
+    seoTitle: 'Base64 Encoder & Decoder — Free Online String & File Tool',
+    seoDescription: 'Encode and decode strings and files to Base64 in your browser. Safe, private, and instant client-side execution.',
+  },
+  'hash-generator': {
+    slug: 'hash-generator',
+    name: 'Cryptographic Hash Generator',
+    shortName: 'Hash Generator',
+    category: 'developer',
+    description: 'Calculate cryptographic hashes (SHA-256, SHA-512, SHA-1, MD5) for text strings and files.',
+    oneLiner: 'Calculate SHA-256, SHA-512, SHA-1, and MD5 hashes for text and files.',
+    icon: '🔒',
+    inputFormats: ['txt', 'any'],
+    outputFormats: ['txt'],
+    route: '/hash-generator',
+    popular: true,
+    relatedSlugs: ['base64-encoder-decoder', 'json-formatter', 'strip-metadata'],
+    seoTitle: 'Hash Generator — Calculate SHA-256, SHA-1, MD5 Free in Browser',
+    seoDescription: 'Generate SHA-256, SHA-512, SHA-1, and MD5 hashes for text and binary files. Uses Web Crypto API for instant local computation.',
+  },
+  'qr-code-generator': {
+    slug: 'qr-code-generator',
+    name: 'QR Code Generator',
+    shortName: 'QR Generator',
+    category: 'text',
+    description: 'Generate customized, high-resolution QR codes for URLs, text, Wi-Fi credentials, and contacts.',
+    oneLiner: 'Create custom QR codes for links, text, and Wi-Fi credentials.',
+    icon: '📱',
+    inputFormats: ['txt'],
+    outputFormats: ['png', 'svg'],
+    route: '/qr-code-generator',
+    popular: true,
+    relatedSlugs: ['base64-encoder-decoder', 'word-counter', 'case-converter'],
+    seoTitle: 'QR Code Generator — Free Online Custom QR Code Tool',
+    seoDescription: 'Generate custom QR codes online in your browser. Download as PNG or SVG with zero server data tracking.',
+  },
+  'word-counter': {
+    slug: 'word-counter',
+    name: 'Word & Character Counter',
+    shortName: 'Word Counter',
+    category: 'text',
+    description: 'Count words, characters, sentences, paragraphs, and estimate reading and speaking times.',
+    oneLiner: 'Count words, characters, paragraphs, and estimate reading time.',
+    icon: '📊',
+    inputFormats: ['txt'],
+    outputFormats: ['txt'],
+    route: '/word-counter',
+    popular: false,
+    relatedSlugs: ['case-converter', 'json-formatter', 'qr-code-generator'],
+    seoTitle: 'Word Counter — Free Online Character & Reading Time Stats',
+    seoDescription: 'Count words, characters with/without spaces, sentences, and calculate reading time live in your browser.',
+  },
+  'case-converter': {
+    slug: 'case-converter',
+    name: 'Text Case Converter',
+    shortName: 'Case Converter',
+    category: 'text',
+    description: 'Transform text case into UPPERCASE, lowercase, Title Case, camelCase, snake_case, and kebab-case.',
+    oneLiner: 'Convert text between UPPERCASE, lowercase, Title Case, and camelCase.',
+    icon: '🔠',
+    inputFormats: ['txt'],
+    outputFormats: ['txt'],
+    route: '/case-converter',
+    popular: false,
+    relatedSlugs: ['word-counter', 'json-formatter', 'base64-encoder-decoder'],
+    seoTitle: 'Case Converter — Convert Text to Title Case, UPPER, lower, camelCase',
+    seoDescription: 'Transform text case instantly online. Convert to Title Case, UPPERCASE, lowercase, camelCase, snake_case and kebab-case.',
+  },
+};
+
+/**
+ * Get all tools as an array
+ */
+export function getAllTools(): ToolMetadata[] {
+  return Object.values(TOOLS_REGISTRY);
+}
+
+/**
+ * Get tools filtered by category
+ */
+export function getToolsByCategory(category: ToolCategory): ToolMetadata[] {
+  return Object.values(TOOLS_REGISTRY).filter((t) => t.category === category);
+}
+
+/**
+ * Get all tools marked as popular
+ */
+export function getPopularTools(): ToolMetadata[] {
+  return Object.values(TOOLS_REGISTRY).filter((t) => t.popular);
+}
+
+/**
+ * Get all tools marked as featured
+ */
+export function getFeaturedTools(): ToolMetadata[] {
+  return Object.values(TOOLS_REGISTRY).filter((t) => t.featured);
+}
+
+/**
+ * Find tool by its slug
+ */
+export function getToolBySlug(slug: string): ToolMetadata | undefined {
+  return TOOLS_REGISTRY[slug];
+}
+
+/**
+ * Find tool by its route path
+ */
+export function getToolByRoute(routePath: string): ToolMetadata | undefined {
+  const normalized = routePath.replace(/\/$/, '') || '/';
+  return Object.values(TOOLS_REGISTRY).find((t) => {
+    const toolNormalized = t.route.replace(/\/$/, '') || '/';
+    return toolNormalized === normalized;
+  });
+}
+
+/**
+ * Get related tools for a given tool slug
+ */
+export function getRelatedTools(slug: string, limit: number = 4): ToolMetadata[] {
+  const tool = TOOLS_REGISTRY[slug];
+  if (!tool) return [];
+  
+  const related: ToolMetadata[] = [];
+  for (const relSlug of tool.relatedSlugs) {
+    if (TOOLS_REGISTRY[relSlug]) {
+      related.push(TOOLS_REGISTRY[relSlug]);
+    }
+  }
+  
+  // If not enough related tools, fill with other tools from the same category
+  if (related.length < limit) {
+    const categoryTools = getToolsByCategory(tool.category).filter(
+      (t) => t.slug !== slug && !related.some((r) => r.slug === t.slug)
+    );
+    related.push(...categoryTools.slice(0, limit - related.length));
+  }
+  
+  return related.slice(0, limit);
+}

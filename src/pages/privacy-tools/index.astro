@@ -1,51 +1,251 @@
 ---
+/**
+ * privacy-tools/index.astro — Privacy & Security Tools Category Hub
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import AdSlot from '../../components/ads/AdSlot.astro';
 ---
 
 <BaseLayout
-  title="Privacy & Security Tools — FreeFileTools"
-  description="100% private browser-side privacy and security tools. Remove EXIF data, strip metadata, and protect your digital footprint locally."
+  title="Privacy & Security File Tools — 100% Private In-Browser Utilities"
+  description="Audit and sanitize files before sharing. Strip EXIF metadata, inspect hidden camera tags, calculate SHA-256 hashes, and verify data 100% inside your browser."
 >
   <header class="hub-hero">
-    <h1 class="hub-title">Privacy &amp; Security Tools</h1>
+    <div class="hub-hero__badge">Privacy &amp; Security Workspace</div>
+    <h1 class="hub-title">Browser Privacy &amp; Security Tools</h1>
     <p class="hub-desc">
-      Protect your digital footprint. All privacy-focused tools run 100% locally in your browser. Your data never leaves your device.
+      Inspect, sanitize, and verify files before sharing them. All tools execute 100% locally inside your browser's memory — zero data is uploaded to remote servers.
     </p>
+    <PrivacyBadge variant="badge" />
   </header>
+
+  <AdSlot position="top-leaderboard" />
 
   <section class="tools-hub" aria-label="Privacy & Security Tools">
     <div class="category-block">
-      <h2 class="category-title">
-        <span class="category-icon">🛡️</span> Image Privacy
-      </h2>
-      <p class="category-desc">Remove tracking data and personal information from your photos before sharing.</p>
-      
       <div class="category-grid">
-        <div class="tool-card tool-card--featured">
-          <div class="tool-badge">Featured</div>
-          <h3 class="tool-title"><a href="/privacy-tools/exif-remover">Free EXIF Remover</a></h3>
+        <!-- File Inspector -->
+        <div class="tool-card tool-card--featured group">
+          <div class="tool-card-top">
+            <span class="tool-card-icon">🔍</span>
+            <span class="tool-badge">Flagship</span>
+          </div>
+          <h2 class="tool-title"><a href="/file-inspector">Browser File Inspector</a></h2>
+          <p class="tool-desc">
+            Deeply inspect MIME types, dimensions, audio/video durations, hidden camera tags, and SHA-256 binary checksums.
+          </p>
+          <a href="/file-inspector" class="tool-link">Inspect File Privately &rarr;</a>
+        </div>
+
+        <!-- EXIF Remover -->
+        <div class="tool-card tool-card--featured group">
+          <div class="tool-card-top">
+            <span class="tool-card-icon">🛡️</span>
+            <span class="tool-badge">Essential</span>
+          </div>
+          <h2 class="tool-title"><a href="/privacy-tools/exif-remover">Free EXIF Remover</a></h2>
           <p class="tool-desc">
             Strip hidden EXIF camera metadata, timestamps, and GPS location data from JPG, PNG, and WebP images.
           </p>
           <a href="/privacy-tools/exif-remover" class="tool-link">Strip EXIF Data &rarr;</a>
         </div>
+
+        <!-- Cryptographic Hash Generator -->
+        <div class="tool-card group">
+          <div class="tool-card-top">
+            <span class="tool-card-icon">🔒</span>
+            <span class="tool-badge">Crypto</span>
+          </div>
+          <h2 class="tool-title"><a href="/hash-generator">Cryptographic Hash Generator</a></h2>
+          <p class="tool-desc">
+            Calculate SHA-256, SHA-512, SHA-1, and MD5 checksums for strings and binary files using the Web Crypto API.
+          </p>
+          <a href="/hash-generator" class="tool-link">Generate Hashes &rarr;</a>
+        </div>
+
+        <!-- Base64 Converter -->
+        <div class="tool-card group">
+          <div class="tool-card-top">
+            <span class="tool-card-icon">🔤</span>
+            <span class="tool-badge">Encoding</span>
+          </div>
+          <h2 class="tool-title"><a href="/base64-encoder-decoder">Base64 Encoder &amp; Decoder</a></h2>
+          <p class="tool-desc">
+            Encode and decode plain text, binary files, and Data URLs safely without leaking data to external encoders.
+          </p>
+          <a href="/base64-encoder-decoder" class="tool-link">Open Base64 Tool &rarr;</a>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- Educational Trust Section -->
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Why Privacy Matters for File Operations</h2>
+      <p>
+        When you upload files to traditional online converters, your documents, family photos, and confidential assets pass through third-party servers where they can be logged, scraped, or retained.
+      </p>
+      <p>
+        FreeFileTool solves this by shifting 100% of the computational workload into your local browser sandbox. You get all the convenience of web tools with the privacy and security of offline desktop software.
+      </p>
+    </section>
+
+    <RelatedTools category="developer" title="Developer & Cryptographic Utilities" />
+  </article>
+
+  <AdSlot position="below-tool" />
 </BaseLayout>
 
 <style>
-  .hub-hero { text-align: center; padding: var(--space-10) 0 var(--space-8); }
-  .hub-title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-3); }
-  .hub-desc { font-size: var(--font-size-lg); color: var(--text-secondary); max-width: 50ch; margin-inline: auto; }
-  .tools-hub { display: flex; flex-direction: column; gap: var(--space-12); padding-bottom: var(--space-16); }
-  .category-block { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
-  .category-title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-2); }
-  .category-desc { font-size: var(--font-size-sm); color: var(--text-muted); margin-bottom: var(--space-6); }
-  .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6); }
-  .tool-card { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-xl); padding: var(--space-6); }
-  .tool-card--featured { border-color: var(--color-brand-400); }
-  .tool-title { font-weight: var(--font-weight-bold); margin-bottom: var(--space-2); }
-  .tool-desc { font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--space-4); }
-  .tool-link { font-weight: var(--font-weight-semibold); color: var(--color-brand-400); }
+  .hub-hero { 
+    text-align: center; 
+    padding: var(--space-8, 2rem) 0 var(--space-6, 1.5rem); 
+  }
+
+  .hub-hero__badge {
+    display: inline-block;
+    padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+    background: rgba(45, 212, 191, 0.12);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    border-radius: var(--radius-full, 9999px);
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-accent-400, #2dd4bf);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .hub-title { 
+    font-size: var(--font-size-3xl, 1.875rem); 
+    font-weight: 800; 
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: var(--space-3, 0.75rem); 
+  }
+
+  .hub-desc { 
+    font-size: var(--font-size-base, 1rem); 
+    color: var(--text-secondary, #94a3b8); 
+    max-width: 58ch; 
+    margin-inline: auto; 
+    line-height: var(--line-height-loose, 1.7);
+  }
+
+  .tools-hub { 
+    max-width: 88rem;
+    margin: 0 auto var(--space-10, 2.5rem);
+    padding: 0 var(--space-6, 1.5rem);
+  }
+
+  .category-grid { 
+    display: grid; 
+    grid-template-columns: repeat(1, minmax(0, 1fr)); 
+    gap: var(--space-6, 1.5rem); 
+  }
+
+  @media (min-width: 640px) {
+    .category-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .tool-card { 
+    background: var(--surface-1, #121526); 
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14)); 
+    border-radius: var(--radius-xl, 1rem); 
+    padding: var(--space-6, 1.5rem); 
+    display: flex;
+    flex-direction: column;
+    transition: all var(--transition-base, 250ms ease);
+  }
+
+  .tool-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-brand-400, #818cf8);
+    background: var(--surface-2, #1a1e35);
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(129, 140, 248, 0.15);
+  }
+
+  .tool-card--featured { 
+    border-color: rgba(45, 212, 191, 0.35); 
+  }
+
+  .tool-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-card-icon {
+    font-size: 2rem;
+  }
+
+  .tool-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    background: rgba(45, 212, 191, 0.12);
+    color: var(--color-accent-400, #2dd4bf);
+    border-radius: var(--radius-sm, 0.375rem);
+  }
+
+  .tool-title { 
+    font-size: 1.125rem;
+    font-weight: 700; 
+    color: #fff;
+    margin-bottom: var(--space-2, 0.5rem); 
+  }
+
+  .tool-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tool-desc { 
+    font-size: 0.875rem; 
+    color: var(--text-secondary, #94a3b8); 
+    line-height: 1.5;
+    margin-bottom: var(--space-4, 1rem); 
+    flex-grow: 1;
+  }
+
+  .tool-link { 
+    font-size: 0.875rem;
+    font-weight: 600; 
+    color: var(--color-accent-400, #2dd4bf); 
+    text-decoration: none;
+    margin-top: auto;
+  }
+
+  .tool-card:hover .tool-link {
+    text-decoration: underline;
+  }
+
+  .tool-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--space-6, 1.5rem);
+  }
+
+  .content-block {
+    margin-bottom: var(--space-8, 2rem);
+  }
+
+  .content-block h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .content-block p {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #94a3b8);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
 </style>

@@ -1,0 +1,848 @@
+---
+/**
+ * image-optimizer.astro — Flagship Web Image Optimizer
+ * 
+ * All-in-one web image optimizer: convert to WebP/AVIF, compress,
+ * resize dimensions, strip EXIF metadata, and batch download with ZIP.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyBadge from '../components/PrivacyBadge.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
+---
+
+<BaseLayout
+  title="Web Image Optimizer — Compress, Convert to WebP & AVIF 100% Free"
+  description="Optimize images for website performance. Convert to WebP & AVIF, resize dimensions, compress file size, and strip EXIF data directly in your browser with zero data upload."
+>
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FreeFileTool Web Image Optimizer",
+          "url": "https://freefiletool.app/image-optimizer",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript and HTML5 Canvas support",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Convert to modern WebP and AVIF formats",
+            "Real-time compression savings comparison",
+            "Intelligent dimensional resizing",
+            "Automatic EXIF metadata stripping",
+            "Batch image processing with ZIP archive export",
+            "100% in-browser processing without server uploads"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How much file size can the Web Image Optimizer save?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "By converting standard PNG or JPEG images to WebP or AVIF and stripping unnecessary metadata, users typically achieve 60% to 85% file size reductions without noticeable visual degradation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to any remote server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. All conversion, compression, resizing, and metadata stripping is executed entirely on your local machine using the HTML5 Canvas API."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <section class="tool-hero">
+    <div class="tool-hero__badge">Flagship Performance Utility</div>
+    <h1 class="tool-hero__title">Web Image Optimizer</h1>
+    <p class="tool-hero__desc">
+      Convert images to WebP or AVIF, compress file sizes, resize dimensions, and strip metadata with instant live savings stats. 100% client-side.
+    </p>
+    <PrivacyBadge variant="badge" />
+  </section>
+
+  <AdSlot position="top-leaderboard" />
+
+  <!-- Interactive Optimizer Workspace -->
+  <section class="optimizer-stage" aria-label="Image Optimizer Workspace">
+    <div class="optimizer-card" id="optimizer-zone">
+      <input 
+        type="file" 
+        id="opt-input" 
+        class="sr-only" 
+        accept="image/png,image/jpeg,image/webp,image/avif" 
+        multiple 
+        aria-label="Select images to optimize" 
+      />
+
+      <!-- Drop Prompt -->
+      <div class="drop-prompt" id="opt-drop-prompt" role="button" tabindex="0">
+        <div class="drop-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </div>
+        <h2 class="drop-title">Drop images here to optimize</h2>
+        <p class="drop-subtitle">
+          or <span class="browse-link">browse files</span> &middot; JPG, PNG, WebP, AVIF &middot; Batch processing supported
+        </p>
+      </div>
+
+      <!-- Settings & Processing Panel -->
+      <div class="opt-panel hidden" id="opt-panel">
+        <div class="opt-controls-grid">
+          <!-- Format Selector -->
+          <div class="control-group">
+            <label for="opt-format" class="ctrl-label">Target Format</label>
+            <select id="opt-format" class="ctrl-select">
+              <option value="webp" selected>WebP (Recommended &middot; 98% browser support)</option>
+              <option value="avif">AVIF (Maximum compression &middot; Modern browsers)</option>
+              <option value="jpg">JPG (Universal compatibility)</option>
+              <option value="png">PNG (Lossless &middot; High quality)</option>
+            </select>
+          </div>
+
+          <!-- Quality Slider -->
+          <div class="control-group">
+            <div class="ctrl-label-wrap">
+              <label for="opt-quality" class="ctrl-label">Quality Level</label>
+              <span class="ctrl-val" id="opt-quality-val">80%</span>
+            </div>
+            <input type="range" id="opt-quality" min="10" max="100" value="80" class="ctrl-range" />
+          </div>
+
+          <!-- Max Dimension Resizer -->
+          <div class="control-group">
+            <label for="opt-max-dim" class="ctrl-label">Max Width / Height</label>
+            <select id="opt-max-dim" class="ctrl-select">
+              <option value="0" selected>Original Dimensions (No Resize)</option>
+              <option value="1920">1920 px (Full HD Web)</option>
+              <option value="1280">1280 px (Standard Web Banner)</option>
+              <option value="800">800 px (Blog Content Images)</option>
+              <option value="400">400 px (Thumbnails &amp; Avatars)</option>
+            </select>
+          </div>
+
+          <!-- Strip EXIF Toggle -->
+          <div class="control-group ctrl-checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-strip-exif" checked class="ctrl-checkbox" />
+              <span>Strip EXIF &amp; GPS Location Tags</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="opt-action-bar">
+          <button type="button" class="btn-primary" id="btn-start-optimize">
+            ⚡ Optimize Images Now
+          </button>
+          <button type="button" class="btn-secondary" id="btn-opt-reset">
+            Clear Queue
+          </button>
+        </div>
+      </div>
+
+      <!-- Processing Progress View -->
+      <div class="opt-processing hidden" id="opt-processing">
+        <div class="spinner"></div>
+        <p class="opt-progress-text" id="opt-progress-status">Optimizing images in browser...</p>
+      </div>
+
+      <!-- Results View -->
+      <div class="opt-results hidden" id="opt-results">
+        <div class="results-banner">
+          <span class="banner-icon">🎉</span>
+          <div>
+            <h3 class="banner-title">Optimization Complete!</h3>
+            <p class="banner-stats" id="total-savings-text">Total Size Saved: 0 KB (0%)</p>
+          </div>
+        </div>
+
+        <div class="results-items-list" id="results-list"></div>
+
+        <div class="results-action-row">
+          <button type="button" class="btn-primary" id="btn-download-all-zip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download All (.zip)
+          </button>
+          <button type="button" class="btn-secondary" id="btn-optimize-more">
+            Optimize Another Batch
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explanatory Technical Content -->
+  <article class="tool-content">
+    <section class="content-block">
+      <h2>Why Optimize Web Images?</h2>
+      <p>
+        Images make up over <strong>60% of the total page weight</strong> on the modern web. Unoptimized images hurt your Google Core Web Vitals (Largest Contentful Paint), increase mobile data usage, and degrade user conversion rates.
+      </p>
+      <p>
+        By converting legacy JPG and PNG assets into modern <strong>WebP or AVIF</strong> files and scaling oversized resolution down to web display standards, you can cut image payloads by up to <strong>80%</strong> without noticeable quality loss.
+      </p>
+    </section>
+
+    <!-- Comparison Matrix -->
+    <section class="content-block">
+      <h2>Modern Web Image Formats Comparison</h2>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">Format</th>
+              <th scope="col">Compression Efficiency</th>
+              <th scope="col">Transparency</th>
+              <th scope="col">Browser Compatibility</th>
+              <th scope="col">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>WebP</strong></td>
+              <td>25%–35% smaller than JPG</td>
+              <td>Yes (Alpha)</td>
+              <td>98%+ (All modern browsers)</td>
+              <td>Universal web delivery &amp; general content</td>
+            </tr>
+            <tr>
+              <td><strong>AVIF</strong></td>
+              <td>50% smaller than JPG</td>
+              <td>Yes (Alpha)</td>
+              <td>93%+ (Chrome, Firefox, Safari 16+)</td>
+              <td>Next-generation speed &amp; hero images</td>
+            </tr>
+            <tr>
+              <td><strong>JPG</strong></td>
+              <td>Baseline</td>
+              <td>No</td>
+              <td>100% (Universal)</td>
+              <td>Legacy fallback &amp; email newsletters</td>
+            </tr>
+            <tr>
+              <td><strong>PNG</strong></td>
+              <td>Lossless (Heavier)</td>
+              <td>Yes (Alpha)</td>
+              <td>100% (Universal)</td>
+              <td>Pixel-art, charts &amp; vector-like graphics</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="content-block faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <details class="faq-details">
+          <summary class="faq-summary">Should I convert my website images to WebP or AVIF?</summary>
+          <div class="faq-answer">
+            <p>WebP is currently the sweet spot with 98%+ global browser support and excellent compression. AVIF delivers even smaller file sizes and is ideal if your audience is primarily on modern desktop and mobile browsers.</p>
+          </div>
+        </details>
+
+        <details class="faq-details">
+          <summary class="faq-summary">What does stripping EXIF metadata do?</summary>
+          <div class="faq-answer">
+            <p>EXIF data contains hidden camera settings, device serials, and GPS location coordinates. Stripping this data protects your privacy and removes several kilobytes of unnecessary metadata overhead per image.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <RelatedTools currentSlug="image-optimizer" />
+  </article>
+
+  <AdSlot position="below-tool" />
+</BaseLayout>
+
+<script>
+  import { convertImage, sanitizeFilename } from '../lib/converter.js';
+  import { formatBytes } from '../lib/shared/validator.js';
+  import { trackEvent, startTimer } from '../lib/analytics.js';
+
+  let queuedFiles: File[] = [];
+  let processedResults: any[] = [];
+
+  function initImageOptimizer() {
+    const dropzone = document.getElementById('optimizer-zone');
+    const input = document.getElementById('opt-input') as HTMLInputElement | null;
+    const dropPrompt = document.getElementById('opt-drop-prompt');
+    const optPanel = document.getElementById('opt-panel');
+    const optProcessing = document.getElementById('opt-processing');
+    const optResults = document.getElementById('opt-results');
+    const qualitySlider = document.getElementById('opt-quality') as HTMLInputElement | null;
+    const qualityVal = document.getElementById('opt-quality-val');
+    const btnStart = document.getElementById('btn-start-optimize');
+    const btnReset = document.getElementById('btn-opt-reset');
+    const btnOptimizeMore = document.getElementById('btn-optimize-more');
+    const btnDownloadZip = document.getElementById('btn-download-all-zip');
+
+    if (!dropzone || !input) return;
+
+    dropPrompt?.addEventListener('click', () => input.click());
+    dropPrompt?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        input.click();
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      if (e.dataTransfer?.files?.length) {
+        addFilesToQueue(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    input.addEventListener('change', () => {
+      if (input.files?.length) {
+        addFilesToQueue(Array.from(input.files));
+      }
+    });
+
+    qualitySlider?.addEventListener('input', () => {
+      if (qualityVal) qualityVal.textContent = `${qualitySlider.value}%`;
+    });
+
+    btnReset?.addEventListener('click', () => {
+      queuedFiles = [];
+      optPanel?.classList.add('hidden');
+      dropPrompt?.classList.remove('hidden');
+      if (input) input.value = '';
+    });
+
+    btnOptimizeMore?.addEventListener('click', () => {
+      queuedFiles = [];
+      processedResults = [];
+      optResults?.classList.add('hidden');
+      dropPrompt?.classList.remove('hidden');
+      if (input) input.value = '';
+    });
+
+    btnStart?.addEventListener('click', () => {
+      executeOptimization();
+    });
+
+    btnDownloadZip?.addEventListener('click', async () => {
+      if (!processedResults.length) return;
+      try {
+        const JSZip = (await import('jszip')).default;
+        const zip = new JSZip();
+        for (const res of processedResults) {
+          zip.file(res.filename, res.blob);
+        }
+        const content = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(content);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `optimized-images-${Date.now()}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        trackEvent('tool_download', { tool_slug: 'image-optimizer', format: 'zip' });
+      } catch (err) {
+        console.error('ZIP generation failed:', err);
+      }
+    });
+  }
+
+  function addFilesToQueue(files: File[]) {
+    const validFiles = files.filter((f) => f.type.startsWith('image/'));
+    if (!validFiles.length) {
+      alert('Please select valid image files (JPG, PNG, WebP, AVIF).');
+      return;
+    }
+
+    queuedFiles.push(...validFiles);
+    const dropPrompt = document.getElementById('opt-drop-prompt');
+    const optPanel = document.getElementById('opt-panel');
+
+    dropPrompt?.classList.add('hidden');
+    optPanel?.classList.remove('hidden');
+  }
+
+  async function executeOptimization() {
+    if (!queuedFiles.length) return;
+
+    const optPanel = document.getElementById('opt-panel');
+    const optProcessing = document.getElementById('opt-processing');
+    const optResults = document.getElementById('opt-results');
+    const optStatus = document.getElementById('opt-progress-status');
+    const formatSelect = document.getElementById('opt-format') as HTMLSelectElement | null;
+    const qualitySlider = document.getElementById('opt-quality') as HTMLInputElement | null;
+    const maxDimSelect = document.getElementById('opt-max-dim') as HTMLSelectElement | null;
+
+    optPanel?.classList.add('hidden');
+    optProcessing?.classList.remove('hidden');
+
+    const targetFormat = formatSelect?.value || 'webp';
+    const quality = Number(qualitySlider?.value || 80) / 100;
+    const maxDim = Number(maxDimSelect?.value || 0);
+
+    const endTimer = startTimer();
+    trackEvent('tool_process_start', {
+      tool_slug: 'image-optimizer',
+      batch_size: queuedFiles.length,
+    });
+
+    processedResults = [];
+    let totalOrigBytes = 0;
+    let totalOptBytes = 0;
+
+    for (let i = 0; i < queuedFiles.length; i++) {
+      const file = queuedFiles[i];
+      if (optStatus) {
+        optStatus.textContent = `Optimizing file ${i + 1} of ${queuedFiles.length}: ${file.name}...`;
+      }
+
+      try {
+        let processedBlob: Blob;
+        let convertedName = '';
+
+        if (maxDim > 0) {
+          // Resize dimensions & convert
+          const res = await resizeAndConvert(file, targetFormat, quality, maxDim);
+          processedBlob = res.blob;
+          convertedName = res.filename;
+        } else {
+          // Standard conversion & compression
+          const res = await convertImage(file, targetFormat, quality);
+          processedBlob = res.blob;
+          convertedName = res.filename;
+        }
+
+        totalOrigBytes += file.size;
+        totalOptBytes += processedBlob.size;
+
+        processedResults.push({
+          originalFile: file,
+          blob: processedBlob,
+          url: URL.createObjectURL(processedBlob),
+          filename: convertedName,
+          originalSize: formatBytes(file.size),
+          optimizedSize: formatBytes(processedBlob.size),
+          savingsPercent: Math.round(((file.size - processedBlob.size) / file.size) * 100),
+        });
+      } catch (err) {
+        console.error(`Error processing ${file.name}:`, err);
+      }
+    }
+
+    optProcessing?.classList.add('hidden');
+    optResults?.classList.remove('hidden');
+
+    // Update summary
+    const totalSavingsText = document.getElementById('total-savings-text');
+    const resultsList = document.getElementById('results-list');
+    const bytesSaved = Math.max(0, totalOrigBytes - totalOptBytes);
+    const percentSaved = totalOrigBytes > 0 ? Math.round((bytesSaved / totalOrigBytes) * 100) : 0;
+
+    if (totalSavingsText) {
+      totalSavingsText.textContent = `Total Size Saved: ${formatBytes(bytesSaved)} (${percentSaved}% reduction)`;
+    }
+
+    if (resultsList) {
+      resultsList.innerHTML = '';
+      processedResults.forEach((res) => {
+        const item = document.createElement('div');
+        item.className = 'result-row';
+        item.innerHTML = `
+          <div class="result-info">
+            <span class="res-name">${res.filename}</span>
+            <span class="res-meta">${res.originalSize} &rarr; <strong>${res.optimizedSize}</strong> (${res.savingsPercent}% saved)</span>
+          </div>
+          <a href="${res.url}" download="${res.filename}" class="btn-download-single">
+            Download
+          </a>
+        `;
+        resultsList.appendChild(item);
+      });
+    }
+
+    trackEvent('tool_success', {
+      tool_slug: 'image-optimizer',
+      duration_ms: endTimer(),
+      batch_size: processedResults.length,
+    });
+  }
+
+  async function resizeAndConvert(file: File, format: string, quality: number, maxDim: number) {
+    const bitmap = await createImageBitmap(file);
+    let { width, height } = bitmap;
+
+    if (width > maxDim || height > maxDim) {
+      if (width > height) {
+        height = Math.round((height * maxDim) / width);
+        width = maxDim;
+      } else {
+        width = Math.round((width * maxDim) / height);
+        height = maxDim;
+      }
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas context failed');
+
+    if (format === 'jpg' || format === 'jpeg') {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, width, height);
+    }
+    ctx.drawImage(bitmap, 0, 0, width, height);
+
+    const mime = format === 'webp' ? 'image/webp' : format === 'avif' ? 'image/avif' : format === 'png' ? 'image/png' : 'image/jpeg';
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((b) => b ? resolve(b) : reject(new Error('toBlob failed')), mime, quality);
+    });
+
+    const baseName = file.name.replace(/\.[^/.]+$/, '');
+    const safeName = sanitizeFilename(baseName);
+    return {
+      blob,
+      filename: `${safeName}.${format}`,
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', initImageOptimizer);
+</script>
+
+<style>
+  .tool-hero {
+    text-align: center;
+    padding: var(--space-8, 2rem) 0 var(--space-6, 1.5rem);
+  }
+
+  .tool-hero__badge {
+    display: inline-block;
+    padding: var(--space-1, 0.25rem) var(--space-3, 0.75rem);
+    background: rgba(129, 140, 248, 0.12);
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    border-radius: var(--radius-full, 9999px);
+    font-size: var(--font-size-xs, 0.75rem);
+    font-weight: 600;
+    color: var(--color-brand-300, #a5b4fc);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__title {
+    font-size: var(--font-size-3xl, 1.875rem);
+    font-weight: 800;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .tool-hero__desc {
+    font-size: var(--font-size-base, 1rem);
+    color: var(--text-secondary, #94a3b8);
+    max-width: 58ch;
+    margin-inline: auto;
+    line-height: var(--line-height-loose, 1.7);
+  }
+
+  .optimizer-stage {
+    max-width: 780px;
+    margin: 0 auto var(--space-10, 2.5rem);
+    padding: 0 var(--space-4, 1rem);
+  }
+
+  .optimizer-card {
+    background: var(--surface-1, #121526);
+    border: 2px dashed var(--border-default, rgba(255, 255, 255, 0.14));
+    border-radius: var(--radius-xl, 1rem);
+    padding: var(--space-6, 1.5rem);
+    text-align: center;
+    transition: all var(--transition-base, 250ms ease);
+  }
+
+  .optimizer-card.dragover {
+    border-color: var(--color-brand-400, #818cf8);
+    background: var(--surface-2, #1a1e35);
+  }
+
+  .drop-prompt {
+    cursor: pointer;
+    padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+  }
+
+  .drop-icon {
+    color: var(--color-accent-400, #2dd4bf);
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  .drop-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.35rem;
+  }
+
+  .drop-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  .browse-link {
+    color: var(--color-brand-400, #818cf8);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  /* Controls Panel */
+  .opt-panel {
+    text-align: left;
+  }
+
+  .opt-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--space-4, 1rem);
+    margin-bottom: var(--space-6, 1.5rem);
+  }
+
+  @media (min-width: 640px) {
+    .opt-controls-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .ctrl-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  .ctrl-label-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ctrl-val {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-accent-400, #2dd4bf);
+  }
+
+  .ctrl-select {
+    background: var(--surface-2, #1a1e35);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+    border-radius: var(--radius-md, 0.5rem);
+    padding: 0.5rem 0.75rem;
+    color: #fff;
+    font-size: 0.875rem;
+  }
+
+  .ctrl-range {
+    accent-color: var(--color-brand-500, #6366f1);
+  }
+
+  .ctrl-checkbox-group {
+    grid-column: 1 / -1;
+  }
+
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-primary, #f8fafc);
+    cursor: pointer;
+  }
+
+  .ctrl-checkbox {
+    accent-color: var(--color-brand-500, #6366f1);
+    width: 16px;
+    height: 16px;
+  }
+
+  .opt-action-bar {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    padding-top: var(--space-4, 1rem);
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition-fast, 150ms ease);
+  }
+
+  .btn-primary {
+    background: var(--color-brand-600, #4f46e5);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-brand-500, #6366f1);
+  }
+
+  .btn-secondary {
+    background: var(--surface-2, #1a1e35);
+    color: var(--text-primary, #f8fafc);
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.14));
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface-3, #242848);
+  }
+
+  /* Processing */
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--color-brand-400, #818cf8);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: var(--space-6, 1.5rem) auto var(--space-3, 0.75rem);
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .opt-progress-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  /* Results */
+  .opt-results {
+    text-align: left;
+  }
+
+  .results-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: var(--radius-lg, 0.75rem);
+    padding: var(--space-4, 1rem);
+    margin-bottom: var(--space-4, 1rem);
+  }
+
+  .banner-icon {
+    font-size: 1.75rem;
+  }
+
+  .banner-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-success-400, #4ade80);
+    margin: 0;
+  }
+
+  .banner-stats {
+    font-size: 0.8125rem;
+    color: var(--text-primary, #f8fafc);
+    margin: 0;
+  }
+
+  .results-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: var(--space-6, 1.5rem);
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  :global(.result-row) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-2, #1a1e35);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md, 0.5rem);
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    font-size: 0.8125rem;
+  }
+
+  :global(.res-name) {
+    font-weight: 600;
+    color: #fff;
+    display: block;
+  }
+
+  :global(.res-meta) {
+    font-size: 0.75rem;
+    color: var(--text-secondary, #94a3b8);
+  }
+
+  :global(.btn-download-single) {
+    background: var(--color-brand-600, #4f46e5);
+    color: #fff;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm, 0.375rem);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .results-action-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>
