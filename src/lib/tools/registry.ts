@@ -27,6 +27,8 @@ export interface ToolMetadata {
   popular?: boolean;
   featured?: boolean;
   relatedSlugs: string[];
+  nextSteps?: string[];
+  relatedGuides?: string[];
   seoTitle: string;
   seoDescription: string;
   faq?: Array<{ question: string; answer: string }>;

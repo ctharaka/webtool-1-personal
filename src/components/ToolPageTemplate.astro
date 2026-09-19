@@ -5,6 +5,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PrivacyBadge from '../components/PrivacyBadge.astro';
 import RelatedTools from '../components/RelatedTools.astro';
+import WhatsNext from '../components/WhatsNext.astro';
+import RecentlyUsedStrip from '../components/RecentlyUsedStrip.astro';
 import AdSlot from '../components/ads/AdSlot.astro';
 
 export interface Props {
@@ -78,11 +80,15 @@ const canonicalURL = `https://freefiletool.app/${toolSlug}`;
       </div>
     </header>
 
+    <RecentlyUsedStrip />
+
     <AdSlot position="top-leaderboard" />
 
     <main class="tool-workspace my-8 bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
       <slot />
     </main>
+
+    <WhatsNext currentSlug={toolSlug} />
 
     <AdSlot position="in-content" />
 
