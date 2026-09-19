@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const title = "PDF to Text Converter — Extract Text from PDF Online | FreeFileTool";
+const description = "Extract text from PDF documents 100% locally in your browser using pdf.js. Copy text or download as a .txt file with zero server uploads.";
+const canonicalURL = "https://freefiletool.app/pdf/to-text";
+
+const faqItems = [
+  {
+    question: "Why did my PDF extract no text?",
+    answer: "If your PDF was created from a physical scanner or image file without Optical Character Recognition (OCR), it contains scanned bitmap images rather than embedded font glyphs. Scanned PDFs do not contain a selectable text layer."
+  },
+  {
+    question: "Is my PDF text uploaded to any server?",
+    answer: "No. All text parsing and extraction are executed locally inside your browser memory using pdf.js. No document text or statistics are ever sent to remote servers."
+  },
+  {
+    question: "Can I download the extracted text as a text file?",
+    answer: "Yes! You can copy the extracted text to your clipboard with a single click or save it as a UTF-8 .txt document."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} canonicalURL={canonicalURL}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "FreeFileTool PDF to Text Converter",
+        "url": canonicalURL,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(item => ({
+          "@type": "Question",
+          "name": item.question,
+          "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+        }))
+      }
+    ]
+  })} />
+
+  <div class="tool-page-container max-w-6xl mx-auto px-4 py-8">
+    <header class="tool-hero text-center mb-8">
+      <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-3">
+        PDF Utilities
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-100 mb-3">PDF to Text Converter</h1>
+      <p class="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg mb-4">
+        Extract plain text from your PDF documents page by page. 100% browser-side parsing with complete privacy.
+      </p>
+      <div class="flex justify-center">
+        <PrivacyBadge variant="badge" tech="pdf.js" />
+      </div>
+    </header>
+
+    <main class="tool-workspace my-8 bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
+      <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center cursor-pointer transition-colors">
+        <input type="file" id="pdf-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="text-4xl mb-3">📄</div>
+        <p class="text-slate-200 font-semibold mb-1">Click to browse or drop your PDF here</p>
+        <p class="text-slate-400 text-sm">Select any PDF document · Instant client-side text extraction</p>
+      </div>
+
+      <div id="status-msg" class="hidden my-4 p-4 rounded-lg text-sm text-center"></div>
+
+      <div id="output-workspace" class="hidden mt-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
+          <div class="text-xs text-slate-400">
+            Pages: <span id="stat-pages" class="font-bold text-slate-200">0</span> · Total Characters: <span id="stat-chars" class="font-bold text-slate-200">0</span>
+          </div>
+          <div class="flex gap-2">
+            <button id="copy-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-medium transition-colors">Copy Text</button>
+            <button id="download-txt-btn" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-sm font-semibold transition-colors">Download .txt File</button>
+          </div>
+        </div>
+
+        <textarea id="text-output" readonly rows="16" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs text-slate-300 leading-relaxed focus:outline-none focus:ring-1 focus:ring-brand-500"></textarea>
+      </div>
+    </main>
+
+    <section class="tool-guide-content prose prose-invert max-w-none my-12 bg-slate-900/40 border border-slate-800/80 rounded-xl p-6 sm:p-8">
+      <h2 class="text-2xl font-bold text-slate-100 mb-4">How to Extract Text from PDF Documents</h2>
+      <p class="text-slate-300">
+        Extracting text from PDF files allows you to reuse report content, copy tables into spreadsheets, or analyze document text without manually retyping paragraphs. FreeFileTool uses Mozilla's pdf.js library to read font vector data directly inside your browser memory.
+      </p>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Important Limitations: Scanned / Image-Only PDFs</h3>
+      <p class="text-slate-300">
+        Please note: If your PDF was created by a physical paper scanner or contains photos of documents, it consists of bitmap image layers rather than embedded font characters. Scanned PDFs do not contain a selectable text layer and cannot be converted to text without specialized Optical Character Recognition (OCR) software.
+      </p>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Step-by-Step Guide</h3>
+      <ol class="list-decimal pl-5 space-y-2 text-slate-300">
+        <li><strong>Upload PDF:</strong> Click or drag your PDF file into the drop zone.</li>
+        <li><strong>Automatic Parsing:</strong> The client engine iterates through each page, pulling embedded text blocks.</li>
+        <li><strong>Copy or Export:</strong> Click "Copy Text" to save to clipboard or "Download .txt File" to save as a plain text document.</li>
+      </ol>
+
+      <div class="tool-faq-block mt-10 pt-8 border-t border-slate-800">
+        <h2 class="text-2xl font-bold text-slate-100 mb-6">Frequently Asked Questions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {faqItems.map(item => (
+            <div class="faq-item-card bg-slate-800/50 border border-slate-700/50 rounded-lg p-5">
+              <h3 class="text-lg font-semibold text-slate-200 mb-2">{item.question}</h3>
+              <p class="text-slate-400 text-sm leading-relaxed">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <RelatedTools currentSlug="pdf/to-text" limit={4} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { extractTextFromPdf } from '../../lib/pdf/pdfEngine.js';
+
+  let currentFile: File | null = null;
+  let extractedTextData = '';
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const pdfInput = document.getElementById('pdf-input') as HTMLInputElement;
+  const statusMsg = document.getElementById('status-msg')!;
+  const outputWorkspace = document.getElementById('output-workspace')!;
+  const textOutput = document.getElementById('text-output') as HTMLTextAreaElement;
+  const statPages = document.getElementById('stat-pages')!;
+  const statChars = document.getElementById('stat-chars')!;
+  const copyBtn = document.getElementById('copy-btn')!;
+  const downloadTxtBtn = document.getElementById('download-txt-btn')!;
+
+  function showStatus(msg: string, type: 'info' | 'error' | 'success') {
+    statusMsg.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'bg-red-950', 'text-red-300', 'bg-emerald-950', 'text-emerald-300');
+    if (type === 'error') {
+      statusMsg.classList.add('bg-red-950', 'text-red-300', 'border', 'border-red-800');
+    } else if (type === 'success') {
+      statusMsg.classList.add('bg-emerald-950', 'text-emerald-300', 'border', 'border-emerald-800');
+    } else {
+      statusMsg.classList.add('bg-blue-950', 'text-blue-300', 'border', 'border-blue-800');
+    }
+    statusMsg.textContent = msg;
+  }
+
+  dropZone.addEventListener('click', () => pdfInput.click());
+  dropZone.addEventListener('dragover', (e) => e.preventDefault());
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer?.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+
+  pdfInput.addEventListener('change', () => {
+    if (pdfInput.files?.length) handleFile(pdfInput.files[0]);
+  });
+
+  async function handleFile(file: File) {
+    if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+      showStatus('Please select a valid PDF file.', 'error');
+      return;
+    }
+
+    currentFile = file;
+    showStatus('Extracting text layer in browser memory...', 'info');
+
+    try {
+      const res = await extractTextFromPdf(file, (curr, total) => {
+        showStatus(`Parsing page ${curr} of ${total}...`, 'info');
+      });
+
+      if (res.isImageOnly) {
+        showStatus('Notice: No embedded text layer found. This PDF appears to be a scanned image or photo without selectable text.', 'error');
+      } else {
+        showStatus(`Successfully extracted text from ${res.pageCount} pages (${res.totalCharacters} characters).`, 'success');
+      }
+
+      extractedTextData = res.text;
+      textOutput.value = res.text;
+      statPages.textContent = String(res.pageCount);
+      statChars.textContent = String(res.totalCharacters);
+      outputWorkspace.classList.remove('hidden');
+    } catch (err: any) {
+      showStatus(err.message || 'Failed to extract text from PDF.', 'error');
+    }
+  }
+
+  copyBtn.addEventListener('click', () => {
+    if (!extractedTextData) return;
+    navigator.clipboard.writeText(extractedTextData).then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => copyBtn.textContent = 'Copy Text', 2000);
+    });
+  });
+
+  downloadTxtBtn.addEventListener('click', () => {
+    if (!extractedTextData || !currentFile) return;
+    const blob = new Blob([extractedTextData], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const base = currentFile.name.replace(/\.[^/.]+$/, '');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${base}-text.txt`;
+    a.click();
+  });
+</script>

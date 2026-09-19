@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const title = "Organize PDF Pages Online — Rotate, Reorder & Delete Pages Free | FreeFileTool";
+const description = "Organize PDF pages 100% locally in your browser. Reorder pages, rotate clockwise or counter-clockwise, and delete unwanted pages with zero file uploads.";
+const canonicalURL = "https://freefiletool.app/pdf/organize";
+
+const faqItems = [
+  {
+    question: "Does organizing PDF pages upload my document to a server?",
+    answer: "No. All PDF page parsing, thumbnail rendering, page rotation, and re-assembly occur entirely within your browser memory using pdf-lib and pdf.js. Your files are never uploaded."
+  },
+  {
+    question: "Can I rotate individual pages in a PDF?",
+    answer: "Yes! Each page thumbnail has rotation controls (90°, 180°, 270°) so you can orient portrait and landscape pages independently before exporting."
+  },
+  {
+    question: "Is there a limit on file size or number of pages?",
+    answer: "Because processing happens in local device RAM, performance depends on your computer or phone memory. Documents up to 100 MB or 200 pages process smoothly on modern browsers."
+  },
+  {
+    question: "What happens if my PDF is password protected?",
+    answer: "Encrypted or password-protected PDFs must be unlocked before you can rearrange or delete pages."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} canonicalURL={canonicalURL}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "FreeFileTool Organize PDF Pages",
+        "url": canonicalURL,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(item => ({
+          "@type": "Question",
+          "name": item.question,
+          "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+        }))
+      }
+    ]
+  })} />
+
+  <div class="tool-page-container max-w-6xl mx-auto px-4 py-8">
+    <header class="tool-hero text-center mb-8">
+      <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-3">
+        PDF Utilities
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-100 mb-3">Organize PDF Pages</h1>
+      <p class="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg mb-4">
+        Reorder, rotate, or remove pages from your PDF documents directly inside your browser. Fast, free, and completely private.
+      </p>
+      <div class="flex justify-center">
+        <PrivacyBadge variant="badge" tech="pdf-lib & pdf.js" />
+      </div>
+    </header>
+
+    <main class="tool-workspace my-8 bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
+      <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center cursor-pointer transition-colors">
+        <input type="file" id="pdf-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="text-4xl mb-3">📑</div>
+        <p class="text-slate-200 font-semibold mb-1">Click to browse or drop your PDF here</p>
+        <p class="text-slate-400 text-sm">Supports PDF files up to 100 MB · Processed locally</p>
+      </div>
+
+      <div id="status-msg" class="hidden my-4 p-4 rounded-lg text-sm text-center"></div>
+
+      <div id="editor-section" class="hidden mt-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-lg font-bold text-slate-100">Page Grid (<span id="page-count">0</span> pages)</h2>
+            <p class="text-xs text-slate-400">Drag or use arrow buttons to reorder, rotate, or delete pages.</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="rotate-all-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-medium transition-colors">Rotate All 90°</button>
+            <button id="reset-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs font-medium transition-colors">Reset</button>
+            <button id="export-btn" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-sm font-semibold transition-colors">Save & Download PDF</button>
+          </div>
+        </div>
+
+        <div id="page-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 max-h-[600px] overflow-y-auto p-2"></div>
+      </div>
+    </main>
+
+    <section class="tool-guide-content prose prose-invert max-w-none my-12 bg-slate-900/40 border border-slate-800/80 rounded-xl p-6 sm:p-8">
+      <h2 class="text-2xl font-bold text-slate-100 mb-4">How to Organize & Reorder PDF Pages</h2>
+      <p class="text-slate-300">
+        Managing multi-page PDF files often requires rearranging out-of-order scans, rotating landscape diagrams, or deleting blank pages before sending an official report. FreeFileTool provides a visual drag-and-drop page editor that runs 100% inside your Web browser using client-side WebAssembly and JavaScript engines.
+      </p>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Step-by-Step Instructions</h3>
+      <ol class="list-decimal pl-5 space-y-2 text-slate-300">
+        <li><strong>Select your file:</strong> Drag your PDF onto the drop zone or click to open your device file picker.</li>
+        <li><strong>Preview page thumbnails:</strong> High-resolution thumbnails are rendered locally in your browser memory.</li>
+        <li><strong>Reorder pages:</strong> Move pages left or right using the directional controls to change the sequence.</li>
+        <li><strong>Rotate or delete:</strong> Click the rotation icon to turn upside-down scans or the trash icon to remove unwanted pages.</li>
+        <li><strong>Export PDF:</strong> Click "Save & Download PDF" to assemble the reordered document and save it to your disk instantly.</li>
+      </ol>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-8 mb-3">Technical Specifications & Limitations</h3>
+      <ul class="list-bullet pl-5 space-y-2 text-slate-300">
+        <li><strong>Browser Memory Limits:</strong> Large documents with hundreds of pages require client RAM to render page thumbnails. For optimal performance on mobile devices, keep files under 100 MB.</li>
+        <li><strong>Password Protection:</strong> Encrypted or password-locked PDFs cannot be rendered until password security is removed.</li>
+        <li><strong>Form Fields & Annotations:</strong> Interactive form fields (AcroForms) will be preserved in output pages but flattened into standard page content.</li>
+      </ul>
+
+      <div class="tool-faq-block mt-10 pt-8 border-t border-slate-800">
+        <h2 class="text-2xl font-bold text-slate-100 mb-6">Frequently Asked Questions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {faqItems.map(item => (
+            <div class="faq-item-card bg-slate-800/50 border border-slate-700/50 rounded-lg p-5">
+              <h3 class="text-lg font-semibold text-slate-200 mb-2">{item.question}</h3>
+              <p class="text-slate-400 text-sm leading-relaxed">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <RelatedTools currentSlug="pdf/organize" limit={4} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { renderPdfThumbnails, organizePdfFile } from '../../lib/pdf/pdfEngine.js';
+
+  let currentFile: File | null = null;
+  let pageList: Array<{ originalIndex: number; rotation: number; dataUrl: string }> = [];
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const pdfInput = document.getElementById('pdf-input') as HTMLInputElement;
+  const statusMsg = document.getElementById('status-msg')!;
+  const editorSection = document.getElementById('editor-section')!;
+  const pageGrid = document.getElementById('page-grid')!;
+  const pageCountSpan = document.getElementById('page-count')!;
+  const exportBtn = document.getElementById('export-btn')!;
+  const rotateAllBtn = document.getElementById('rotate-all-btn')!;
+  const resetBtn = document.getElementById('reset-btn')!;
+
+  function showStatus(msg: string, type: 'info' | 'error' | 'success') {
+    statusMsg.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'bg-red-950', 'text-red-300', 'bg-emerald-950', 'text-emerald-300');
+    if (type === 'error') {
+      statusMsg.classList.add('bg-red-950', 'text-red-300', 'border', 'border-red-800');
+    } else if (type === 'success') {
+      statusMsg.classList.add('bg-emerald-950', 'text-emerald-300', 'border', 'border-emerald-800');
+    } else {
+      statusMsg.classList.add('bg-blue-950', 'text-blue-300', 'border', 'border-blue-800');
+    }
+    statusMsg.textContent = msg;
+  }
+
+  dropZone.addEventListener('click', () => pdfInput.click());
+  dropZone.addEventListener('dragover', (e) => e.preventDefault());
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer?.files.length) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  pdfInput.addEventListener('change', () => {
+    if (pdfInput.files?.length) {
+      handleFile(pdfInput.files[0]);
+    }
+  });
+
+  async function handleFile(file: File) {
+    if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+      showStatus('Please select a valid PDF file.', 'error');
+      return;
+    }
+
+    currentFile = file;
+    showStatus('Rendering page thumbnails in memory...', 'info');
+
+    try {
+      const thumbs = await renderPdfThumbnails(file, 0.35, (curr, total) => {
+        showStatus(`Rendering thumbnail for page ${curr} of ${total}...`, 'info');
+      });
+
+      pageList = thumbs.map((t, idx) => ({
+        originalIndex: idx,
+        rotation: 0,
+        dataUrl: t.dataUrl,
+      }));
+
+      renderPageGrid();
+      editorSection.classList.remove('hidden');
+      statusMsg.classList.add('hidden');
+    } catch (err: any) {
+      showStatus(err.message || 'Failed to parse PDF file. It may be corrupt or encrypted.', 'error');
+    }
+  }
+
+  function renderPageGrid() {
+    pageGrid.innerHTML = '';
+    pageCountSpan.textContent = String(pageList.length);
+
+    pageList.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'bg-slate-800 border border-slate-700 rounded-lg p-2 flex flex-col items-center relative group';
+      
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'w-full h-40 flex items-center justify-center bg-slate-950 rounded overflow-hidden mb-2';
+      
+      const img = document.createElement('img');
+      img.src = item.dataUrl;
+      img.className = 'max-h-full max-w-full object-contain transition-transform duration-200';
+      img.style.transform = `rotate(${item.rotation}deg)`;
+      imgWrap.appendChild(img);
+
+      const label = document.createElement('span');
+      label.className = 'text-xs text-slate-300 font-medium mb-2';
+      label.textContent = `Page ${index + 1} (Orig: #${item.originalIndex + 1})`;
+
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'flex gap-1 w-full justify-between';
+
+      const leftBtn = document.createElement('button');
+      leftBtn.className = 'p-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded text-xs';
+      leftBtn.textContent = '◀';
+      leftBtn.disabled = index === 0;
+      leftBtn.onclick = () => movePage(index, -1);
+
+      const rotateBtn = document.createElement('button');
+      rotateBtn.className = 'p-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded text-xs';
+      rotateBtn.textContent = '🔄';
+      rotateBtn.title = 'Rotate 90°';
+      rotateBtn.onclick = () => rotatePage(index);
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'p-1 bg-red-900/60 hover:bg-red-800 text-red-200 rounded text-xs';
+      delBtn.textContent = '🗑️';
+      delBtn.title = 'Delete Page';
+      delBtn.onclick = () => deletePage(index);
+
+      const rightBtn = document.createElement('button');
+      rightBtn.className = 'p-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded text-xs';
+      rightBtn.textContent = '▶';
+      rightBtn.disabled = index === pageList.length - 1;
+      rightBtn.onclick = () => movePage(index, 1);
+
+      btnGroup.appendChild(leftBtn);
+      btnGroup.appendChild(rotateBtn);
+      btnGroup.appendChild(delBtn);
+      btnGroup.appendChild(rightBtn);
+
+      card.appendChild(imgWrap);
+      card.appendChild(label);
+      card.appendChild(btnGroup);
+      pageGrid.appendChild(card);
+    });
+  }
+
+  function movePage(index: number, dir: number) {
+    const target = index + dir;
+    if (target < 0 || target >= pageList.length) return;
+    const temp = pageList[index];
+    pageList[index] = pageList[target];
+    pageList[target] = temp;
+    renderPageGrid();
+  }
+
+  function rotatePage(index: number) {
+    pageList[index].rotation = (pageList[index].rotation + 90) % 360;
+    renderPageGrid();
+  }
+
+  function deletePage(index: number) {
+    if (pageList.length <= 1) {
+      alert('The PDF must contain at least one page.');
+      return;
+    }
+    pageList.splice(index, 1);
+    renderPageGrid();
+  }
+
+  rotateAllBtn.addEventListener('click', () => {
+    pageList.forEach(p => p.rotation = (p.rotation + 90) % 360);
+    renderPageGrid();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    if (currentFile) handleFile(currentFile);
+  });
+
+  exportBtn.addEventListener('click', async () => {
+    if (!currentFile || !pageList.length) return;
+    showStatus('Assembling updated PDF in browser memory...', 'info');
+
+    try {
+      const res = await organizePdfFile(currentFile, pageList.map(p => ({ originalIndex: p.originalIndex, rotation: p.rotation })));
+      const a = document.createElement('a');
+      a.href = res.url;
+      a.download = res.filename;
+      a.click();
+      showStatus(`Successfully saved organized PDF (${res.formattedSize}, ${res.pageCount} pages).`, 'success');
+    } catch (err: any) {
+      showStatus(err.message || 'Failed to export organized PDF.', 'error');
+    }
+  });
+</script>

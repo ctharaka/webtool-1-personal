@@ -8,9 +8,14 @@
 export interface Props {
   variant?: 'badge' | 'banner' | 'card';
   showDetailsButton?: boolean;
+  tech?: string;
 }
 
-const { variant = 'badge', showDetailsButton = true } = Astro.props;
+const { 
+  variant = 'badge', 
+  showDetailsButton = true,
+  tech = 'HTML5 Canvas & Client JavaScript'
+} = Astro.props;
 ---
 
 <div class={`privacy-trust-wrapper privacy-trust--${variant}`}>
@@ -72,8 +77,8 @@ const { variant = 'badge', showDetailsButton = true } = Astro.props;
         <div class="privacy-step-card">
           <span class="step-num">2</span>
           <div>
-            <h3>Converted by Client Hardware</h3>
-            <p>Our client-side engines (HTML5 Canvas, Web Audio API, Web Crypto, and WebAssembly) manipulate the data using your computer or phone's local processor.</p>
+            <h3>Processed Client-Side</h3>
+            <p>Our client-side engine ({tech}) processes the data directly using your computer or phone's CPU.</p>
           </div>
         </div>
 

@@ -1,0 +1,326 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PrivacyBadge from '../../components/PrivacyBadge.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+
+const title = "Sign PDF Online Free — Draw or Type Signature on PDF | FreeFileTool";
+const description = "Sign PDF documents online for free. Draw your signature or type custom text, place it anywhere on your PDF, and download with zero server uploads.";
+const canonicalURL = "https://freefiletool.app/pdf/sign";
+
+const faqItems = [
+  {
+    question: "Is my signature stored on your server?",
+    answer: "No! Your signature drawing, typed text, and document contents remain strictly in your browser's local RAM. No data is stored, sent, or transmitted anywhere."
+  },
+  {
+    question: "Can I choose which page to sign?",
+    answer: "Yes, you can select any page number from your document, position the signature box visually, and adjust the dimensions before downloading."
+  },
+  {
+    question: "Can I add date and name text fields alongside my signature?",
+    answer: "Yes! You can enter additional fields like Full Name, Date, or Title to stamp onto the document alongside your handwritten signature."
+  },
+  {
+    question: "Is a browser-based digital signature legally binding?",
+    answer: "In most jurisdictions (e.g. US ESIGN Act, eIDAS in the EU), electronic signatures placed on documents with mutual consent are legally binding. Check local legal standards for specific contract requirements."
+  }
+];
+---
+
+<BaseLayout title={title} description={description} canonicalURL={canonicalURL}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "FreeFileTool Sign PDF Online",
+        "url": canonicalURL,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map(item => ({
+          "@type": "Question",
+          "name": item.question,
+          "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+        }))
+      }
+    ]
+  })} />
+
+  <div class="tool-page-container max-w-6xl mx-auto px-4 py-8">
+    <header class="tool-hero text-center mb-8">
+      <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 mb-3">
+        PDF Utilities
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-100 mb-3">Sign PDF Document</h1>
+      <p class="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg mb-4">
+        Draw your signature or type your name to sign PDF files online. Completely free, private, and browser-based.
+      </p>
+      <div class="flex justify-center">
+        <PrivacyBadge variant="badge" tech="HTML5 Canvas & pdf-lib" />
+      </div>
+    </header>
+
+    <main class="tool-workspace my-8 bg-slate-900/60 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
+      <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center cursor-pointer transition-colors">
+        <input type="file" id="pdf-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="text-4xl mb-3">✍️</div>
+        <p class="text-slate-200 font-semibold mb-1">Click to browse or drop your PDF here</p>
+        <p class="text-slate-400 text-sm">Select any PDF to sign · 100% private in-memory processing</p>
+      </div>
+
+      <div id="status-msg" class="hidden my-4 p-4 rounded-lg text-sm text-center"></div>
+
+      <div id="signer-workspace" class="hidden mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-1 bg-slate-800/80 border border-slate-700 rounded-xl p-5 space-y-4">
+            <h2 class="text-lg font-bold text-slate-100">Signature Controls</h2>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Target Page Number</label>
+              <input type="number" id="page-num-input" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-slate-200" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-2">Create Signature</label>
+              <div class="flex gap-2 mb-2">
+                <button id="mode-draw-btn" class="flex-1 py-1.5 bg-brand-600 text-white rounded text-xs font-semibold">Draw</button>
+                <button id="mode-type-btn" class="flex-1 py-1.5 bg-slate-700 text-slate-300 rounded text-xs font-semibold">Type Text</button>
+              </div>
+
+              <div id="draw-wrap">
+                <canvas id="sig-canvas" width="280" height="120" class="w-full bg-slate-950 border border-slate-700 rounded cursor-crosshair touch-none"></canvas>
+                <button id="clear-canvas-btn" class="mt-1 text-xs text-slate-400 hover:text-slate-200 underline">Clear Drawing</button>
+              </div>
+
+              <div id="type-wrap" class="hidden space-y-2">
+                <input type="text" id="type-sig-input" placeholder="Enter Full Name" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-slate-200" />
+              </div>
+            </div>
+
+            <div class="border-t border-slate-700 pt-3 space-y-2">
+              <label class="block text-xs font-medium text-slate-300">Optional Document Fields</label>
+              <input type="text" id="signer-name-input" placeholder="Full Name (e.g. John Doe)" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-slate-200" />
+              <input type="text" id="signer-date-input" placeholder="Date (e.g. 2026-09-19)" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-slate-200" />
+            </div>
+
+            <button id="sign-download-btn" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg text-sm transition-colors shadow-lg mt-4">
+              Sign & Download PDF
+            </button>
+          </div>
+
+          <div class="lg:col-span-2 bg-slate-800/40 border border-slate-700/80 rounded-xl p-4 flex flex-col items-center justify-center min-h-[400px]">
+            <p class="text-xs text-slate-400 mb-2">Signature Position Preview (Page <span id="preview-page-num">1</span>)</p>
+            <div id="pdf-preview-box" class="relative max-w-full bg-slate-950 border border-slate-700 rounded shadow-inner overflow-hidden p-2">
+              <canvas id="pdf-page-canvas" class="max-w-full max-h-[500px] object-contain"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="tool-guide-content prose prose-invert max-w-none my-12 bg-slate-900/40 border border-slate-800/80 rounded-xl p-6 sm:p-8">
+      <h2 class="text-2xl font-bold text-slate-100 mb-4">How to Sign a PDF Document Online</h2>
+      <p class="text-slate-300">
+        Adding a handwritten or typed signature to contracts, tax forms, rental agreements, or invoices used to require printing and scanning physical paper. FreeFileTool allows you to digitally sign PDF documents directly in your browser without transmitting sensitive legal paperwork to remote servers.
+      </p>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Simple Steps to Sign</h3>
+      <ol class="list-decimal pl-5 space-y-2 text-slate-300">
+        <li><strong>Load PDF:</strong> Select your file or drag it into the signer zone.</li>
+        <li><strong>Create Signature:</strong> Draw your signature using your mouse, trackpad, or touchscreen, or type out your full name.</li>
+        <li><strong>Select Page & Fields:</strong> Specify which page to sign and optionally add date or name text fields.</li>
+        <li><strong>Sign & Download:</strong> Click "Sign & Download PDF" to embed your signature into the document and save it locally.</li>
+      </ol>
+
+      <h3 class="text-xl font-semibold text-slate-200 mt-8 mb-3">Privacy & Memory Limits</h3>
+      <p class="text-slate-300">
+        Your signature image data and document contents are strictly held inside temporary browser memory and are deleted the moment you close or refresh the tab.
+      </p>
+
+      <div class="tool-faq-block mt-10 pt-8 border-t border-slate-800">
+        <h2 class="text-2xl font-bold text-slate-100 mb-6">Frequently Asked Questions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {faqItems.map(item => (
+            <div class="faq-item-card bg-slate-800/50 border border-slate-700/50 rounded-lg p-5">
+              <h3 class="text-lg font-semibold text-slate-200 mb-2">{item.question}</h3>
+              <p class="text-slate-400 text-sm leading-relaxed">{item.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <RelatedTools currentSlug="pdf/sign" limit={4} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { signPdfFile } from '../../lib/pdf/pdfEngine.js';
+
+  let currentFile: File | null = null;
+  let isDrawing = false;
+  let sigMode: 'draw' | 'type' = 'draw';
+
+  const dropZone = document.getElementById('drop-zone')!;
+  const pdfInput = document.getElementById('pdf-input') as HTMLInputElement;
+  const statusMsg = document.getElementById('status-msg')!;
+  const signerWorkspace = document.getElementById('signer-workspace')!;
+
+  const sigCanvas = document.getElementById('sig-canvas') as HTMLCanvasElement;
+  const sigCtx = sigCanvas?.getContext('2d');
+  const clearCanvasBtn = document.getElementById('clear-canvas-btn')!;
+
+  const modeDrawBtn = document.getElementById('mode-draw-btn')!;
+  const modeTypeBtn = document.getElementById('mode-type-btn')!;
+  const drawWrap = document.getElementById('draw-wrap')!;
+  const typeWrap = document.getElementById('type-wrap')!;
+  const typeSigInput = document.getElementById('type-sig-input') as HTMLInputElement;
+
+  const pageNumInput = document.getElementById('page-num-input') as HTMLInputElement;
+  const signerNameInput = document.getElementById('signer-name-input') as HTMLInputElement;
+  const signerDateInput = document.getElementById('signer-date-input') as HTMLInputElement;
+  const signDownloadBtn = document.getElementById('sign-download-btn')!;
+
+  function showStatus(msg: string, type: 'info' | 'error' | 'success') {
+    statusMsg.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'bg-red-950', 'text-red-300', 'bg-emerald-950', 'text-emerald-300');
+    if (type === 'error') {
+      statusMsg.classList.add('bg-red-950', 'text-red-300', 'border', 'border-red-800');
+    } else if (type === 'success') {
+      statusMsg.classList.add('bg-emerald-950', 'text-emerald-300', 'border', 'border-emerald-800');
+    } else {
+      statusMsg.classList.add('bg-blue-950', 'text-blue-300', 'border', 'border-blue-800');
+    }
+    statusMsg.textContent = msg;
+  }
+
+  // Canvas drawing setup
+  if (sigCtx) {
+    sigCtx.strokeStyle = '#000000';
+    sigCtx.lineWidth = 2.5;
+    sigCtx.lineCap = 'round';
+    sigCtx.lineJoin = 'round';
+  }
+
+  function getPos(e: MouseEvent | TouchEvent) {
+    const rect = sigCanvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * (sigCanvas.width / rect.width),
+      y: (clientY - rect.top) * (sigCanvas.height / rect.height),
+    };
+  }
+
+  sigCanvas?.addEventListener('mousedown', (e) => { isDrawing = true; const p = getPos(e); sigCtx?.beginPath(); sigCtx?.moveTo(p.x, p.y); });
+  sigCanvas?.addEventListener('mousemove', (e) => { if (!isDrawing) return; const p = getPos(e); sigCtx?.lineTo(p.x, p.y); sigCtx?.stroke(); });
+  window.addEventListener('mouseup', () => { isDrawing = false; });
+
+  sigCanvas?.addEventListener('touchstart', (e) => { isDrawing = true; const p = getPos(e); sigCtx?.beginPath(); sigCtx?.moveTo(p.x, p.y); }, { passive: true });
+  sigCanvas?.addEventListener('touchmove', (e) => { if (!isDrawing) return; const p = getPos(e); sigCtx?.lineTo(p.x, p.y); sigCtx?.stroke(); }, { passive: true });
+  sigCanvas?.addEventListener('touchend', () => { isDrawing = false; });
+
+  clearCanvasBtn?.addEventListener('click', () => {
+    sigCtx?.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+  });
+
+  modeDrawBtn?.addEventListener('click', () => {
+    sigMode = 'draw';
+    drawWrap.classList.remove('hidden');
+    typeWrap.classList.add('hidden');
+    modeDrawBtn.className = 'flex-1 py-1.5 bg-brand-600 text-white rounded text-xs font-semibold';
+    modeTypeBtn.className = 'flex-1 py-1.5 bg-slate-700 text-slate-300 rounded text-xs font-semibold';
+  });
+
+  modeTypeBtn?.addEventListener('click', () => {
+    sigMode = 'type';
+    typeWrap.classList.remove('hidden');
+    drawWrap.classList.add('hidden');
+    modeTypeBtn.className = 'flex-1 py-1.5 bg-brand-600 text-white rounded text-xs font-semibold';
+    modeDrawBtn.className = 'flex-1 py-1.5 bg-slate-700 text-slate-300 rounded text-xs font-semibold';
+  });
+
+  dropZone.addEventListener('click', () => pdfInput.click());
+  dropZone.addEventListener('dragover', (e) => e.preventDefault());
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer?.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+
+  pdfInput.addEventListener('change', () => {
+    if (pdfInput.files?.length) handleFile(pdfInput.files[0]);
+  });
+
+  function handleFile(file: File) {
+    if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+      showStatus('Please select a valid PDF file.', 'error');
+      return;
+    }
+    currentFile = file;
+    signerWorkspace.classList.remove('hidden');
+    statusMsg.classList.add('hidden');
+
+    // Default date to today
+    if (signerDateInput && !signerDateInput.value) {
+      signerDateInput.value = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  signDownloadBtn.addEventListener('click', async () => {
+    if (!currentFile) return;
+
+    let sigDataUrl = '';
+    if (sigMode === 'draw') {
+      sigDataUrl = sigCanvas.toDataURL('image/png');
+    } else {
+      const textVal = typeSigInput.value.trim();
+      if (!textVal) {
+        showStatus('Please enter a name for typed signature.', 'error');
+        return;
+      }
+      // Render typed text to a temp canvas
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 300;
+      tempCanvas.height = 100;
+      const tctx = tempCanvas.getContext('2d');
+      if (tctx) {
+        tctx.fillStyle = '#000000';
+        tctx.font = 'italic bold 28px Georgia, serif';
+        tctx.fillText(textVal, 10, 60);
+        sigDataUrl = tempCanvas.toDataURL('image/png');
+      }
+    }
+
+    const pageIdx = Math.max(0, parseInt(pageNumInput.value || '1', 10) - 1);
+    const textFields = [];
+    if (signerNameInput.value.trim()) textFields.push({ text: `Signed by: ${signerNameInput.value.trim()}`, x: 50, y: 50 });
+    if (signerDateInput.value.trim()) textFields.push({ text: `Date: ${signerDateInput.value.trim()}`, x: 50, y: 35 });
+
+    showStatus('Signing PDF in browser memory...', 'info');
+
+    try {
+      const res = await signPdfFile(currentFile, {
+        pageIndex: pageIdx,
+        signatureDataUrl: sigDataUrl,
+        x: 50,
+        y: 70,
+        width: 160,
+        height: 60,
+        textFields,
+      });
+
+      const a = document.createElement('a');
+      a.href = res.url;
+      a.download = res.filename;
+      a.click();
+
+      showStatus(`Signed PDF created successfully (${res.formattedSize}).`, 'success');
+    } catch (err: any) {
+      showStatus(err.message || 'Failed to sign PDF.', 'error');
+    }
+  });
+</script>

@@ -606,3 +606,378 @@ export async function extractSinglePagePdf(file, pageNum) {
     formattedSize: formatBytes(blob.size),
   };
 }
+
+/**
+ * Render low-resolution thumbnails for each page of a PDF file using pdfjs-dist.
+ * @param {File} file
+ * @param {number} [scale=0.3]
+ * @param {Function} [onProgress]
+ * @returns {Promise<Array<{ pageNum: number, dataUrl: string, width: number, height: number }>>}
+ */
+export async function renderPdfThumbnails(file, scale = 0.3, onProgress = null) {
+  const pdfjsLib = await getPdfJs();
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+  const pdfDoc = await loadingTask.promise;
+  const numPages = pdfDoc.numPages;
+  const thumbnails = [];
+
+  for (let p = 1; p <= numPages; p++) {
+    if (onProgress) onProgress(p, numPages);
+    const page = await pdfDoc.getPage(p);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    const ctx = canvas.getContext('2d');
+    
+    if (ctx) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      thumbnails.push({
+        pageNum: p,
+        dataUrl: canvas.toDataURL('image/jpeg', 0.75),
+        width: viewport.width,
+        height: viewport.height,
+      });
+    }
+  }
+
+  return thumbnails;
+}
+
+/**
+ * Reorder, rotate, or delete pages from a PDF.
+ * @param {File} file
+ * @param {Array<{ originalIndex: number, rotation: number }>} pageOps - 0-based original index and relative rotation (0, 90, 180, 270)
+ * @returns {Promise<{ blob: Blob, url: string, filename: string, pageCount: number, formattedSize: string }>}
+ */
+export async function organizePdfFile(file, pageOps) {
+  if (!pageOps || pageOps.length === 0) {
+    throw new Error('At least one page must remain in the organized PDF.');
+  }
+
+  const { PDFDocument, degrees } = await getPdfLib();
+  const arrayBuffer = await file.arrayBuffer();
+  let srcDoc;
+  try {
+    srcDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
+  } catch (err) {
+    throw new Error('Could not parse PDF. File may be password-protected or damaged.');
+  }
+
+  const newDoc = await PDFDocument.create();
+
+  for (const op of pageOps) {
+    const [copiedPage] = await newDoc.copyPages(srcDoc, [op.originalIndex]);
+    const currentRotation = copiedPage.getRotation().angle;
+    const finalRotation = (currentRotation + (op.rotation || 0)) % 360;
+    copiedPage.setRotation(degrees(finalRotation));
+    newDoc.addPage(copiedPage);
+  }
+
+  const bytes = await newDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const rawBase = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ''));
+  const filename = `${rawBase}-organized.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageCount: pageOps.length,
+    formattedSize: formatBytes(blob.size),
+  };
+}
+
+/**
+ * Sign PDF file by stamping signature image / text fields onto a selected page.
+ */
+export async function signPdfFile(file, { pageIndex = 0, signatureDataUrl = '', x = 50, y = 50, width = 150, height = 75, textFields = [] }) {
+  const { PDFDocument, StandardFonts, rgb } = await getPdfLib();
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
+
+  const pages = pdfDoc.getPages();
+  if (pageIndex < 0 || pageIndex >= pages.length) {
+    throw new Error('Invalid target page for signature placement.');
+  }
+
+  const targetPage = pages[pageIndex];
+
+  if (signatureDataUrl) {
+    const pngImage = await pdfDoc.embedPng(signatureDataUrl);
+    targetPage.drawImage(pngImage, {
+      x: Number(x),
+      y: Number(y),
+      width: Number(width),
+      height: Number(height),
+    });
+  }
+
+  if (textFields && textFields.length > 0) {
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    for (const tf of textFields) {
+      if (tf.text && tf.text.trim()) {
+        targetPage.drawText(tf.text.trim(), {
+          x: Number(tf.x || x),
+          y: Number(tf.y || (y - 20)),
+          size: Number(tf.fontSize || 12),
+          font,
+          color: rgb(0.1, 0.1, 0.1),
+        });
+      }
+    }
+  }
+
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const rawBase = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ''));
+  const filename = `${rawBase}-signed.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageCount: pages.length,
+    formattedSize: formatBytes(blob.size),
+  };
+}
+
+/**
+ * Add page numbers to all pages in a PDF file.
+ */
+export async function addPageNumbersToPdf(file, { position = 'bottom-center', format = 'page-of-total', fontSize = 10, margin = 25 }) {
+  const { PDFDocument, StandardFonts, rgb } = await getPdfLib();
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
+
+  const pages = pdfDoc.getPages();
+  const totalPages = pages.length;
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  pages.forEach((page, idx) => {
+    const { width, height } = page.getSize();
+    const currentNum = idx + 1;
+    const text = format === 'page-of-total' ? `Page ${currentNum} of ${totalPages}` : `${currentNum}`;
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+    const textHeight = fontSize;
+
+    let x = (width - textWidth) / 2;
+    let y = margin;
+
+    if (position === 'bottom-left') {
+      x = margin;
+      y = margin;
+    } else if (position === 'bottom-right') {
+      x = width - margin - textWidth;
+      y = margin;
+    } else if (position === 'top-left') {
+      x = margin;
+      y = height - margin - textHeight;
+    } else if (position === 'top-center') {
+      x = (width - textWidth) / 2;
+      y = height - margin - textHeight;
+    } else if (position === 'top-right') {
+      x = width - margin - textWidth;
+      y = height - margin - textHeight;
+    }
+
+    page.drawText(text, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(0.2, 0.2, 0.2),
+    });
+  });
+
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const rawBase = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ''));
+  const filename = `${rawBase}-numbered.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageCount: totalPages,
+    formattedSize: formatBytes(blob.size),
+  };
+}
+
+/**
+ * Add text watermark to all pages of a PDF file.
+ */
+export async function addWatermarkToPdf(file, { text = 'CONFIDENTIAL', opacity = 0.3, fontSize = 48, rotationAngle = 45 }) {
+  const { PDFDocument, StandardFonts, degrees, rgb } = await getPdfLib();
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
+
+  const pages = pdfDoc.getPages();
+  const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+
+    const x = (width - textWidth) / 2;
+    const y = height / 2;
+
+    page.drawText(text, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+      opacity: Number(opacity),
+      rotate: degrees(Number(rotationAngle)),
+    });
+  });
+
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const rawBase = sanitizeFilename(file.name.replace(/\.[^/.]+$/, ''));
+  const filename = `${rawBase}-watermarked.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageCount: pages.length,
+    formattedSize: formatBytes(blob.size),
+  };
+}
+
+/**
+ * Extract plain text from PDF pages using pdfjs-dist.
+ */
+export async function extractTextFromPdf(file, onProgress = null) {
+  const pdfjsLib = await getPdfJs();
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+  const pdfDoc = await loadingTask.promise;
+  const numPages = pdfDoc.numPages;
+  const pageTexts = [];
+  let totalCharacters = 0;
+
+  for (let p = 1; p <= numPages; p++) {
+    if (onProgress) onProgress(p, numPages);
+    const page = await pdfDoc.getPage(p);
+    const textContent = await page.getTextContent();
+    const pageStr = textContent.items.map((item) => item.str).join(' ');
+    pageTexts.push(`--- Page ${p} ---\n${pageStr}`);
+    totalCharacters += pageStr.trim().length;
+  }
+
+  const fullText = pageTexts.join('\n\n');
+  const isImageOnly = totalCharacters === 0;
+
+  return {
+    text: fullText,
+    isImageOnly,
+    pageCount: numPages,
+    totalCharacters,
+  };
+}
+
+/**
+ * Convert plain text or Markdown text to a PDF document using pdf-lib.
+ */
+export async function convertTextToPdf(text, { pageSize = 'a4', fontSize = 12, margin = 40, lineHeight = 1.4 } = {}) {
+  if (!text || !text.trim()) {
+    throw new Error('Please enter or paste text to generate a PDF document.');
+  }
+
+  const { PDFDocument, StandardFonts, rgb } = await getPdfLib();
+  const pdfDoc = await PDFDocument.create();
+
+  // Page dimensions (points): A4 = [595.28, 841.89], Letter = [612, 792]
+  const dimensions = pageSize === 'letter' ? [612, 792] : [595.28, 841.89];
+  const [pageWidth, pageHeight] = dimensions;
+
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const leading = fontSize * lineHeight;
+  const printableWidth = pageWidth - 2 * margin;
+
+  let currentPage = pdfDoc.addPage(dimensions);
+  let y = pageHeight - margin - fontSize;
+
+  // Split input into lines
+  const paragraphs = text.split('\n');
+
+  for (const para of paragraphs) {
+    if (para.trim() === '') {
+      y -= leading;
+      if (y < margin) {
+        currentPage = pdfDoc.addPage(dimensions);
+        y = pageHeight - margin - fontSize;
+      }
+      continue;
+    }
+
+    // Word wrap paragraph
+    const words = para.split(' ');
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const width = font.widthOfTextAtSize(testLine, fontSize);
+
+      if (width > printableWidth && currentLine) {
+        currentPage.drawText(currentLine, {
+          x: margin,
+          y,
+          size: fontSize,
+          font,
+          color: rgb(0.1, 0.1, 0.1),
+        });
+        y -= leading;
+
+        if (y < margin) {
+          currentPage = pdfDoc.addPage(dimensions);
+          y = pageHeight - margin - fontSize;
+        }
+
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+
+    if (currentLine) {
+      currentPage.drawText(currentLine, {
+        x: margin,
+        y,
+        size: fontSize,
+        font,
+        color: rgb(0.1, 0.1, 0.1),
+      });
+      y -= leading;
+
+      if (y < margin) {
+        currentPage = pdfDoc.addPage(dimensions);
+        y = pageHeight - margin - fontSize;
+      }
+    }
+  }
+
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const filename = `document.pdf`;
+
+  return {
+    blob,
+    url,
+    filename,
+    pageCount: pdfDoc.getPageCount(),
+    formattedSize: formatBytes(blob.size),
+  };
+}
+
