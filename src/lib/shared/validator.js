@@ -1,5 +1,5 @@
 /**
- * validator.js — Magic-number file validation for FreeFileTools
+ * validator.js — Magic-number file validation for FreeFileTool
  *
  * Validates files by reading the first bytes and comparing against
  * known binary signatures. Never trusts the file extension alone.

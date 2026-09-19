@@ -53,7 +53,7 @@ import UploadZone from '../components/UploadZone.astro';
               "name": "Can I batch convert multiple JPEG files at once?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes! Drag multiple JPG files into the upload box above. FreeFileTools will convert them in parallel using browser threads and allow you to download all converted WebP files in a single .zip archive."
+                "text": "Yes! Drag multiple JPG files into the upload box above. FreeFileTool will convert them in parallel using browser threads and allow you to download all converted WebP files in a single .zip archive."
               }
             }
           ]
@@ -160,7 +160,7 @@ import UploadZone from '../components/UploadZone.astro';
     <section class="content-block">
       <h2>How the browser-based conversion works (Privacy)</h2>
       <p>
-        FreeFileTools runs conversion algorithms directly inside your browser space. When you drop or select a JPG image, the local script utilizes `createImageBitmap` or `FileReader` to load the binary data into temporary computer memory. An HTML5 Canvas element is dynamically instantiated to project the image bitmap onto a 2D rendering context.
+        FreeFileTool runs conversion algorithms directly inside your browser space. When you drop or select a JPG image, the local script utilizes `createImageBitmap` or `FileReader` to load the binary data into temporary computer memory. An HTML5 Canvas element is dynamically instantiated to project the image bitmap onto a 2D rendering context.
       </p>
       <p>
         Finally, the canvas re-encodes the image into the target MIME type `image/webp`. Because this procedure is handled by your browser's local processing thread, your images are never sent across the web, keeping your sensitive visual assets fully protected.
@@ -174,7 +174,7 @@ import UploadZone from '../components/UploadZone.astro';
           <summary class="faq-summary">Does this tool upload my image?</summary>
           <div class="faq-answer">
             <p>
-              No. FreeFileTools will never upload your graphics or data to any external server. All conversion computations occur 100% locally within your device's web browser environment (RAM). Your files are processed locally on your client machine and are not saved, logged, or shared.
+              No. FreeFileTool will never upload your graphics or data to any external server. All conversion computations occur 100% locally within your device's web browser environment (RAM). Your files are processed locally on your client machine and are not saved, logged, or shared.
             </p>
           </div>
         </details>
@@ -212,14 +212,14 @@ import UploadZone from '../components/UploadZone.astro';
       <h2>Related Tools &amp; Guides</h2>
       <p>Explore more free browser-based image tools and in-depth optimization guides:</p>
       <ul class="related-list">
-        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
-        <li>🖼️ <a href="/jpg-to-png">JPG to PNG Converter</a> — Convert JPEG photos to lossless PNG format for editing.</li>
-        <li>🚀 <a href="/jpg-to-avif">JPG to AVIF Converter</a> — Encode photos in cutting-edge AVIF format for up to 50% savings.</li>
-        <li>✨ <a href="/png-to-webp">PNG to WebP Converter</a> — Preserve full alpha transparency while shrinking heavy PNG graphic files.</li>
-        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress PNG, JPG, and WebP assets without changing pixel dimensions.</li>
-        <li>📄 <a href="/pdf/jpg-to-pdf">JPG to PDF Converter</a> — Need to turn JPG photos into a document? Convert JPG to a multi-page PDF.</li>
-        <li>📖 <a href="/guides/image-format-converter-guide">Image Format Converter Guide</a> — When and how to convert between JPG, PNG, WebP, and AVIF.</li>
-        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical comparison guide with compatibility table and format benchmarks.</li>
+        <li>🔄 <a href="/image-converter/">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
+        <li>🖼️ <a href="/jpg-to-png/">JPG to PNG Converter</a> — Convert JPEG photos to lossless PNG format for editing.</li>
+        <li>🚀 <a href="/jpg-to-avif/">JPG to AVIF Converter</a> — Encode photos in cutting-edge AVIF format for up to 50% savings.</li>
+        <li>✨ <a href="/png-to-webp/">PNG to WebP Converter</a> — Preserve full alpha transparency while shrinking heavy PNG graphic files.</li>
+        <li>🗜️ <a href="/compress-image/">Image Compressor</a> — Compress PNG, JPG, and WebP assets without changing pixel dimensions.</li>
+        <li>📄 <a href="/pdf/jpg-to-pdf/">JPG to PDF Converter</a> — Need to turn JPG photos into a document? Convert JPG to a multi-page PDF.</li>
+        <li>📖 <a href="/guides/image-format-converter-guide/">Image Format Converter Guide</a> — When and how to convert between JPG, PNG, WebP, and AVIF.</li>
+        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use/">WebP vs PNG vs JPEG: Which Format to Use?</a> — Technical comparison guide with compatibility table and format benchmarks.</li>
       </ul>
     </section>
   </article>

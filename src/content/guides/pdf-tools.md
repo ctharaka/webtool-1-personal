@@ -13,9 +13,9 @@ When you use traditional web-based PDF services, your document is transmitted ac
 - **Regulatory non-compliance**: Uploading customer data or healthcare documents violates GDPR, HIPAA, or SOC-2 compliance frameworks.
 - **Telemetry & scraping**: Untrusted free services may index or inspect document text.
 
-### How FreeFileTools Guarantees 100% Privacy
+### How FreeFileTool Guarantees 100% Privacy
 
-FreeFileTools uses modern browser capabilities to eliminate the server entirely:
+FreeFileTool uses modern browser capabilities to eliminate the server entirely:
 1. **Local Memory Allocation**: Files selected via `<input type="file">` or drag-and-drop are loaded into local browser RAM using the HTML5 `FileReader` and `ArrayBuffer` APIs.
 2. **In-Browser Processing Engine**: We utilize **`pdf-lib`** (a pure JavaScript PDF manipulation engine) and **`pdfjs-dist`** (Mozilla's WebAssembly-accelerated PDF rendering engine).
 3. **Zero Outbound Network Traffic**: No byte of your document is sent across the wire. Disconnecting your internet after loading the page will not interrupt any PDF operation.

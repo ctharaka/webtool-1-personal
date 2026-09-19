@@ -18,6 +18,7 @@ const knownLabels: Record<string, string> = {
   'png-to-jpg': 'PNG to JPG Converter',
   'jpg-to-png': 'JPG to PNG Converter',
   'pdf': 'PDF Tools',
+  'image': 'Image Tools',
   'image-tools': 'Image Tools',
   'text-tools': 'Text Tools',
   'audio-tools': 'Audio Tools',
@@ -38,7 +39,7 @@ function formatLabel(segment: string): string {
     .split('-')
     .map(word => {
       const upper = word.toUpperCase();
-      if (['PDF', 'JPG', 'JPEG', 'PNG', 'HEIC', 'MP3', 'MP4', 'WAV', 'SVG', 'ZIP', 'QR', 'JSON', 'CSV', 'AVIF', 'WEBP', 'EXIF', 'JWT', 'UUID', 'URL', 'EXIF'].includes(upper)) {
+      if (['PDF', 'JPG', 'JPEG', 'PNG', 'HEIC', 'MP3', 'MP4', 'WAV', 'SVG', 'ZIP', 'QR', 'JSON', 'CSV', 'AVIF', 'WEBP', 'EXIF', 'JWT', 'UUID', 'URL'].includes(upper)) {
         return upper === 'WEBP' ? 'WebP' : upper;
       }
       return word.charAt(0).toUpperCase() + word.slice(1);
@@ -46,10 +47,16 @@ function formatLabel(segment: string): string {
     .join(' ');
 }
 
+function getSegmentHref(segments: string[], index: number): string {
+  let segPath = segments.slice(0, index + 1).join('/');
+  if (segPath === 'image') segPath = 'image-tools';
+  return '/' + segPath + '/';
+}
+
 const items = [
   { name: 'Home', url: 'https://freefiletool.app/' },
   ...segments.map((segment, index) => {
-    const href = '/' + segments.slice(0, index + 1).join('/');
+    const href = getSegmentHref(segments, index);
     return {
       name: formatLabel(segment),
       url: `https://freefiletool.app${href}`
@@ -78,7 +85,7 @@ const breadcrumbSchema = {
           <a href="/" class="hover:text-brand-400 transition-colors">Home</a>
         </li>
         {segments.map((segment, index) => {
-          const href = '/' + segments.slice(0, index + 1).join('/');
+          const href = getSegmentHref(segments, index);
           const isLast = index === segments.length - 1;
           const label = formatLabel(segment);
           return (

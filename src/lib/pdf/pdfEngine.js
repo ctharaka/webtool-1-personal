@@ -1,5 +1,5 @@
 /**
- * pdfEngine.js — Pure Client-Side PDF Processing Engine for FreeFileTools
+ * pdfEngine.js — Pure Client-Side PDF Processing Engine for FreeFileTool
  *
  * Implements zero-backend, 100% in-browser PDF utilities:
  *  - Merge multiple PDF documents
@@ -303,8 +303,8 @@ export async function compressPdfFile(file, onProgress = null) {
   pdfDoc.setAuthor('');
   pdfDoc.setSubject('');
   pdfDoc.setKeywords([]);
-  pdfDoc.setProducer('FreeFileTools In-Browser PDF Optimizer');
-  pdfDoc.setCreator('FreeFileTools (https://freefiletool.app)');
+  pdfDoc.setProducer('FreeFileTool In-Browser PDF Optimizer');
+  pdfDoc.setCreator('FreeFileTool (https://freefiletool.app)');
 
   // Save with compressed object streams enabled
   const compressedBytes = await pdfDoc.save({ useObjectStreams: true });

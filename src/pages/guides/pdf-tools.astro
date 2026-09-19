@@ -6,9 +6,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Complete Guide to Browser-Based PDF Tools — Privacy, Performance & How-To | FreeFileTools"
+  title="Complete Guide to Browser-Based PDF Tools — Privacy, Performance & How-To | FreeFileTool"
   description="Master client-side PDF tools: Learn how browser-based merging, splitting, compression, and image conversion operate in memory without server uploads."
-  canonicalURL="https://freefiletool.app/guides/pdf-tools"
+  canonicalURL="https://freefiletool.app/guides/pdf-tools/"
 >
   <script type="application/ld+json" is:inline>
     {
@@ -20,11 +20,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           "description": "A technical guide covering in-browser PDF manipulation, security advantages of zero-backend processing, and practical usage tips.",
           "author": {
             "@type": "Organization",
-            "name": "FreeFileTools"
+            "name": "FreeFileTool"
           },
           "publisher": {
             "@type": "Organization",
-            "name": "FreeFileTools",
+            "name": "FreeFileTool",
             "logo": {
               "@type": "ImageObject",
               "url": "https://freefiletool.app/favicon.svg"
@@ -36,7 +36,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Do FreeFileTools PDF utilities upload files to any server?",
+              "name": "Do FreeFileTool PDF utilities upload files to any server?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "No. All PDF operations run 100% client-side inside your browser's memory using pdf-lib and PDF.js. Your documents never leave your computer or phone."
@@ -60,7 +60,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <ol class="breadcrumb-list">
       <li><a href="/">Home</a></li>
       <li aria-hidden="true">&rsaquo;</li>
-      <li><a href="/guides">Guides</a></li>
+      <li><a href="/guides/">Guides</a></li>
       <li aria-hidden="true">&rsaquo;</li>
       <li aria-current="page">PDF Tools Guide</li>
     </ol>
@@ -74,7 +74,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         Explore the zero-backend privacy model, in-memory stream optimization, and how to merge, split, compress, and convert PDFs directly in your web browser.
       </p>
       <div class="guide-meta">
-        <span>Published by FreeFileTools Engineering</span> &middot; <span>8 min read</span>
+        <span>Published by FreeFileTool Engineering</span> &middot; <span>8 min read</span>
       </div>
     </header>
 
@@ -84,7 +84,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         In modern business and personal workflows, PDF (Portable Document Format) is the gold standard for agreements, invoices, resumes, tax filings, and technical schematics. Yet, traditional web utilities require uploading these sensitive files to third-party cloud servers.
       </p>
       <p>
-        FreeFileTools replaces this outdated paradigm with a <strong>100% client-side architecture</strong>. By running <code>pdf-lib</code> and <code>pdfjs-dist</code> locally inside your browser's WebAssembly and JavaScript engines, files are processed strictly inside your device's RAM.
+        FreeFileTool replaces this outdated paradigm with a <strong>100% client-side architecture</strong>. By running <code>pdf-lib</code> and <code>pdfjs-dist</code> locally inside your browser's JavaScript and HTML5 Canvas engines, files are processed strictly inside your device's RAM.
       </p>
 
       <div class="callout-box">
@@ -96,39 +96,39 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
       <h2>2. Overview of the Native PDF Tools</h2>
       <p>
-        The FreeFileTools suite provides six specialized client-side tools designed for specific PDF workflows:
+        The FreeFileTool suite provides six specialized client-side tools designed for specific PDF workflows:
       </p>
 
       <div class="tools-directory-grid">
         <div class="tool-summary-card">
-          <h3><a href="/pdf/merge">Merge PDF</a></h3>
+          <h3><a href="/pdf/merge/">Merge PDF</a></h3>
           <p>Combines multiple PDF files into one sequential document with drag-and-drop reordering.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf/split">Split PDF</a></h3>
+          <h3><a href="/pdf/split/">Split PDF</a></h3>
           <p>Splits documents into custom page ranges (e.g. 1-3, 5) or extracts every page into a ZIP archive.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf/compress">Compress PDF</a></h3>
+          <h3><a href="/pdf/compress/">Compress PDF</a></h3>
           <p>Optimizes binary object streams and strips redundant metadata without blurring vector fonts.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf/pdf-to-jpg">PDF to JPG</a></h3>
+          <h3><a href="/pdf/pdf-to-jpg/">PDF to JPG</a></h3>
           <p>Renders PDF pages to high-resolution PNG or JPG graphics via HTML5 Canvas with custom DPI.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf/jpg-to-pdf">JPG to PDF</a></h3>
+          <h3><a href="/pdf/jpg-to-pdf/">JPG to PDF</a></h3>
           <p>Embeds collections of JPG and PNG images into a clean multi-page PDF with A4 margin presets.</p>
         </div>
         <div class="tool-summary-card">
-          <h3><a href="/pdf/pdf-to-png">PDF to PNG</a></h3>
+          <h3><a href="/pdf/pdf-to-png/">PDF to PNG</a></h3>
           <p>Isolates pages from a PDF document as lossless PNG graphics.</p>
         </div>
       </div>
 
       <h2>3. Performance, Memory &amp; Security Boundaries</h2>
       <p>
-        Because all computation executes on your local hardware, FreeFileTools implements built-in safety boundaries:
+        Because all computation executes on your local hardware, FreeFileTool implements built-in safety boundaries:
       </p>
       <ul>
         <li><strong>50 MB File Size Cap:</strong> Prevents browser tab memory exhaustion on smartphones and low-RAM devices.</li>
@@ -140,14 +140,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <ol>
         <li><strong>For Printing:</strong> Choose the High-Res (144 DPI) option when converting PDF pages to images.</li>
         <li><strong>For Archival:</strong> Use PNG output when converting technical documents to preserve vector clarity and transparent backgrounds.</li>
-        <li><strong>For Single Pages:</strong> Use the <a href="/pdf/split">Split PDF Page Extractor</a> rather than splitting the whole document when you only need one certificate or invoice.</li>
+        <li><strong>For Single Pages:</strong> Use the <a href="/pdf/split/">Split PDF Page Extractor</a> rather than splitting the whole document when you only need one certificate or invoice.</li>
       </ol>
     </div>
 
     <footer class="guide-footer">
       <h3>Ready to work with your PDFs?</h3>
       <p>Choose a free, private tool to get started immediately.</p>
-      <a href="/pdf" class="primary-btn">Explore All PDF Tools &rarr;</a>
+      <a href="/pdf/" class="primary-btn">Explore All PDF Tools &rarr;</a>
     </footer>
   </article>
 </BaseLayout>
