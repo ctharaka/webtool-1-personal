@@ -1,0 +1,248 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Why convert HEIC photos to PNG format?",
+    answer: "PNG is a lossless image format supported by every browser, graphics editor, and operating system. Converting iPhone HEIC photos to PNG preserves full image clarity and transparency."
+  },
+  {
+    question: "Are my HEIC files uploaded to any external server?",
+    answer: "No. FreeFileTool converts HEIC files to PNG locally in your browser memory. Your files are processed strictly on your device and are never uploaded."
+  },
+  {
+    question: "Is the HEIC library loaded automatically?",
+    answer: "To ensure fast initial page load times, the HEIC decoder library is lazy-loaded into your browser memory only when you select a HEIC file for conversion."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="heic-to-png"
+  toolName="HEIC to PNG Converter"
+  title="HEIC to PNG Converter — Convert iPhone Photos to PNG Free"
+  description="Convert Apple iPhone HEIC/HEIF photos to lossless PNG format 100% locally in your browser. Fast batch conversion with zero file uploads."
+  badge="Image Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex items-center gap-4 text-sm font-semibold text-slate-300">
+        <div>
+          <span class="mr-2 text-slate-400">Target Output:</span>
+          <span class="font-mono text-brand-400">PNG (Lossless)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="heic-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">📱</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop HEIC / HEIF photos here</p>
+        <p class="text-xs text-slate-400">or click to select files from your iPhone or Mac</p>
+        <input type="file" id="heic-file-input" accept=".heic,.HEIC,.heif,.HEIF" multiple class="hidden" />
+      </div>
+    </div>
+
+    <!-- Status & Progress -->
+    <div id="heic-status-box" class="hidden p-4 rounded-lg bg-slate-950 border border-slate-800 text-sm font-medium text-slate-300">
+      <span id="heic-status-text">Ready</span>
+    </div>
+
+    <!-- Results Container -->
+    <div id="heic-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Converting HEIC Photos to Lossless PNG Format</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      High Efficiency Image Format (HEIC) is Apple's standard photo container for iPhone camera shots. When editing photos in web applications or uploading to non-Apple software, converting HEIC to PNG ensures maximum quality retention without lossy compression artifacts.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Browser-Based HEIC Decoding</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      FreeFileTool decodes HEIC image streams locally inside your browser session using WebGL/Canvas rendering. Your photos are never transferred across the network to external servers, protecting your personal media.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Limitations &amp; Usage Guidance</h3>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Batch Sizes:</strong> For high-resolution 48MP ProRAW iPhone photos, we recommend converting up to 15 images at a time to prevent browser memory exhaustion.</li>
+      <li><strong>Live Photos:</strong> The primary high-resolution static photo frame will be extracted and converted to PNG.</li>
+    </ul>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('heic-dropzone');
+    const fileInput = document.getElementById('heic-file-input') as HTMLInputElement;
+    const statusBox = document.getElementById('heic-status-box') as HTMLElement;
+    const statusText = document.getElementById('heic-status-text') as HTMLElement;
+    const resultsGrid = document.getElementById('heic-results-grid') as HTMLElement;
+
+    let isScriptLoaded = false;
+    let isScriptLoading = false;
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        handleFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        handleFiles(Array.from(fileInput.files));
+      }
+    });
+
+    function loadHeicLibrary(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        if (isScriptLoaded || (window as any).heic2any) {
+          isScriptLoaded = true;
+          return resolve();
+        }
+        if (isScriptLoading) {
+          const check = setInterval(() => {
+            if ((window as any).heic2any) {
+              clearInterval(check);
+              isScriptLoaded = true;
+              resolve();
+            }
+          }, 100);
+          return;
+        }
+
+        isScriptLoading = true;
+        const script = document.createElement('script');
+        script.src = '/vendor/heic2any.min.js';
+        script.onload = () => {
+          isScriptLoaded = true;
+          isScriptLoading = false;
+          resolve();
+        };
+        script.onerror = () => {
+          isScriptLoading = false;
+          reject(new Error('Failed to load HEIC decoder library (/vendor/heic2any.min.js)'));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    async function handleFiles(files: File[]) {
+      const heicFiles = files.filter(f => /\.(heic|heif)$/i.test(f.name));
+      if (heicFiles.length === 0) {
+        showStatus('Please select valid .HEIC or .HEIF photo files.', 'text-amber-400');
+        return;
+      }
+
+      showStatus('Loading HEIC decoder engine...', 'text-brand-400');
+
+      try {
+        await loadHeicLibrary();
+      } catch (err: any) {
+        showStatus(`Library Error: ${err?.message || 'Could not load HEIC decoder.'}`, 'text-red-400');
+        return;
+      }
+
+      if (resultsGrid) resultsGrid.innerHTML = '';
+
+      for (let i = 0; i < heicFiles.length; i++) {
+        const file = heicFiles[i];
+        showStatus(`Converting (${i + 1}/${heicFiles.length}): ${file.name}...`, 'text-brand-400');
+
+        try {
+          const heic2any = (window as any).heic2any;
+          const blobResult = await heic2any({
+            blob: file,
+            toType: 'image/png'
+          });
+
+          const blob = Array.isArray(blobResult) ? blobResult[0] : blobResult;
+          const outName = file.name.replace(/\.(heic|heif)$/i, '.png');
+          const url = URL.createObjectURL(blob);
+
+          renderCard(outName, url, file.size, blob.size);
+        } catch (err: any) {
+          renderErrorCard(file.name, err?.message || 'Unsupported HEIC encoding or file corruption.');
+        }
+      }
+
+      showStatus(`Completed batch conversion of ${heicFiles.length} file(s).`, 'text-emerald-400');
+    }
+
+    function showStatus(msg: string, colorClass: string) {
+      if (statusBox && statusText) {
+        statusBox.classList.remove('hidden');
+        statusText.textContent = msg;
+        statusText.className = `font-medium ${colorClass}`;
+      }
+    }
+
+    function renderCard(name: string, url: string, origSize: number, newSize: number) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2';
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'w-full h-40 object-cover rounded border border-slate-800';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'text-xs font-semibold text-slate-200 truncate';
+      nameEl.textContent = name;
+
+      const statsEl = document.createElement('div');
+      statsEl.className = 'text-[11px] text-slate-400 flex justify-between';
+      statsEl.innerHTML = `<span>${(origSize/1024).toFixed(0)}KB &rarr; ${(newSize/1024).toFixed(0)}KB</span><span class="text-emerald-400 font-bold">✓ Ready</span>`;
+
+      const downloadBtn = document.createElement('a');
+      downloadBtn.href = url;
+      downloadBtn.download = name;
+      downloadBtn.className = 'block text-center py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-xs font-semibold transition';
+      downloadBtn.textContent = 'Download PNG';
+
+      card.appendChild(img);
+      card.appendChild(nameEl);
+      card.appendChild(statsEl);
+      card.appendChild(downloadBtn);
+
+      resultsGrid.appendChild(card);
+    }
+
+    function renderErrorCard(name: string, errorMsg: string) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-red-950/40 border border-red-800/80 rounded-lg p-3 space-y-2';
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'text-xs font-bold text-red-300 truncate';
+      titleEl.textContent = `Failed: ${name}`;
+
+      const msgEl = document.createElement('div');
+      msgEl.className = 'text-xs text-red-400 leading-relaxed';
+      msgEl.textContent = errorMsg;
+
+      card.appendChild(titleEl);
+      card.appendChild(msgEl);
+      resultsGrid.appendChild(card);
+    }
+  });
+</script>
