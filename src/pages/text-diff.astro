@@ -1,0 +1,246 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Are my text or code comparison inputs uploaded to any server?",
+    answer: "No. FreeFileTool performs line-by-line text comparison 100% inside your browser using pure JavaScript diff algorithms. Your documents, code snippets, and confidential files never leave your device."
+  },
+  {
+    question: "How does the text diff algorithm detect changes?",
+    answer: "The diff engine computes the Longest Common Subsequence (LCS) between the original and modified text strings, accurately identifying added lines, deleted lines, and modified blocks."
+  },
+  {
+    question: "Can I ignore whitespace differences?",
+    answer: "Yes! Enabling the 'Ignore Whitespace' toggle trims leading and trailing space differences so you can focus strictly on substantive content changes."
+  },
+  {
+    question: "Is this tool suitable for code reviews and configuration files?",
+    answer: "Absolutely. It is designed for comparing code snippets, JSON objects, CSV rows, SQL scripts, Markdown documentation, and configuration files."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="text-diff"
+  toolName="Text Diff & Comparison Tool"
+  title="Text Diff Tool — Compare Text & Find Differences Free"
+  description="Compare two text files or code blocks line-by-line. Highlight additions, deletions, and line modifications 100% locally in your browser."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex items-center gap-4 text-xs font-semibold text-slate-300">
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="diff-ignore-space" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+          <label for="diff-ignore-space">Ignore Whitespace</label>
+        </div>
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="diff-ignore-case" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+          <label for="diff-ignore-case">Ignore Case</label>
+        </div>
+      </div>
+
+      <!-- Stats Counters -->
+      <div class="flex gap-4 text-xs font-mono">
+        <span class="text-emerald-400 font-bold">+<span id="diff-add-count">0</span> Added</span>
+        <span class="text-rose-400 font-bold">-<span id="diff-del-count">0</span> Removed</span>
+        <span class="text-slate-400"><span id="diff-same-count">0</span> Unchanged</span>
+      </div>
+    </div>
+
+    <!-- Inputs Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label for="text-orig" class="text-xs font-bold uppercase tracking-wider text-slate-300">Original Text</label>
+          <button type="button" id="btn-sample-diff" class="text-xs text-brand-400 hover:text-brand-300 underline">Load Sample</button>
+        </div>
+        <textarea
+          id="text-orig"
+          rows="10"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          placeholder="Paste original text here..."
+        ></textarea>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label for="text-mod" class="text-xs font-bold uppercase tracking-wider text-slate-300">Modified Text</label>
+          <button type="button" id="btn-clear-diff" class="text-xs text-slate-400 hover:text-slate-200">Clear</button>
+        </div>
+        <textarea
+          id="text-mod"
+          rows="10"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          placeholder="Paste modified text here..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Highlighted Diff Result -->
+    <div>
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">Visual Line Comparison</h3>
+      <div id="diff-output-container" class="bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs overflow-x-auto min-h-[150px] space-y-1">
+        <p class="text-slate-500">Paste text into both boxes above to calculate differences...</p>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">How Line-by-Line Text Diffing Works</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Comparing text files and finding exact structural differences is a fundamental operation in software engineering, technical writing, legal document review, and data auditing. A text diff utility computes the minimal set of edits (additions and deletions) required to transform an original document into a modified version.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Longest Common Subsequence (LCS) Algorithm</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      The core of modern diff algorithms (including GNU <code>diff</code> and Git version control) relies on solving the <strong>Longest Common Subsequence (LCS)</strong> problem. By identifying the longest sequence of lines that appear in both documents in the same relative order, the algorithm isolates exactly which lines were added, removed, or left untouched.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Visualizing Additions and Deletions</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Diff outputs follow standardized visual conventions:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong class="text-emerald-400">Green (+) Lines:</strong> Represent new lines added in the modified text.</li>
+      <li><strong class="text-rose-400">Red (-) Lines:</strong> Represent lines present in the original text that were deleted or modified.</li>
+      <li><span class="text-slate-400">Gray Lines:</span> Unchanged context lines that match between both versions.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Client-Side Confidentiality</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Pasting source code, proprietary API responses, or sensitive legal contracts into cloud-hosted diff tools risks exposing confidential intellectual property. FreeFileTool's Text Diff engine executes entirely within your browser's local sandbox, guaranteeing that your text remains confidential.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const textOrig = document.getElementById('text-orig') as HTMLTextAreaElement;
+    const textMod = document.getElementById('text-mod') as HTMLTextAreaElement;
+    const chkSpace = document.getElementById('diff-ignore-space') as HTMLInputElement;
+    const chkCase = document.getElementById('diff-ignore-case') as HTMLInputElement;
+    const outputContainer = document.getElementById('diff-output-container') as HTMLElement;
+    const addCount = document.getElementById('diff-add-count') as HTMLElement;
+    const delCount = document.getElementById('diff-del-count') as HTMLElement;
+    const sameCount = document.getElementById('diff-same-count') as HTMLElement;
+    const btnSample = document.getElementById('btn-sample-diff');
+    const btnClear = document.getElementById('btn-clear-diff');
+
+    // LCS Diff Engine
+    function computeLCS(origLines: string[], modLines: string[]) {
+      const ignoreSpace = chkSpace?.checked;
+      const ignoreCase = chkCase?.checked;
+
+      function norm(str: string) {
+        let s = str;
+        if (ignoreSpace) s = s.trim();
+        if (ignoreCase) s = s.toLowerCase();
+        return s;
+      }
+
+      const M = origLines.length;
+      const N = modLines.length;
+      const dp: number[][] = Array.from({ length: M + 1 }, () => new Array(N + 1).fill(0));
+
+      for (let i = M - 1; i >= 0; i--) {
+        for (let j = N - 1; j >= 0; j--) {
+          if (norm(origLines[i]) === norm(modLines[j])) {
+            dp[i][j] = 1 + dp[i + 1][j + 1];
+          } else {
+            dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+          }
+        }
+      }
+
+      let i = 0;
+      let j = 0;
+      const diff: Array<{ type: 'same' | 'add' | 'del'; line: string }> = [];
+
+      while (i < M && j < N) {
+        if (norm(origLines[i]) === norm(modLines[j])) {
+          diff.push({ type: 'same', line: origLines[i] });
+          i++;
+          j++;
+        } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+          diff.push({ type: 'del', line: origLines[i] });
+          i++;
+        } else {
+          diff.push({ type: 'add', line: modLines[j] });
+          j++;
+        }
+      }
+
+      while (i < M) {
+        diff.push({ type: 'del', line: origLines[i] });
+        i++;
+      }
+      while (j < N) {
+        diff.push({ type: 'add', line: modLines[j] });
+        j++;
+      }
+
+      return diff;
+    }
+
+    function renderDiff() {
+      const origStr = textOrig?.value || '';
+      const modStr = textMod?.value || '';
+
+      if (!origStr && !modStr) {
+        outputContainer.innerHTML = '<p class="text-slate-500">Paste text into both boxes above to calculate differences...</p>';
+        addCount.textContent = '0';
+        delCount.textContent = '0';
+        sameCount.textContent = '0';
+        return;
+      }
+
+      const origLines = origStr.split(/\r?\n/);
+      const modLines = modStr.split(/\r?\n/);
+
+      const diffResult = computeLCS(origLines, modLines);
+
+      let adds = 0;
+      let dels = 0;
+      let sames = 0;
+
+      const html = diffResult.map(item => {
+        const escaped = item.line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (item.type === 'add') {
+          adds++;
+          return `<div class="bg-emerald-950/60 border-l-4 border-emerald-500 text-emerald-300 px-3 py-1 font-mono">+ ${escaped || ' '}</div>`;
+        } else if (item.type === 'del') {
+          dels++;
+          return `<div class="bg-rose-950/60 border-l-4 border-rose-500 text-rose-300 px-3 py-1 font-mono">- ${escaped || ' '}</div>`;
+        } else {
+          sames++;
+          return `<div class="text-slate-400 px-3 py-0.5 border-l-4 border-transparent font-mono">&nbsp; ${escaped || ' '}</div>`;
+        }
+      }).join('');
+
+      outputContainer.innerHTML = html;
+      addCount.textContent = adds.toString();
+      delCount.textContent = dels.toString();
+      sameCount.textContent = sames.toString();
+    }
+
+    textOrig?.addEventListener('input', renderDiff);
+    textMod?.addEventListener('input', renderDiff);
+    chkSpace?.addEventListener('change', renderDiff);
+    chkCase?.addEventListener('change', renderDiff);
+
+    btnSample?.addEventListener('click', () => {
+      textOrig.value = `// FreeFileTool Config v1.0\nconst config = {\n  port: 8080,\n  environment: "development",\n  maxUploadSize: "10MB",\n  enableCache: true\n};`;
+      textMod.value = `// FreeFileTool Config v2.0\nconst config = {\n  port: 4321,\n  environment: "production",\n  maxUploadSize: "0MB",\n  enableCache: true,\n  clientSideOnly: true\n};`;
+      renderDiff();
+    });
+
+    btnClear?.addEventListener('click', () => {
+      textOrig.value = '';
+      textMod.value = '';
+      renderDiff();
+    });
+  });
+</script>

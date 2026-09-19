@@ -1,0 +1,213 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Is it safe to paste my JWT tokens into this decoder?",
+    answer: "Yes, 100%. FreeFileTool decodes JSON Web Tokens entirely inside your browser's local memory using pure JavaScript base64url parsing. Your token is never uploaded or sent across any network."
+  },
+  {
+    question: "Does this tool verify the JWT signature?",
+    answer: "This tool decodes and displays the unencrypted Header and Payload metadata contained within the JWT. Signature verification requires the private key or secret key which remains on your authentication backend server."
+  },
+  {
+    question: "How are JWT timestamps formatted?",
+    answer: "Standard JWT claims like exp (expiration), iat (issued at), and nbf (not before) are stored as Unix epoch timestamps (seconds since Jan 1, 1970). Our tool converts these numeric values into readable ISO and local time strings automatically."
+  },
+  {
+    question: "What is base64url encoding in JWTs?",
+    answer: "JWTs use Base64URL encoding, which is a variant of Base64 that replaces '+' with '-' and '/' with '_' while omitting trailing '=' padding characters to ensure tokens can be safely transmitted in HTTP headers and URL parameters."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="jwt-decoder"
+  toolName="JWT Decoder"
+  title="JWT Decoder — Decode JSON Web Tokens Online Free"
+  description="Decode JWT headers, payload JSON, algorithm headers, and expiration claims 100% locally in your browser. Fast, secure, and private."
+  faqItems={faqItems}
+>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Input Section -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <label for="jwt-input" class="text-sm font-semibold text-slate-200">Encoded JWT Token</label>
+        <button type="button" id="btn-sample-jwt" class="text-xs text-brand-400 hover:text-brand-300 underline">Insert Sample JWT</button>
+      </div>
+      <textarea
+        id="jwt-input"
+        rows="10"
+        class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm font-mono text-slate-200 focus:outline-none focus:border-brand-500 transition"
+        placeholder="Paste your JWT token here (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
+      ></textarea>
+      <div class="flex gap-3">
+        <button type="button" id="btn-clear-jwt" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition">Clear</button>
+      </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="space-y-4">
+      <!-- Status Pill -->
+      <div id="jwt-status-banner" class="p-3 rounded-lg border bg-slate-950 border-slate-800 flex items-center justify-between text-sm">
+        <span class="font-medium text-slate-400">Status: <span id="jwt-status-text">Waiting for input...</span></span>
+        <span id="jwt-alg-badge" class="px-2 py-0.5 rounded text-xs font-mono bg-slate-800 text-slate-300 hidden">ALG: NONE</span>
+      </div>
+
+      <!-- Header Output -->
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Header: Algorithm & Token Type</span>
+        </div>
+        <pre id="jwt-header-output" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-red-300 overflow-x-auto min-h-[80px]">{}</pre>
+      </div>
+
+      <!-- Payload Output -->
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Payload: Data & Claims</span>
+        </div>
+        <pre id="jwt-payload-output" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-purple-300 overflow-x-auto min-h-[160px]">{}</pre>
+      </div>
+
+      <!-- Signature Output -->
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Signature</span>
+        </div>
+        <div id="jwt-signature-output" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-cyan-300 break-all min-h-[40px]">Unverified Signature String</div>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Understanding JSON Web Tokens (JWT)</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      JSON Web Tokens (JWT) are an open, industry-standard (RFC 7519) method for securely representing claims between two parties. They are widely used in modern web applications for user authentication, session management, and API authorization. A standard JWT consists of three distinct parts separated by dots (<code>.</code>): the <strong>Header</strong>, the <strong>Payload</strong>, and the <strong>Signature</strong>.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">1. The Header</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      The header typically consists of two parts: the type of token (which is <code>JWT</code>) and the cryptographic signing algorithm being used, such as HMAC SHA-256 (<code>HS256</code>) or RSA (<code>RS256</code>). This JSON object is then base64url encoded to form the first part of the token.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">2. The Payload</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      The payload contains claims—statements about an entity (typically, the user) and additional data. Claims are categorized into registered claims (such as <code>iss</code> for issuer, <code>exp</code> for expiration time, <code>sub</code> for subject, and <code>aud</code> for audience), public claims, and private custom claims defined by your application. Like the header, the payload is Base64URL encoded.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">3. The Signature</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      To create the signature part, the encoded header, encoded payload, a secret key, and the algorithm specified in the header are passed through a cryptographic hash function. The signature is used to verify that the sender of the JWT is who it says it is and to ensure that the message was not tampered with along the way.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Why Local Client-Side Decoding Matters</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Because JWT payloads frequently contain user IDs, authorization roles, email addresses, and session expiration timestamps, sending your production or staging JWT tokens to external server endpoints poses a privacy risk. FreeFileTool's JWT Decoder runs 100% inside your local browser tab, guaranteeing that your authorization tokens never leave your machine.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('jwt-input') as HTMLTextAreaElement;
+    const headerOut = document.getElementById('jwt-header-output') as HTMLElement;
+    const payloadOut = document.getElementById('jwt-payload-output') as HTMLElement;
+    const sigOut = document.getElementById('jwt-signature-output') as HTMLElement;
+    const statusText = document.getElementById('jwt-status-text') as HTMLElement;
+    const statusBanner = document.getElementById('jwt-status-banner') as HTMLElement;
+    const algBadge = document.getElementById('jwt-alg-badge') as HTMLElement;
+    const btnSample = document.getElementById('btn-sample-jwt');
+    const btnClear = document.getElementById('btn-clear-jwt');
+
+    function base64UrlDecode(str: string) {
+      let output = str.replace(/-/g, '+').replace(/_/g, '/');
+      switch (output.length % 4) {
+        case 0: break;
+        case 2: output += '=='; break;
+        case 3: output += '='; break;
+        default: throw new Error('Illegal base64url string!');
+      }
+      return decodeURIComponent(atob(output).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    }
+
+    function decodeJWT() {
+      const token = (input?.value || '').trim();
+      if (!token) {
+        headerOut.textContent = '{}';
+        payloadOut.textContent = '{}';
+        sigOut.textContent = 'Unverified Signature String';
+        statusText.textContent = 'Waiting for input...';
+        statusText.className = 'font-medium text-slate-400';
+        algBadge.classList.add('hidden');
+        return;
+      }
+
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        statusText.textContent = 'Invalid JWT format (must have 3 parts separated by dots)';
+        statusText.className = 'font-medium text-red-400';
+        algBadge.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const headerJson = JSON.parse(base64UrlDecode(parts[0]));
+        const payloadJson = JSON.parse(base64UrlDecode(parts[1]));
+
+        headerOut.textContent = JSON.stringify(headerJson, null, 2);
+        payloadOut.textContent = JSON.stringify(payloadJson, null, 2);
+        sigOut.textContent = parts[2];
+
+        // Check algorithm
+        if (headerJson.alg) {
+          algBadge.textContent = `ALG: ${headerJson.alg}`;
+          algBadge.classList.remove('hidden');
+        }
+
+        // Check expiration
+        let statusMsg = 'Valid JWT structure';
+        let statusColor = 'font-medium text-emerald-400';
+
+        if (payloadJson.exp) {
+          const nowSec = Math.floor(Date.now() / 1000);
+          const diff = payloadJson.exp - nowSec;
+          const expDate = new Date(payloadJson.exp * 1000).toLocaleString();
+
+          if (diff < 0) {
+            statusMsg = `Expired on ${expDate} (${Math.abs(Math.floor(diff / 60))} mins ago)`;
+            statusColor = 'font-medium text-amber-400';
+          } else {
+            statusMsg = `Valid token (Expires ${expDate})`;
+            statusColor = 'font-medium text-emerald-400';
+          }
+        }
+
+        statusText.textContent = statusMsg;
+        statusText.className = statusColor;
+      } catch (err: any) {
+        statusText.textContent = `Decoding error: ${err?.message || 'Invalid base64 encoding'}`;
+        statusText.className = 'font-medium text-red-400';
+        algBadge.classList.add('hidden');
+      }
+    }
+
+    input?.addEventListener('input', decodeJWT);
+
+    btnSample?.addEventListener('click', () => {
+      // Standard sample JWT
+      const sample = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE5MTYyMzkwMjJ9.40x4G1fV3QYmP_W8w-9Vj0K9N0S1X2Y3Z4A5B6C7D8E";
+      if (input) {
+        input.value = sample;
+        decodeJWT();
+      }
+    });
+
+    btnClear?.addEventListener('click', () => {
+      if (input) {
+        input.value = '';
+        decodeJWT();
+      }
+    });
+  });
+</script>

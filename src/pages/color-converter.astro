@@ -1,0 +1,240 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "What color models are supported by this converter?",
+    answer: "FreeFileTool converts between HEX (#RRGGBB / #RRGGBBAA), RGB (Red, Green, Blue), HSL (Hue, Saturation, Lightness), and HSV/HSB (Hue, Saturation, Value) color models."
+  },
+  {
+    question: "How does the HSL color model differ from RGB?",
+    answer: "RGB defines colors by blending intensities of red, green, and blue light (ideal for screens). HSL describes colors based on human perception: Hue (color angle on a 360° wheel), Saturation (vibrancy %), and Lightness (brightness %)."
+  },
+  {
+    question: "What is 8-digit HEX color encoding?",
+    answer: "An 8-digit HEX code (e.g. #38BDF8FF) appends two extra hexadecimal digits at the end to specify the Alpha (opacity) channel, where 00 is completely transparent and FF is fully opaque."
+  },
+  {
+    question: "Are color conversions exact across all formats?",
+    answer: "Yes, mathematical algorithms map coordinates between sRGB, HSL, and HSV spaces with full floating-point precision, rounding clean values for CSS output."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="color-converter"
+  toolName="Color Code Converter"
+  title="Color Code Converter — HEX, RGB, HSL, HSV Free Tool"
+  description="Convert color codes between HEX, RGB, HSL, HSV, and CSS formats in real-time with visual color swatch preview."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Main Color Swatch & Picker -->
+    <div class="p-6 bg-slate-950 border border-slate-800 rounded-lg flex flex-wrap items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <!-- Visual Swatch -->
+        <div id="color-preview-box" class="w-20 h-20 rounded-xl border-2 border-slate-700 shadow-lg transition-colors" style="background-color: #38bdf8;"></div>
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Color Picker</span>
+          <input
+            type="color"
+            id="color-picker-input"
+            value="#38bdf8"
+            class="w-12 h-10 bg-transparent border-0 cursor-pointer rounded"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-1 text-right">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Active Hex Code</span>
+        <span id="active-hex-label" class="font-mono text-2xl font-bold text-slate-100">#38BDF8</span>
+      </div>
+    </div>
+
+    <!-- Outputs Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- HEX -->
+      <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
+        <label for="out-hex" class="text-xs font-bold text-slate-400 uppercase tracking-wider">HEX Code</label>
+        <div class="flex gap-2">
+          <input type="text" id="out-hex" value="#38bdf8" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 font-mono text-sm text-cyan-300 focus:outline-none focus:border-brand-500" />
+          <button type="button" data-copy-target="out-hex" class="btn-copy-color text-xs px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy</button>
+        </div>
+      </div>
+
+      <!-- RGB -->
+      <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
+        <label for="out-rgb" class="text-xs font-bold text-slate-400 uppercase tracking-wider">RGB Color</label>
+        <div class="flex gap-2">
+          <input type="text" id="out-rgb" value="rgb(56, 189, 248)" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 font-mono text-sm text-emerald-300 focus:outline-none focus:border-brand-500" />
+          <button type="button" data-copy-target="out-rgb" class="btn-copy-color text-xs px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy</button>
+        </div>
+      </div>
+
+      <!-- HSL -->
+      <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
+        <label for="out-hsl" class="text-xs font-bold text-slate-400 uppercase tracking-wider">HSL Color</label>
+        <div class="flex gap-2">
+          <input type="text" id="out-hsl" value="hsl(198, 93%, 60%)" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 font-mono text-sm text-purple-300 focus:outline-none focus:border-brand-500" />
+          <button type="button" data-copy-target="out-hsl" class="btn-copy-color text-xs px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy</button>
+        </div>
+      </div>
+
+      <!-- HSV / HSB -->
+      <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-2">
+        <label for="out-hsv" class="text-xs font-bold text-slate-400 uppercase tracking-wider">HSV / HSB Color</label>
+        <div class="flex gap-2">
+          <input type="text" id="out-hsv" value="hsv(198, 77%, 97%)" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 font-mono text-sm text-amber-300 focus:outline-none focus:border-brand-500" />
+          <button type="button" data-copy-target="out-hsv" class="btn-copy-color text-xs px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Understanding Color Spaces &amp; Formats</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Digital displays render colors by combining red, green, and blue light channels. However, software applications, UI design systems, and web stylesheets use different mathematical representations (color models) to define colors effectively.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">1. HEX Color Codes</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Hexadecimal color notation represents colors using a six-digit hexadecimal value preceded by a hash symbol (<code>#RRGGBB</code>). The first pair represents Red, the second Green, and the third Blue, with values ranging from <code>00</code> (0 intensity) to <code>FF</code> (255 intensity).
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">2. RGB &amp; RGBA</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      RGB explicitly lists integer values from 0 to 255 for Red, Green, and Blue (e.g. <code>rgb(56, 189, 248)</code>). RGBA adds a fourth floating-point parameter between <code>0.0</code> (transparent) and <code>1.0</code> (opaque) for alpha channel transparency.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">3. HSL (Hue, Saturation, Lightness)</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      HSL models color in a cylindrical coordinate system:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Hue (0°–360°):</strong> The angle on the standard color wheel (0° = Red, 120° = Green, 240° = Blue).</li>
+      <li><strong>Saturation (0%–100%):</strong> The intensity or purity of the color (0% is grayscale, 100% is vibrant).</li>
+      <li><strong>Lightness (0%–100%):</strong> The amount of light (0% is black, 50% is pure color, 100% is white).</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">4. HSV / HSB (Hue, Saturation, Value/Brightness)</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Commonly used in graphic design software like Photoshop and Figma, HSV replaces Lightness with Value (brightness relative to white light).
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = document.getElementById('color-picker-input') as HTMLInputElement;
+    const previewBox = document.getElementById('color-preview-box') as HTMLElement;
+    const hexLabel = document.getElementById('active-hex-label') as HTMLElement;
+
+    const outHex = document.getElementById('out-hex') as HTMLInputElement;
+    const outRgb = document.getElementById('out-rgb') as HTMLInputElement;
+    const outHsl = document.getElementById('out-hsl') as HTMLInputElement;
+    const outHsv = document.getElementById('out-hsv') as HTMLInputElement;
+
+    function hexToRgb(hex: string) {
+      let c = hex.replace(/^#/, '');
+      if (c.length === 3) {
+        c = c.split('').map(x => x + x).join('');
+      }
+      const num = parseInt(c, 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function rgbToHsl(r: number, g: number, b: number) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0, l = (max + min) / 2;
+
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    }
+
+    function rgbToHsv(r: number, g: number, b: number) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const d = max - min;
+      let h = 0;
+      const s = max === 0 ? 0 : d / max;
+      const v = max;
+
+      if (max !== min) {
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        v: Math.round(v * 100)
+      };
+    }
+
+    function updateFromHex(hex: string) {
+      if (!/^#?[0-9A-Fa-f]{6}$/.test(hex)) return;
+      const cleanHex = hex.startsWith('#') ? hex : `#${hex}`;
+      const { r, g, b } = hexToRgb(cleanHex);
+      const hsl = rgbToHsl(r, g, b);
+      const hsv = rgbToHsv(r, g, b);
+
+      if (previewBox) previewBox.style.backgroundColor = cleanHex;
+      if (hexLabel) hexLabel.textContent = cleanHex.toUpperCase();
+      if (picker && picker.value.toLowerCase() !== cleanHex.toLowerCase()) picker.value = cleanHex;
+
+      if (outHex) outHex.value = cleanHex.toLowerCase();
+      if (outRgb) outRgb.value = `rgb(${r}, ${g}, ${b})`;
+      if (outHsl) outHsl.value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+      if (outHsv) outHsv.value = `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`;
+    }
+
+    picker?.addEventListener('input', (e) => {
+      updateFromHex((e.target as HTMLInputElement).value);
+    });
+
+    outHex?.addEventListener('input', (e) => {
+      updateFromHex((e.target as HTMLInputElement).value);
+    });
+
+    document.querySelectorAll('.btn-copy-color').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-copy-target');
+        if (!targetId) return;
+        const targetInput = document.getElementById(targetId) as HTMLInputElement;
+        if (targetInput && targetInput.value) {
+          navigator.clipboard.writeText(targetInput.value).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = orig; }, 2000);
+          });
+        }
+      });
+    });
+
+    // Initial update
+    updateFromHex('#38bdf8');
+  });
+</script>

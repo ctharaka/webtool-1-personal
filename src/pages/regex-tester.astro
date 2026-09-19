@@ -1,0 +1,334 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Is my test data or regex pattern uploaded to any server?",
+    answer: "No. FreeFileTool tests and evaluates regular expressions using your browser's native JavaScript RegExp engine in local RAM. Zero regex patterns or test strings are transmitted."
+  },
+  {
+    question: "What JavaScript regex flags are supported?",
+    answer: "This tool supports all standard ECMAScript flags: g (global search), i (case-insensitive), m (multiline mode), s (dotAll mode to match newlines), and u (unicode support)."
+  },
+  {
+    question: "How do capture groups work in replacement strings?",
+    answer: "You can reference captured parenthetical groups in your replacement string using $1, $2, $3, etc., or use $& to insert the full matched string."
+  },
+  {
+    question: "What causes Catastrophic Backtracking in regex?",
+    answer: "Catastrophic backtracking occurs when nested quantifiers (e.g. (a+)+$) force the engine to evaluate exponential permutations on non-matching strings. Our browser tester is sandboxed to keep your browser tab responsive."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="regex-tester"
+  toolName="Regex Tester & Debugger"
+  title="Regex Tester — Test Regular Expressions Online Free"
+  description="Test and debug JavaScript regular expressions online. Real-time match highlighting, capture group extraction, and regex replace."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Pattern & Flags Input Header -->
+    <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <!-- Pattern Input -->
+        <div class="md:col-span-2 space-y-1">
+          <label for="regex-pattern" class="text-xs font-bold text-slate-300 uppercase tracking-wider">Regular Expression Pattern</label>
+          <div class="flex items-center bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 font-mono text-sm text-emerald-300 focus-within:border-brand-500">
+            <span class="text-slate-500 mr-1">/</span>
+            <input
+              type="text"
+              id="regex-pattern"
+              placeholder="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+              class="w-full bg-transparent border-0 text-emerald-300 focus:outline-none"
+            />
+            <span class="text-slate-500 ml-1">/</span>
+            <span id="regex-flags-preview" class="text-brand-400 font-bold ml-1">g</span>
+          </div>
+        </div>
+
+        <!-- Flags Checks -->
+        <div class="space-y-1">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider block">Flags</span>
+          <div class="flex flex-wrap gap-3 text-xs font-mono text-slate-300 pt-1">
+            <label class="flex items-center space-x-1 cursor-pointer">
+              <input type="checkbox" id="flag-g" checked class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+              <span>g</span>
+            </label>
+            <label class="flex items-center space-x-1 cursor-pointer">
+              <input type="checkbox" id="flag-i" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+              <span>i</span>
+            </label>
+            <label class="flex items-center space-x-1 cursor-pointer">
+              <input type="checkbox" id="flag-m" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+              <span>m</span>
+            </label>
+            <label class="flex items-center space-x-1 cursor-pointer">
+              <input type="checkbox" id="flag-s" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+              <span>s</span>
+            </label>
+            <label class="flex items-center space-x-1 cursor-pointer">
+              <input type="checkbox" id="flag-u" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+              <span>u</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional Substitution / Replace input -->
+      <div class="pt-2 border-t border-slate-900 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="regex-replace" class="text-xs font-semibold text-slate-400">Substitution / Replace String (Optional)</label>
+          <input
+            type="text"
+            id="regex-replace"
+            placeholder="e.g. [REDACTED_EMAIL] or [$1]"
+            class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          />
+        </div>
+        <div class="flex items-end justify-between text-xs">
+          <span class="text-slate-400">Match Status: <span id="regex-status" class="font-bold text-emerald-400">Ready</span></span>
+          <button type="button" id="btn-sample-regex" class="text-brand-400 hover:text-brand-300 underline">Load Email Sample</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test String Input & Match Highlights -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label for="regex-test-text" class="text-xs font-bold uppercase tracking-wider text-slate-300">Test String Input</label>
+        <textarea
+          id="regex-test-text"
+          rows="12"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          placeholder="Paste test text here to evaluate matches..."
+        ></textarea>
+      </div>
+
+      <!-- Match Highlighted Output -->
+      <div class="space-y-2">
+        <label class="text-xs font-bold uppercase tracking-wider text-slate-300 block">Highlighted Matches &amp; Output</label>
+        <div id="regex-highlight-box" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 min-h-[140px] max-h-[300px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
+          <span class="text-slate-500">Matches will be highlighted here...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match Breakdown & Replacement Results -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Table of Matches -->
+      <div class="space-y-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">Extracted Matches &amp; Groups</span>
+        <div id="regex-table-container" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono min-h-[100px] max-h-[220px] overflow-y-auto">
+          <p class="text-slate-500">No matches found.</p>
+        </div>
+      </div>
+
+      <!-- Replacement Result Box -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-300 block">Replaced Result Text</span>
+          <button type="button" id="btn-copy-replaced" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy Replaced</button>
+        </div>
+        <textarea
+          id="regex-replaced-output"
+          rows="6"
+          readonly
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-cyan-300 focus:outline-none"
+          placeholder="Replaced output text will appear here..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Mastering Regular Expressions (Regex)</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Regular Expressions (Regex) are powerful search patterns used to parse, validate, extract, and replace strings across virtually all programming languages. Standardized by the ECMAScript specification in JavaScript, regex patterns allow developers to express complex string matching rules in compact syntax.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Core Syntax Components</h3>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Character Classes:</strong> <code>\d</code> (digits 0-9), <code>\w</code> (word characters), <code>\s</code> (whitespace characters), <code>.</code> (any character except newline).</li>
+      <li><strong>Quantifiers:</strong> <code>*</code> (0 or more), <code>+</code> (1 or more), <code>?</code> (0 or 1), <code>&#123;n,m&#125;</code> (between n and m times).</li>
+      <li><strong>Anchors:</strong> <code>^</code> (start of line/string), <code>$</code> (end of line/string), <code>\b</code> (word boundary).</li>
+      <li><strong>Capture Groups:</strong> Parentheses <code>(...)</code> create numbered capture groups accessible in replacement operations via <code>$1</code>, <code>$2</code>.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">JavaScript Regex Flags</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Flags appended to the end of a regular expression alter its search behavior:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><code>g</code> (Global): Matches all occurrences in the string rather than stopping after the first match.</li>
+      <li><code>i</code> (Ignore Case): Case-insensitive matching (e.g. <code>/abc/i</code> matches <code>ABC</code>).</li>
+      <li><code>m</code> (Multiline): Causes <code>^</code> and <code>$</code> to match the start and end of individual lines rather than the entire string.</li>
+      <li><code>s</code> (dotAll): Allows the dot <code>.</code> character to match newline characters (<code>\n</code>).</li>
+      <li><code>u</code> (Unicode): Enables full Unicode code-point matching for emojis and international scripts.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">In-Browser Debugging Privacy</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      When debugging regex against server log entries, database credentials, or email dumps, using server-side online regex tools exposes sensitive log data. FreeFileTool evaluates regex patterns locally in your browser, keeping your text 100% private.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const patternInput = document.getElementById('regex-pattern') as HTMLInputElement;
+    const flagsPreview = document.getElementById('regex-flags-preview') as HTMLElement;
+    const replaceInput = document.getElementById('regex-replace') as HTMLInputElement;
+    const testArea = document.getElementById('regex-test-text') as HTMLTextAreaElement;
+    const highlightBox = document.getElementById('regex-highlight-box') as HTMLElement;
+    const tableContainer = document.getElementById('regex-table-container') as HTMLElement;
+    const replacedArea = document.getElementById('regex-replaced-output') as HTMLTextAreaElement;
+    const statusText = document.getElementById('regex-status') as HTMLElement;
+
+    const flagG = document.getElementById('flag-g') as HTMLInputElement;
+    const flagI = document.getElementById('flag-i') as HTMLInputElement;
+    const flagM = document.getElementById('flag-m') as HTMLInputElement;
+    const flagS = document.getElementById('flag-s') as HTMLInputElement;
+    const flagU = document.getElementById('flag-u') as HTMLInputElement;
+
+    const btnSample = document.getElementById('btn-sample-regex');
+    const btnCopyReplaced = document.getElementById('btn-copy-replaced');
+
+    function getFlags() {
+      let f = '';
+      if (flagG?.checked) f += 'g';
+      if (flagI?.checked) f += 'i';
+      if (flagM?.checked) f += 'm';
+      if (flagS?.checked) f += 's';
+      if (flagU?.checked) f += 'u';
+      return f;
+    }
+
+    function evaluateRegex() {
+      const patStr = patternInput?.value || '';
+      const flags = getFlags();
+      if (flagsPreview) flagsPreview.textContent = flags;
+
+      const text = testArea?.value || '';
+
+      if (!patStr || !text) {
+        highlightBox.innerHTML = '<span class="text-slate-500">Matches will be highlighted here...</span>';
+        tableContainer.innerHTML = '<p class="text-slate-500">No matches found.</p>';
+        replacedArea.value = '';
+        statusText.textContent = 'Ready';
+        statusText.className = 'font-bold text-slate-400';
+        return;
+      }
+
+      try {
+        const re = new RegExp(patStr, flags);
+        statusText.textContent = 'Valid Pattern';
+        statusText.className = 'font-bold text-emerald-400';
+
+        // 1. Highlight matches
+        let matchCount = 0;
+        const matches: Array<{ match: string; index: number; groups: string[] }> = [];
+
+        // Global vs Non-Global matching
+        if (flags.includes('g')) {
+          let match: RegExpExecArray | null;
+          let lastIndex = 0;
+          let highlighted = '';
+
+          while ((match = re.exec(text)) !== null) {
+            matchCount++;
+            matches.push({
+              match: match[0],
+              index: match.index,
+              groups: Array.from(match).slice(1)
+            });
+
+            // Append preceding text
+            highlighted += escapeHtml(text.slice(lastIndex, match.index));
+            // Append highlighted match
+            highlighted += `<mark class="bg-brand-500/30 text-brand-300 font-bold rounded px-0.5 border border-brand-500/50">${escapeHtml(match[0])}</mark>`;
+            lastIndex = re.lastIndex;
+
+            if (match[0].length === 0) {
+              re.lastIndex++; // prevent infinite loop on zero-width matches
+            }
+            if (matchCount > 500) break; // safety guard
+          }
+          highlighted += escapeHtml(text.slice(lastIndex));
+          highlightBox.innerHTML = highlighted;
+        } else {
+          const match = re.exec(text);
+          if (match) {
+            matchCount = 1;
+            matches.push({
+              match: match[0],
+              index: match.index,
+              groups: Array.from(match).slice(1)
+            });
+            const before = escapeHtml(text.slice(0, match.index));
+            const mText = escapeHtml(match[0]);
+            const after = escapeHtml(text.slice(match.index + match[0].length));
+            highlightBox.innerHTML = `${before}<mark class="bg-brand-500/30 text-brand-300 font-bold rounded px-0.5 border border-brand-500/50">${mText}</mark>${after}`;
+          } else {
+            highlightBox.innerHTML = escapeHtml(text);
+          }
+        }
+
+        // 2. Build Match Breakdown Table
+        if (matches.length > 0) {
+          let tblHtml = `<table class="w-full text-left text-xs border-collapse"><thead class="text-slate-400 border-b border-slate-800"><tr><th class="py-1">#</th><th class="py-1">Index</th><th class="py-1">Match</th><th class="py-1">Groups</th></tr></thead><tbody>`;
+          matches.forEach((m, idx) => {
+            const grpStr = m.groups.length > 0 ? m.groups.map((g, gi) => `$${gi+1}: "${escapeHtml(g)}"`).join(', ') : 'none';
+            tblHtml += `<tr class="border-b border-slate-900"><td class="py-1 text-slate-500">${idx + 1}</td><td class="py-1 text-slate-400">${m.index}</td><td class="py-1 text-emerald-400 font-bold">${escapeHtml(m.match)}</td><td class="py-1 text-purple-300">${grpStr}</td></tr>`;
+          });
+          tblHtml += `</tbody></table>`;
+          tableContainer.innerHTML = tblHtml;
+        } else {
+          tableContainer.innerHTML = '<p class="text-slate-500">No matches found.</p>';
+        }
+
+        // 3. Replacement output
+        const replStr = replaceInput?.value || '';
+        if (replStr) {
+          replacedArea.value = text.replace(re, replStr);
+        } else {
+          replacedArea.value = text;
+        }
+
+      } catch (err: any) {
+        statusText.textContent = `Regex Error: ${err?.message || 'Invalid pattern'}`;
+        statusText.className = 'font-bold text-red-400';
+        highlightBox.innerHTML = escapeHtml(text);
+        tableContainer.innerHTML = '<p class="text-red-400">Invalid Regular Expression Syntax</p>';
+      }
+    }
+
+    function escapeHtml(str: string) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    patternInput?.addEventListener('input', evaluateRegex);
+    replaceInput?.addEventListener('input', evaluateRegex);
+    testArea?.addEventListener('input', evaluateRegex);
+    [flagG, flagI, flagM, flagS, flagU].forEach(f => f?.addEventListener('change', evaluateRegex));
+
+    btnSample?.addEventListener('click', () => {
+      patternInput.value = '([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})';
+      replaceInput.value = '$1@[MASKED-DOMAIN]';
+      testArea.value = `Contact our team at support@freefiletool.app or sales@example.com for inquiries.\nDeveloper contact: dev.user+test@service.org`;
+      if (flagG) flagG.checked = true;
+      if (flagI) flagI.checked = true;
+      evaluateRegex();
+    });
+
+    btnCopyReplaced?.addEventListener('click', () => {
+      if (!replacedArea?.value) return;
+      navigator.clipboard.writeText(replacedArea.value).then(() => {
+        const orig = btnCopyReplaced.textContent;
+        btnCopyReplaced.textContent = 'Copied!';
+        setTimeout(() => { btnCopyReplaced.textContent = orig; }, 2000);
+      });
+    });
+  });
+</script>

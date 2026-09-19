@@ -1,0 +1,184 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "How are UUID v4 identifiers generated in this tool?",
+    answer: "FreeFileTool generates UUIDs using your browser's native window.crypto.getRandomValues() API, which accesses system-level cryptographically secure random number generation (CSPRNG)."
+  },
+  {
+    question: "What is the probability of a UUID v4 collision?",
+    answer: "UUID v4 uses 122 bits of random data. To have a 50% chance of a single collision, you would need to generate approximately 2.71 quintillion UUIDs (2.71 x 10^18), making collisions virtually impossible in practical applications."
+  },
+  {
+    question: "What is the difference between UUID v1, v4, and v5?",
+    answer: "UUID v1 is time-and-MAC-address based; UUID v4 is purely randomly generated; UUID v5 is namespace-and-name based using SHA-1 hashing. Version 4 is the most popular choice for web applications due to privacy and simplicity."
+  },
+  {
+    question: "Can I use these generated UUIDs in databases and production applications?",
+    answer: "Yes, all generated UUIDs strictly comply with RFC 4122 standards and are fully suitable for primary keys, database identifiers, session IDs, and API request tracking."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="uuid-generator"
+  toolName="UUID / GUID Generator"
+  title="UUID Generator — Generate Random v4 UUIDs Online Free"
+  description="Generate cryptographically secure Version 4 UUIDs (GUIDs) in bulk. Custom formatting, uppercase/lowercase, hyphens, and instant bulk copy."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div>
+        <label for="uuid-quantity" class="block text-xs font-semibold text-slate-300 mb-1">Quantity (1 - 50)</label>
+        <input
+          type="number"
+          id="uuid-quantity"
+          min="1"
+          max="50"
+          value="5"
+          class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-brand-500"
+        />
+      </div>
+
+      <div class="flex items-center space-x-2 pt-5">
+        <input type="checkbox" id="uuid-uppercase" class="rounded border-slate-700 text-brand-500 focus:ring-brand-500 bg-slate-900" />
+        <label for="uuid-uppercase" class="text-sm font-medium text-slate-300">UPPERCASE</label>
+      </div>
+
+      <div class="flex items-center space-x-2 pt-5">
+        <input type="checkbox" id="uuid-nohyphens" class="rounded border-slate-700 text-brand-500 focus:ring-brand-500 bg-slate-900" />
+        <label for="uuid-nohyphens" class="text-sm font-medium text-slate-300">Remove Hyphens</label>
+      </div>
+
+      <div class="flex items-center space-x-2 pt-5">
+        <input type="checkbox" id="uuid-braces" class="rounded border-slate-700 text-brand-500 focus:ring-brand-500 bg-slate-900" />
+        <label for="uuid-braces" class="text-sm font-medium text-slate-300">&#123; Add Braces &#125;</label>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap gap-3">
+      <button type="button" id="btn-generate-uuid" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg text-sm transition shadow-md">
+        Generate New UUIDs
+      </button>
+      <button type="button" id="btn-copy-uuids" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg text-sm transition">
+        Copy All to Clipboard
+      </button>
+    </div>
+
+    <!-- Output List -->
+    <div>
+      <textarea
+        id="uuid-output"
+        rows="10"
+        readonly
+        class="w-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-sm text-emerald-400 focus:outline-none"
+        placeholder="Generated UUIDs will appear here..."
+      ></textarea>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">What is a Universally Unique Identifier (UUID)?</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      A Universally Unique Identifier (UUID), also known as a Globally Unique Identifier (GUID), is a 128-bit number used to identify information in computer systems. Standardized by RFC 4122 and ITU-T X.667, UUIDs are designed to enable distributed systems to uniquely identify information without central coordination or authority.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Structure of a UUID Version 4</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      In its canonical textual representation, a UUID is expressed as 32 hexadecimal digits displayed in five groups separated by hyphens, in the form <code>8-4-4-4-12</code> for a total of 36 characters (e.g., <code>f47ac10b-58cc-4372-a567-0e02b2c3d479</code>).
+    </p>
+
+    <p class="text-slate-300 leading-relaxed mb-4">
+      For a Version 4 UUID, the 13th hexadecimal character (the first character of the 3rd group) is set to <code>4</code> to designate version 4. Additionally, the 17th hexadecimal character (the first character of the 4th group) is set to one of <code>8</code>, <code>9</code>, <code>a</code>, or <code>b</code> to indicate the variant specified in RFC 4122.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Cryptographic Randomness &amp; Security</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Standard <code>Math.random()</code> pseudo-random number generators in older programming environments are predictable and unsuitable for security-sensitive UUID generation. FreeFileTool uses the modern W3C Web Cryptography API (<code>crypto.getRandomValues</code> or <code>crypto.randomUUID()</code>), ensuring every generated bit comes directly from the operating system's CSPRNG pool.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Common Use Cases for UUIDs</h3>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Database Primary Keys:</strong> Preventing key collision across distributed SQL databases and microservice clusters.</li>
+      <li><strong>API Tracking IDs:</strong> Assigning correlation IDs to HTTP requests and asynchronous job queues.</li>
+      <li><strong>Session Identifiers:</strong> Creating unguessable authentication token seeds.</li>
+      <li><strong>Unique File Names:</strong> Eliminating file overwrite collisions on object stores.</li>
+    </ul>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const qtyInput = document.getElementById('uuid-quantity') as HTMLInputElement;
+    const uppercaseChk = document.getElementById('uuid-uppercase') as HTMLInputElement;
+    const noHyphensChk = document.getElementById('uuid-nohyphens') as HTMLInputElement;
+    const bracesChk = document.getElementById('uuid-braces') as HTMLInputElement;
+    const output = document.getElementById('uuid-output') as HTMLTextAreaElement;
+    const btnGenerate = document.getElementById('btn-generate-uuid');
+    const btnCopy = document.getElementById('btn-copy-uuids');
+
+    function generateSingleUUID() {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+      // Fallback CSPRNG implementation
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40; // Version 4
+      bytes[8] = (bytes[8] & 0x3f) | 0x80; // Variant 10xx
+      const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+    }
+
+    function generateBatch() {
+      let qty = parseInt(qtyInput?.value || '1', 10);
+      if (isNaN(qty) || qty < 1) qty = 1;
+      if (qty > 50) qty = 50;
+
+      const isUpper = uppercaseChk?.checked;
+      const noHyphens = noHyphensChk?.checked;
+      const addBraces = bracesChk?.checked;
+
+      const list: string[] = [];
+      for (let i = 0; i < qty; i++) {
+        let val = generateSingleUUID();
+        if (noHyphens) {
+          val = val.replace(/-/g, '');
+        }
+        if (isUpper) {
+          val = val.toUpperCase();
+        }
+        if (addBraces) {
+          val = `{${val}}`;
+        }
+        list.push(val);
+      }
+
+      if (output) {
+        output.value = list.join('\n');
+      }
+    }
+
+    btnGenerate?.addEventListener('click', generateBatch);
+    qtyInput?.addEventListener('input', generateBatch);
+    uppercaseChk?.addEventListener('change', generateBatch);
+    noHyphensChk?.addEventListener('change', generateBatch);
+    bracesChk?.addEventListener('change', generateBatch);
+
+    btnCopy?.addEventListener('click', () => {
+      if (!output || !output.value) return;
+      navigator.clipboard.writeText(output.value).then(() => {
+        const orig = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => { btnCopy.textContent = orig; }, 2000);
+      });
+    });
+
+    // Initial generation
+    generateBatch();
+  });
+</script>

@@ -1,0 +1,319 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Is my CSV or JSON data uploaded to any server during conversion?",
+    answer: "No. FreeFileTool performs all CSV parsing and JSON serialization 100% in local browser memory using client-side JavaScript. Your data remains completely private."
+  },
+  {
+    question: "Does this converter handle quotes and commas inside cells?",
+    answer: "Yes. Our parser supports RFC 4180 CSV specifications, correctly handling quoted fields containing commas, line breaks, and escaped double quotes."
+  },
+  {
+    question: "Can I convert JSON back into a CSV file?",
+    answer: "Yes, this tool is fully bidirectional. You can switch to JSON to CSV mode, paste your JSON array of objects, and generate clean formatted CSV data."
+  },
+  {
+    question: "What delimiters are supported?",
+    answer: "You can convert using commas (,), tabs (TSV), or semicolons (;) to accommodate different regional spreadsheet exports (e.g. European Excel CSVs)."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="csv-to-json"
+  toolName="CSV <-> JSON Converter"
+  title="CSV to JSON & JSON to CSV Converter — Free Online Tool"
+  description="Convert CSV spreadsheets to JSON objects and convert JSON array data to CSV table format 100% client-side with custom delimiters."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Mode & Options Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex gap-2">
+        <button type="button" id="btn-mode-csv2json" class="px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition">CSV &rarr; JSON</button>
+        <button type="button" id="btn-mode-json2csv" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">JSON &rarr; CSV</button>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-300">
+        <div>
+          <label for="csv-delimiter" class="mr-1">Delimiter:</label>
+          <select id="csv-delimiter" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200">
+            <option value=",">Comma (,)</option>
+            <option value=";">Semicolon (;)</option>
+            <option value="&#9;">Tab (\t)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="json-indent" class="mr-1">JSON Indent:</label>
+          <select id="json-indent" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200">
+            <option value="2">2 Spaces</option>
+            <option value="4">4 Spaces</option>
+            <option value="0">Minified</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input & Output Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Input Box -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label id="input-label" for="csv-json-input" class="text-xs font-bold uppercase tracking-wider text-slate-300">Input CSV Text</label>
+          <button type="button" id="btn-sample-data" class="text-xs text-brand-400 hover:text-brand-300 underline">Load Sample Data</button>
+        </div>
+        <textarea
+          id="csv-json-input"
+          rows="14"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          placeholder="Paste CSV text here..."
+        ></textarea>
+      </div>
+
+      <!-- Output Box -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label id="output-label" for="csv-json-output" class="text-xs font-bold uppercase tracking-wider text-slate-300">Converted JSON Output</label>
+          <div class="flex gap-2">
+            <button type="button" id="btn-copy-output" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy</button>
+            <button type="button" id="btn-download-output" class="text-xs px-2.5 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded font-medium">Download</button>
+          </div>
+        </div>
+        <textarea
+          id="csv-json-output"
+          rows="14"
+          readonly
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-300 focus:outline-none"
+          placeholder="Converted output will appear here..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Converting Between CSV and JSON</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Comma-Separated Values (CSV) and JavaScript Object Notation (JSON) are the two most prevalent data exchange formats used across modern web development, data analysis, and spreadsheet software like Microsoft Excel and Google Sheets. Converting between these formats is a daily requirement for developers and data engineers.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">RFC 4180 CSV Parsing Standard</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      A simple string split by commas is insufficient for robust CSV parsing. Real-world CSV files frequently contain fields with commas, quoted strings, line breaks, and escaped double quotes (<code>""</code>). FreeFileTool uses an RFC 4180 compliant state-machine parser that correctly preserves field boundaries and text integrity without data corruption.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Bi-Directional Conversion</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      When converting <strong>CSV to JSON</strong>, the first row of the CSV is parsed as object keys (headers), and subsequent rows are mapped into an array of JavaScript objects. When converting <strong>JSON to CSV</strong>, the tool extracts all unique keys across the object array to construct the header row, placing values into aligned tabular columns.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Data Privacy Guarantee</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Financial reports, customer contact lists, and confidential database dumps should never be uploaded to unknown third-party conversion servers. FreeFileTool runs 100% inside your browser's local JavaScript execution context, ensuring zero bytes ever leave your device.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let mode: 'csv2json' | 'json2csv' = 'csv2json';
+
+    const btnCsv2Json = document.getElementById('btn-mode-csv2json');
+    const btnJson2Csv = document.getElementById('btn-mode-json2csv');
+    const inputLabel = document.getElementById('input-label') as HTMLElement;
+    const outputLabel = document.getElementById('output-label') as HTMLElement;
+    const delimiterSelect = document.getElementById('csv-delimiter') as HTMLSelectElement;
+    const indentSelect = document.getElementById('json-indent') as HTMLSelectElement;
+    const inputArea = document.getElementById('csv-json-input') as HTMLTextAreaElement;
+    const outputArea = document.getElementById('csv-json-output') as HTMLTextAreaElement;
+    const btnSample = document.getElementById('btn-sample-data');
+    const btnCopy = document.getElementById('btn-copy-output');
+    const btnDownload = document.getElementById('btn-download-output');
+
+    // RFC 4180 CSV Parser
+    function parseCSV(text: string, delimiter: string = ','): string[][] {
+      const rows: string[][] = [];
+      let currentRow: string[] = [];
+      let currentCell = '';
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (insideQuotes) {
+          if (char === '"' && nextChar === '"') {
+            currentCell += '"';
+            i++; // skip next quote
+          } else if (char === '"') {
+            insideQuotes = false;
+          } else {
+            currentCell += char;
+          }
+        } else {
+          if (char === '"') {
+            insideQuotes = true;
+          } else if (char === delimiter) {
+            currentRow.push(currentCell);
+            currentCell = '';
+          } else if (char === '\r' && nextChar === '\n') {
+            currentRow.push(currentCell);
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+            i++; // skip \n
+          } else if (char === '\n' || char === '\r') {
+            currentRow.push(currentCell);
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+          } else {
+            currentCell += char;
+          }
+        }
+      }
+
+      if (currentCell || currentRow.length > 0) {
+        currentRow.push(currentCell);
+        rows.push(currentRow);
+      }
+
+      return rows.filter(r => r.length > 1 || r[0] !== '');
+    }
+
+    function processConversion() {
+      const text = (inputArea?.value || '').trim();
+      const delimiter = delimiterSelect?.value || ',';
+      const indent = parseInt(indentSelect?.value || '2', 10);
+
+      if (!text) {
+        if (outputArea) outputArea.value = '';
+        return;
+      }
+
+      if (mode === 'csv2json') {
+        try {
+          const matrix = parseCSV(text, delimiter);
+          if (matrix.length < 1) {
+            outputArea.value = '[]';
+            return;
+          }
+
+          const headers = matrix[0].map(h => h.trim());
+          const result: any[] = [];
+
+          for (let i = 1; i < matrix.length; i++) {
+            const row = matrix[i];
+            const obj: Record<string, string> = {};
+            headers.forEach((h, colIdx) => {
+              obj[h] = row[colIdx] !== undefined ? row[colIdx] : '';
+            });
+            result.push(obj);
+          }
+
+          outputArea.value = JSON.stringify(result, null, indent);
+        } catch (err: any) {
+          outputArea.value = `CSV Parsing Error: ${err?.message || 'Invalid format'}`;
+        }
+      } else {
+        // JSON to CSV
+        try {
+          const json = JSON.parse(text);
+          const arr = Array.isArray(json) ? json : [json];
+
+          if (arr.length === 0) {
+            outputArea.value = '';
+            return;
+          }
+
+          const keysSet = new Set<string>();
+          arr.forEach(item => {
+            if (typeof item === 'object' && item !== null) {
+              Object.keys(item).forEach(k => keysSet.add(k));
+            }
+          });
+
+          const keys = Array.from(keysSet);
+          const csvRows: string[] = [];
+
+          // Header
+          csvRows.push(keys.map(k => `"${k.replace(/"/g, '""')}"`).join(delimiter));
+
+          // Rows
+          arr.forEach(item => {
+            const row = keys.map(k => {
+              const val = item[k] !== undefined && item[k] !== null ? String(item[k]) : '';
+              return `"${val.replace(/"/g, '""')}"`;
+            });
+            csvRows.push(row.join(delimiter));
+          });
+
+          outputArea.value = csvRows.join('\n');
+        } catch (err: any) {
+          outputArea.value = `JSON Parsing Error: ${err?.message || 'Invalid JSON'}`;
+        }
+      }
+    }
+
+    btnCsv2Json?.addEventListener('click', () => {
+      mode = 'csv2json';
+      btnCsv2Json.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition';
+      btnJson2Csv.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition';
+      inputLabel.textContent = 'Input CSV Text';
+      outputLabel.textContent = 'Converted JSON Output';
+      inputArea.placeholder = 'Paste CSV text here...';
+      processConversion();
+    });
+
+    btnJson2Csv?.addEventListener('click', () => {
+      mode = 'json2csv';
+      btnJson2Csv.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition';
+      btnCsv2Json.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition';
+      inputLabel.textContent = 'Input JSON Array';
+      outputLabel.textContent = 'Converted CSV Output';
+      inputArea.placeholder = 'Paste JSON array here...\n[{"id": 1, "name": "Alice"}]';
+      processConversion();
+    });
+
+    inputArea?.addEventListener('input', processConversion);
+    delimiterSelect?.addEventListener('change', processConversion);
+    indentSelect?.addEventListener('change', processConversion);
+
+    btnSample?.addEventListener('click', () => {
+      if (mode === 'csv2json') {
+        inputArea.value = `id,name,role,department,email\n1,"Alice Smith",Developer,"Engineering",alice@example.com\n2,"Bob Jones",Designer,"Product",bob@example.com\n3,"Charlie Brown","Product Manager","Product",charlie@example.com`;
+      } else {
+        inputArea.value = JSON.stringify([
+          { id: 1, name: "Alice Smith", role: "Developer", department: "Engineering" },
+          { id: 2, name: "Bob Jones", role: "Designer", department: "Product" },
+          { id: 3, name: "Charlie Brown", role: "Product Manager", department: "Product" }
+        ], null, 2);
+      }
+      processConversion();
+    });
+
+    btnCopy?.addEventListener('click', () => {
+      if (!outputArea?.value) return;
+      navigator.clipboard.writeText(outputArea.value).then(() => {
+        const orig = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => { btnCopy.textContent = orig; }, 2000);
+      });
+    });
+
+    btnDownload?.addEventListener('click', () => {
+      if (!outputArea?.value) return;
+      const ext = mode === 'csv2json' ? 'json' : 'csv';
+      const mime = mode === 'csv2json' ? 'application/json' : 'text/csv';
+      const blob = new Blob([outputArea.value], { type: `${mime};charset=utf-8` });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `converted-data.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+</script>

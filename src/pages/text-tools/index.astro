@@ -66,21 +66,69 @@ import AdSlot from '../../components/ads/AdSlot.astro';
       <h2 class="category-title">
         <span class="category-icon">🛠️</span> Developer Tools
       </h2>
-      <p class="category-desc">Beautify payloads, inspect data structures, and compute cryptographic signatures.</p>
+      <p class="category-desc">Beautify payloads, inspect data structures, decode tokens, and compute cryptographic signatures.</p>
 
       <div class="category-grid">
         <div class="tool-card">
           <h3 class="tool-title"><a href="/json-formatter">JSON Formatter &amp; Validator</a></h3>
           <p class="tool-desc">
-            Pretty-print, validate syntax, and minify JSON data with exact line and column error reporting. Supports direct .json file upload and download.
+            Pretty-print, validate syntax, and minify JSON data with exact line and column error reporting.
           </p>
           <a href="/json-formatter" class="tool-link">Format JSON &rarr;</a>
         </div>
 
         <div class="tool-card">
+          <h3 class="tool-title"><a href="/jwt-decoder">JWT Decoder</a></h3>
+          <p class="tool-desc">
+            Decode JSON Web Token headers, payload JSON, expiration dates, and algorithms locally.
+          </p>
+          <a href="/jwt-decoder" class="tool-link">Decode JWT &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/uuid-generator">UUID / GUID Generator</a></h3>
+          <p class="tool-desc">
+            Generate cryptographically secure v4 UUIDs in bulk with uppercase, hyphen, and brace formatting options.
+          </p>
+          <a href="/uuid-generator" class="tool-link">Generate UUIDs &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/unix-timestamp-converter">Unix Timestamp Converter</a></h3>
+          <p class="tool-desc">
+            Convert Unix epoch seconds/milliseconds to UTC and local human-readable dates and vice versa.
+          </p>
+          <a href="/unix-timestamp-converter" class="tool-link">Convert Timestamp &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/text-diff">Text Diff &amp; Comparison</a></h3>
+          <p class="tool-desc">
+            Compare two text files or code blocks line-by-line with visual change highlighting.
+          </p>
+          <a href="/text-diff" class="tool-link">Compare Text &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/regex-tester">Regex Tester &amp; Debugger</a></h3>
+          <p class="tool-desc">
+            Test and debug regular expressions with live match highlights, capture groups, and regex replace.
+          </p>
+          <a href="/regex-tester" class="tool-link">Test Regex &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/password-generator">Secure Password Generator</a></h3>
+          <p class="tool-desc">
+            Generate cryptographically strong, random passwords using CSPRNG with entropy metrics.
+          </p>
+          <a href="/password-generator" class="tool-link">Generate Passwords &rarr;</a>
+        </div>
+
+        <div class="tool-card">
           <h3 class="tool-title"><a href="/hash-generator">Cryptographic Hash Generator</a></h3>
           <p class="tool-desc">
-            Compute MD5, SHA-1, SHA-256, and SHA-512 checksums for passwords, text, and binary files using hardware-accelerated Web Crypto.
+            Compute MD5, SHA-1, SHA-256, and SHA-512 checksums for passwords, text, and binary files.
           </p>
           <a href="/hash-generator" class="tool-link">Compute Hashes &rarr;</a>
         </div>
@@ -92,13 +140,37 @@ import AdSlot from '../../components/ads/AdSlot.astro';
       <h2 class="category-title">
         <span class="category-icon">🔄</span> Encoders &amp; Converters
       </h2>
-      <p class="category-desc">Transform representations between binary formats and text casings.</p>
+      <p class="category-desc">Transform representations between binary formats, URL strings, and text casings.</p>
 
       <div class="category-grid">
         <div class="tool-card">
+          <h3 class="tool-title"><a href="/csv-to-json">CSV &lt;-&gt; JSON Converter</a></h3>
+          <p class="tool-desc">
+            Bidirectional converter between CSV spreadsheet tables and JSON object arrays with custom delimiters.
+          </p>
+          <a href="/csv-to-json" class="tool-link">Convert CSV/JSON &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/url-encoder-decoder">URL Encoder &amp; Decoder</a></h3>
+          <p class="tool-desc">
+            Encode special characters and decode percent-encoded URLs (RFC 3986) with full UTF-8 support.
+          </p>
+          <a href="/url-encoder-decoder" class="tool-link">Encode URL &rarr;</a>
+        </div>
+
+        <div class="tool-card">
+          <h3 class="tool-title"><a href="/color-converter">Color Code Converter</a></h3>
+          <p class="tool-desc">
+            Convert color codes between HEX, RGB, HSL, HSV, and CSS formats in real-time with visual preview.
+          </p>
+          <a href="/color-converter" class="tool-link">Convert Colors &rarr;</a>
+        </div>
+
+        <div class="tool-card">
           <h3 class="tool-title"><a href="/base64-encoder-decoder">Base64 Encoder &amp; Decoder</a></h3>
           <p class="tool-desc">
-            Encode and decode plain text, Unicode strings, and binary files to Base64 with full UTF-8 international character support.
+            Encode and decode plain text, Unicode strings, and binary files to Base64 with full UTF-8 support.
           </p>
           <a href="/base64-encoder-decoder" class="tool-link">Open Base64 Tool &rarr;</a>
         </div>
@@ -106,7 +178,7 @@ import AdSlot from '../../components/ads/AdSlot.astro';
         <div class="tool-card">
           <h3 class="tool-title"><a href="/case-converter">Text Case Converter</a></h3>
           <p class="tool-desc">
-            Transform text between UPPERCASE, lowercase, Title Case, Sentence case, camelCase, snake_case, and kebab-case with one click.
+            Transform text between UPPERCASE, lowercase, Title Case, Sentence case, camelCase, snake_case, and kebab-case.
           </p>
           <a href="/case-converter" class="tool-link">Convert Case &rarr;</a>
         </div>

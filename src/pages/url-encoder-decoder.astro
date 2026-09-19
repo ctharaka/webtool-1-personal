@@ -1,0 +1,197 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "What is the difference between encodeURI and encodeURIComponent?",
+    answer: "encodeURI() is designed to encode a full URL while preserving reserved protocol and domain characters like http://, ?, and /. encodeURIComponent() encodes ALL reserved characters, making it suitable for individual query string values."
+  },
+  {
+    question: "Why should space be encoded as %20 vs +?",
+    answer: "Standard URL Percent-Encoding uses %20 for spaces. The plus (+) sign for spaces is specific to application/x-www-form-urlencoded form data submissions."
+  },
+  {
+    question: "Is it safe to encode URLs containing non-ASCII international characters?",
+    answer: "Yes! Modern JavaScript converts non-ASCII Unicode characters (like emojis or foreign scripts) to their UTF-8 byte sequences before percent-encoding each byte."
+  },
+  {
+    question: "Are my URL strings logged or tracked?",
+    answer: "Never. FreeFileTool encodes and decodes URLs locally using browser APIs. Your URLs and parameter strings are never sent to any server."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="url-encoder-decoder"
+  toolName="URL Encoder & Decoder"
+  title="URL Encoder & Decoder — Free Online Percent Encoding Tool"
+  description="Encode and decode URLs and query parameters online using percent-encoding (RFC 3986). Supports UTF-8 strings, encodeURI, and encodeURIComponent."
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Mode Controls -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex gap-2">
+        <button type="button" id="btn-mode-encode" class="px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition">Encode Mode</button>
+        <button type="button" id="btn-mode-decode" class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Decode Mode</button>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs font-medium text-slate-300">
+        <div>
+          <label for="url-func" class="mr-1">Mode Target:</label>
+          <select id="url-func" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200">
+            <option value="component">Component (encodeURIComponent)</option>
+            <option value="full">Full URL (encodeURI)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <input type="checkbox" id="chk-space-plus" class="rounded border-slate-700 text-brand-500 bg-slate-900" />
+          <label for="chk-space-plus">Use '+' for spaces</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Textareas Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label id="lbl-url-in" for="url-input" class="text-xs font-bold uppercase tracking-wider text-slate-300">Input Text or URL</label>
+          <button type="button" id="btn-sample-url" class="text-xs text-brand-400 hover:text-brand-300 underline">Insert Sample URL</button>
+        </div>
+        <textarea
+          id="url-input"
+          rows="12"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500"
+          placeholder="Paste URL or string to encode/decode..."
+        ></textarea>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <label id="lbl-url-out" for="url-output" class="text-xs font-bold uppercase tracking-wider text-slate-300">Result</label>
+          <button type="button" id="btn-copy-url" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded font-medium">Copy Result</button>
+        </div>
+        <textarea
+          id="url-output"
+          rows="12"
+          readonly
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-cyan-300 focus:outline-none"
+          placeholder="Resulting encoded/decoded text will appear here..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Understanding Percent-Encoding (URL Encoding)</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Uniform Resource Locators (URLs) can only be transmitted over the Internet using the US-ASCII character set. Characters outside this unreserved set—such as spaces, punctuation, symbols, and non-Latin scripts—must be converted into a valid ASCII format. This conversion process is called <strong>Percent-Encoding</strong> or <strong>URL Encoding</strong> (defined by RFC 3986).
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Reserved vs. Unreserved Characters</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      RFC 3986 divides characters into <strong>unreserved</strong> characters (alphanumeric characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, and <code>- _ . ~</code>) which never need encoding, and <strong>reserved</strong> characters (such as <code>: / ? # [ ] @ ! $ & ' ( ) * + , ; =</code>). Reserved characters have special syntax meanings within a URI. For example, <code>?</code> demarcates the query string and <code>&</code> separates query parameters.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">encodeURI vs. encodeURIComponent</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Choosing the correct JavaScript URL encoding function depends on the context:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>encodeURI():</strong> Used when you want to encode a complete, valid URL. It preserves protocol delimiters (<code>http://</code>), domain slashes, and query indicators (<code>?</code>).</li>
+      <li><strong>encodeURIComponent():</strong> Used when encoding a single parameter key or value to be embedded inside a query string. It encodes reserved characters like <code>/</code>, <code>?</code>, and <code>&</code> so they don't break the query string structure.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">UTF-8 Character Conversion</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      When encoding international characters or emojis (e.g. <code>café</code> or <code>🚀</code>), the browser first converts the character into its UTF-8 multi-byte representation. Each byte is then represented by a percent sign followed by a two-digit hexadecimal number (e.g. <code>%C3%A9</code> for <code>é</code>).
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let mode: 'encode' | 'decode' = 'encode';
+
+    const btnEncode = document.getElementById('btn-mode-encode');
+    const btnDecode = document.getElementById('btn-mode-decode');
+    const targetSelect = document.getElementById('url-func') as HTMLSelectElement;
+    const spacePlusChk = document.getElementById('chk-space-plus') as HTMLInputElement;
+    const inputArea = document.getElementById('url-input') as HTMLTextAreaElement;
+    const outputArea = document.getElementById('url-output') as HTMLTextAreaElement;
+    const btnSample = document.getElementById('btn-sample-url');
+    const btnCopy = document.getElementById('btn-copy-url');
+    const lblIn = document.getElementById('lbl-url-in') as HTMLElement;
+    const lblOut = document.getElementById('lbl-url-out') as HTMLElement;
+
+    function processUrl() {
+      const text = inputArea?.value || '';
+      if (!text) {
+        if (outputArea) outputArea.value = '';
+        return;
+      }
+
+      const isComponent = targetSelect?.value === 'component';
+      const usePlus = spacePlusChk?.checked;
+
+      try {
+        if (mode === 'encode') {
+          let res = isComponent ? encodeURIComponent(text) : encodeURI(text);
+          if (usePlus) {
+            res = res.replace(/%20/g, '+');
+          }
+          outputArea.value = res;
+        } else {
+          let raw = text;
+          if (usePlus) {
+            raw = raw.replace(/\+/g, '%20');
+          }
+          outputArea.value = isComponent ? decodeURIComponent(raw) : decodeURI(raw);
+        }
+      } catch (err: any) {
+        outputArea.value = `Error: ${err?.message || 'Invalid encoded URI string'}`;
+      }
+    }
+
+    btnEncode?.addEventListener('click', () => {
+      mode = 'encode';
+      btnEncode.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition';
+      btnDecode.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition';
+      lblIn.textContent = 'Input Text or URL to Encode';
+      lblOut.textContent = 'Encoded Percent-String';
+      processUrl();
+    });
+
+    btnDecode?.addEventListener('click', () => {
+      mode = 'decode';
+      btnDecode.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-600 text-white transition';
+      btnEncode.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition';
+      lblIn.textContent = 'Input Encoded URL to Decode';
+      lblOut.textContent = 'Decoded Plain Text';
+      processUrl();
+    });
+
+    inputArea?.addEventListener('input', processUrl);
+    targetSelect?.addEventListener('change', processUrl);
+    spacePlusChk?.addEventListener('change', processUrl);
+
+    btnSample?.addEventListener('click', () => {
+      if (mode === 'encode') {
+        inputArea.value = "https://freefiletool.app/search?query=hello world & category=developer & user=café";
+      } else {
+        inputArea.value = "https%3A%2F%2Ffreefiletool.app%2Fsearch%3Fquery%3Dhello%2520world%2520%26%2520category%3Ddeveloper";
+      }
+      processUrl();
+    });
+
+    btnCopy?.addEventListener('click', () => {
+      if (!outputArea?.value) return;
+      navigator.clipboard.writeText(outputArea.value).then(() => {
+        const orig = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => { btnCopy.textContent = orig; }, 2000);
+      });
+    });
+  });
+</script>
