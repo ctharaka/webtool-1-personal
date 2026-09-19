@@ -1,0 +1,252 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "How does MP4 to MP3 extraction work in the browser?",
+    answer: "FreeFileTool reads the MP4 video binary file using the Web Audio API (decodeAudioData) to decode the raw PCM audio waveform, then encodes it into an MP3 audio file using client-side LAME encoding."
+  },
+  {
+    question: "Are my video files uploaded to a remote server?",
+    answer: "No. All audio extraction and MP3 encoding run 100% inside your browser memory. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "What happens if a video has no audio track or an unsupported codec?",
+    answer: "If your browser cannot decode the audio track (e.g. video file with no audio or proprietary AC3/DTS audio streams), our tool will detect it immediately and show a clear human error message."
+  },
+  {
+    question: "What bitrates are supported for MP3 export?",
+    answer: "You can choose between 128 kbps (lightweight), 192 kbps (standard), and 320 kbps (high fidelity CD quality)."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="mp4-to-mp3"
+  toolName="MP4 to MP3 Converter"
+  title="MP4 to MP3 Converter — Extract Audio from Video Free"
+  description="Extract audio tracks from MP4 video files and convert to MP3 format 100% locally in your browser with custom bitrates."
+  badge="Audio Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex items-center gap-4 text-sm font-semibold text-slate-300">
+        <div>
+          <label for="mp4-bitrate" class="mr-2">MP3 Bitrate:</label>
+          <select id="mp4-bitrate" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+            <option value="128">128 kbps (Standard)</option>
+            <option value="192" selected>192 kbps (High Quality)</option>
+            <option value="320">320 kbps (CD Quality)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="mp4-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">🎬</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop MP4 / MOV video files here</p>
+        <p class="text-xs text-slate-400">Extract high-quality audio track to MP3 locally</p>
+        <input type="file" id="mp4-file-input" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Status & Progress -->
+    <div id="mp4-status-box" class="hidden p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+      <div class="flex justify-between items-center text-sm font-semibold text-slate-300">
+        <span id="mp4-status-text">Processing...</span>
+        <span id="mp4-pct-text" class="font-mono text-brand-400">0%</span>
+      </div>
+      <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div id="mp4-progress-bar" class="bg-brand-500 h-full w-0 transition-all duration-200"></div>
+      </div>
+    </div>
+
+    <!-- Download Result Card -->
+    <div id="mp4-result-box" class="hidden p-5 bg-slate-950 border border-slate-800 rounded-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="mp4-out-filename" class="font-bold text-slate-200 text-sm">audio.mp3</h3>
+          <p id="mp4-out-details" class="text-xs text-slate-400 mt-0.5">0.0 MB • MP3 Audio</p>
+        </div>
+        <a id="mp4-download-btn" href="#" download="audio.mp3" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg text-sm transition">
+          Download MP3
+        </a>
+      </div>
+      <audio id="mp4-audio-preview" controls class="w-full"></audio>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Extracting Audio Streams from MP4 Video Files</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Converting MP4 video recordings, lectures, podcasts, or music videos into standalone MP3 audio files is essential for listening on mobile media players, saving storage space, and editing audio tracks independently.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">How Web Audio API Decoding Works</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      FreeFileTool utilizes your browser's native <code>AudioContext.decodeAudioData()</code> engine to read the underlying audio track from the video container into uncompressed 32-bit floating-point PCM audio buffers in local RAM. The decoded PCM buffer is then passed to our embedded LAME encoder to generate a compliant MP3 audio stream.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Browser Capabilities &amp; Error Handling</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Because video decoding relies on system codecs, please note the following real-world technical requirements:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Supported Audio Codecs:</strong> AAC, MP3, PCM, and Opus audio streams inside MP4/MOV containers are fully supported by Chrome, Safari, Edge, and Firefox.</li>
+      <li><strong>Unsupported Audio Codecs:</strong> Videos with proprietary AC3/Dolby Digital or multi-channel surround tracks that browser engines cannot decode will trigger a clear, non-blocking error message.</li>
+      <li><strong>Silent Video Files:</strong> If an uploaded video contains no audio tracks, the system immediately notifies you rather than running empty encoding loops.</li>
+    </ul>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  import { Mp3Encoder } from '@breezystack/lamejs';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('mp4-dropzone');
+    const fileInput = document.getElementById('mp4-file-input') as HTMLInputElement;
+    const bitrateSelect = document.getElementById('mp4-bitrate') as HTMLSelectElement;
+    const statusBox = document.getElementById('mp4-status-box') as HTMLElement;
+    const statusText = document.getElementById('mp4-status-text') as HTMLElement;
+    const pctText = document.getElementById('mp4-pct-text') as HTMLElement;
+    const progressBar = document.getElementById('mp4-progress-bar') as HTMLElement;
+    const resultBox = document.getElementById('mp4-result-box') as HTMLElement;
+    const outFilename = document.getElementById('mp4-out-filename') as HTMLElement;
+    const outDetails = document.getElementById('mp4-out-details') as HTMLElement;
+    const downloadBtn = document.getElementById('mp4-download-btn') as HTMLAnchorElement;
+    const audioPreview = document.getElementById('mp4-audio-preview') as HTMLAudioElement;
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        processVideo(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        processVideo(fileInput.files[0]);
+      }
+    });
+
+    function updateProgress(pct: number, statusStr: string) {
+      if (statusBox) statusBox.classList.remove('hidden');
+      if (statusText) statusText.textContent = statusStr;
+      if (pctText) pctText.textContent = `${Math.round(pct)}%`;
+      if (progressBar) progressBar.style.width = `${Math.round(pct)}%`;
+    }
+
+    async function processVideo(file: File) {
+      if (resultBox) resultBox.classList.add('hidden');
+      updateProgress(5, `Reading video file: ${file.name}...`);
+
+      const arrayBuffer = await file.arrayBuffer();
+      updateProgress(15, 'Decoding audio stream via Web Audio API...');
+
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+      let audioBuffer: AudioBuffer;
+      try {
+        audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      } catch (err: any) {
+        updateProgress(0, `Decoding Error: Unable to decode audio track from video. (${err?.message || 'Unsupported codec or missing audio track'})`);
+        if (progressBar) progressBar.style.width = '0%';
+        return;
+      }
+
+      if (!audioBuffer || audioBuffer.numberOfChannels === 0) {
+        updateProgress(0, 'Error: No audio track found inside this video file.');
+        if (progressBar) progressBar.style.width = '0%';
+        return;
+      }
+
+      const sampleRate = audioBuffer.sampleRate;
+      const numChannels = Math.min(audioBuffer.numberOfChannels, 2);
+      const bitrate = parseInt(bitrateSelect?.value || '192', 10);
+
+      updateProgress(30, `Encoding MP3 (${bitrate} kbps, ${sampleRate}Hz, ${numChannels} ch)...`);
+
+      const leftChannel = audioBuffer.getChannelData(0);
+      const rightChannel = numChannels > 1 ? audioBuffer.getChannelData(1) : leftChannel;
+
+      // Convert float32 [-1, 1] to Int16 [-32768, 32767]
+      const samplesLen = leftChannel.length;
+      const leftInt16 = new Int16Array(samplesLen);
+      const rightInt16 = new Int16Array(samplesLen);
+
+      for (let i = 0; i < samplesLen; i++) {
+        let l = Math.max(-1, Math.min(1, leftChannel[i]));
+        leftInt16[i] = l < 0 ? l * 0x8000 : l * 0x7FFF;
+
+        let r = Math.max(-1, Math.min(1, rightChannel[i]));
+        rightInt16[i] = r < 0 ? r * 0x8000 : r * 0x7FFF;
+      }
+
+      const encoder = new Mp3Encoder(numChannels, sampleRate, bitrate);
+      const mp3Data: Uint8Array[] = [];
+      const blockSize = 1152;
+
+      for (let i = 0; i < samplesLen; i += blockSize) {
+        const leftChunk = leftInt16.subarray(i, i + blockSize);
+        const rightChunk = rightInt16.subarray(i, i + blockSize);
+
+        const mp3buf = numChannels === 1
+          ? encoder.encodeBuffer(leftChunk)
+          : encoder.encodeBuffer(leftChunk, rightChunk);
+
+        if (mp3buf.length > 0) {
+          mp3Data.push(mp3buf);
+        }
+
+        if (i % (blockSize * 50) === 0) {
+          const progress = 30 + ((i / samplesLen) * 65);
+          updateProgress(progress, 'Encoding MP3 audio frames...');
+          await new Promise(r => setTimeout(r, 0));
+        }
+      }
+
+      const endBuf = encoder.flush();
+      if (endBuf.length > 0) {
+        mp3Data.push(endBuf);
+      }
+
+      updateProgress(100, 'Audio extraction complete!');
+
+      const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+      const mp3Url = URL.createObjectURL(mp3Blob);
+
+      const outName = file.name.replace(/\.[^/.]+$/, "") + ".mp3";
+
+      if (outFilename) outFilename.textContent = outName;
+      if (outDetails) outDetails.textContent = `${(mp3Blob.size / (1024 * 1024)).toFixed(2)} MB • ${bitrate} kbps MP3`;
+      if (downloadBtn) {
+        downloadBtn.href = mp3Url;
+        downloadBtn.download = outName;
+      }
+      if (audioPreview) {
+        audioPreview.src = mp3Url;
+      }
+
+      if (resultBox) resultBox.classList.remove('hidden');
+    }
+  });
+</script>

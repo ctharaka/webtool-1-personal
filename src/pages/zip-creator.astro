@@ -1,0 +1,212 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "How does in-browser ZIP creation work?",
+    answer: "FreeFileTool packages your selected files into a standard DEFLATE-compressed .zip archive entirely inside your browser's RAM memory using JSZip."
+  },
+  {
+    question: "Are my files uploaded to a remote server when creating a ZIP archive?",
+    answer: "No. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "Is there a limit on how many files I can add to a ZIP archive?",
+    answer: "There are no artificial file count limits. Memory capacity depends on your device's available RAM. For optimal browser performance, we recommend archiving up to 1-2 GB at a time."
+  },
+  {
+    question: "Can I customize the archive filename and compression level?",
+    answer: "Yes! You can specify a custom ZIP archive filename and select compression levels ranging from Store (fastest, uncompressed) to Maximum DEFLATE compression."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="zip-creator"
+  toolName="ZIP Creator & Archiver"
+  title="ZIP Creator — Compress Files into ZIP Archives Free"
+  description="Package and compress multiple files into a single .zip archive 100% locally in your browser. Fast, secure, and private archiving."
+  badge="Developer & Text Tools"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex items-center gap-4 text-sm font-semibold text-slate-300">
+        <div>
+          <label for="zip-filename" class="mr-2">Archive Name:</label>
+          <input type="text" id="zip-filename" value="archive.zip" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200 text-sm font-mono" />
+        </div>
+        <div>
+          <label for="zip-level" class="mr-2">Compression Level:</label>
+          <select id="zip-level" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+            <option value="6" selected>Standard DEFLATE (Level 6)</option>
+            <option value="9">Maximum DEFLATE (Level 9)</option>
+            <option value="0">Store Only (0% Compression)</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" id="btn-create-zip" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm rounded-lg transition disabled:opacity-50" disabled>
+        Create &amp; Download ZIP
+      </button>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="zip-create-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">📦</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop files here to compress into ZIP</p>
+        <p class="text-xs text-slate-400">Add documents, images, code files, or folders</p>
+        <input type="file" id="zip-create-file-input" multiple class="hidden" />
+      </div>
+    </div>
+
+    <!-- Selected Files Table -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-slate-300">
+        <span>Files in Queue (<span id="zip-file-count">0</span>)</span>
+        <button type="button" id="btn-clear-zip-queue" class="text-slate-400 hover:text-slate-200">Clear Queue</button>
+      </div>
+      <div id="zip-files-list" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono min-h-[100px] max-h-[250px] overflow-y-auto space-y-1">
+        <p class="text-slate-500">No files added yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Creating ZIP Archives Locally in Your Browser</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      ZIP is the world's most ubiquitous file archiving format. Packaging multiple files into a single <code>.zip</code> container reduces total download size, simplifies file sharing over email and messaging apps, and preserves original file structure.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">DEFLATE Compression Algorithm</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      FreeFileTool uses the standard DEFLATE compression algorithm implemented via JSZip. DEFLATE combines LZ77 dictionary encoding with Huffman coding to compress text, code, documents, and data tables by up to 60-80% of their uncompressed footprint.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Absolute Data Privacy</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Creating ZIP files often involves sensitive business spreadsheets, client contracts, and personal media collections. FreeFileTool builds ZIP archives entirely inside your local browser memory space. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  import JSZip from 'jszip';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('zip-create-dropzone');
+    const fileInput = document.getElementById('zip-create-file-input') as HTMLInputElement;
+    const nameInput = document.getElementById('zip-filename') as HTMLInputElement;
+    const levelSelect = document.getElementById('zip-level') as HTMLSelectElement;
+    const btnCreate = document.getElementById('btn-create-zip') as HTMLButtonElement;
+    const btnClear = document.getElementById('btn-clear-zip-queue');
+    const fileCount = document.getElementById('zip-file-count') as HTMLElement;
+    const filesList = document.getElementById('zip-files-list') as HTMLElement;
+
+    let queuedFiles: File[] = [];
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        addFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        addFiles(Array.from(fileInput.files));
+      }
+    });
+
+    function addFiles(files: File[]) {
+      queuedFiles.push(...files);
+      renderQueue();
+    }
+
+    function renderQueue() {
+      if (fileCount) fileCount.textContent = queuedFiles.length.toString();
+      if (btnCreate) btnCreate.disabled = queuedFiles.length === 0;
+
+      if (!filesList) return;
+      if (queuedFiles.length === 0) {
+        filesList.innerHTML = '<p class="text-slate-500">No files added yet.</p>';
+        return;
+      }
+
+      filesList.innerHTML = queuedFiles.map((f, idx) => `
+        <div class="flex items-center justify-between py-1 px-2 hover:bg-slate-900 rounded">
+          <span class="text-slate-200 truncate max-w-xs">${f.name}</span>
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 font-mono">${(f.size / 1024).toFixed(1)} KB</span>
+            <button type="button" data-remove-idx="${idx}" class="text-rose-400 hover:text-rose-300 font-bold px-1">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      filesList.querySelectorAll('[data-remove-idx]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt((e.target as HTMLElement).getAttribute('data-remove-idx') || '0', 10);
+          queuedFiles.splice(idx, 1);
+          renderQueue();
+        });
+      });
+    }
+
+    btnClear?.addEventListener('click', () => {
+      queuedFiles = [];
+      renderQueue();
+    });
+
+    btnCreate?.addEventListener('click', async () => {
+      if (queuedFiles.length === 0) return;
+
+      const zip = new JSZip();
+      queuedFiles.forEach(f => {
+        zip.file(f.name, f);
+      });
+
+      const origText = btnCreate.textContent;
+      btnCreate.textContent = 'Compressing...';
+      btnCreate.disabled = true;
+
+      const level = parseInt(levelSelect?.value || '6', 10);
+      const zipName = (nameInput?.value || 'archive.zip').replace(/\.zip$/i, '') + '.zip';
+
+      try {
+        const content = await zip.generateAsync({
+          type: 'blob',
+          compression: level === 0 ? 'STORE' : 'DEFLATE',
+          compressionOptions: { level: level }
+        });
+
+        const url = URL.createObjectURL(content);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = zipName;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err: any) {
+        alert(`ZIP Error: ${err?.message || 'Failed to generate ZIP archive.'}`);
+      } finally {
+        btnCreate.textContent = origText;
+        btnCreate.disabled = false;
+      }
+    });
+  });
+</script>

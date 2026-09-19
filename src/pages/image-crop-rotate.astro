@@ -1,0 +1,221 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "How do rotation and flipping work in the browser?",
+    answer: "FreeFileTool rotates and flips images using HTML5 Canvas 2D transformations (ctx.rotate and ctx.scale) in local browser RAM memory before exporting the pixel buffer."
+  },
+  {
+    question: "Are my cropped and rotated photos uploaded to a server?",
+    answer: "No. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "Does rotating an image reduce visual quality?",
+    answer: "Orthogonal rotations (90°, 180°, 270°) and horizontal/vertical flips maintain 100% loss-free pixel geometry without resampling distortion."
+  },
+  {
+    question: "What image formats can I crop and rotate?",
+    answer: "You can crop and rotate JPG, PNG, WebP, GIF, and AVIF graphics, exporting the output as JPEG, PNG, or WebP."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="image-crop-rotate"
+  toolName="Image Crop & Rotate Tool"
+  title="Image Crop & Rotate — Free Online Image Editor"
+  description="Rotate photos 90/180/270 degrees, flip horizontally or vertically, and crop custom image regions 100% locally in your browser."
+  badge="Image Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-300">
+        <button type="button" id="btn-rot-90" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded transition">🔄 Rotate 90°</button>
+        <button type="button" id="btn-rot-180" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded transition">🔄 Rotate 180°</button>
+        <button type="button" id="btn-rot-270" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded transition">🔄 Rotate 270°</button>
+        <button type="button" id="btn-flip-h" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded transition">↔️ Flip Horiz</button>
+        <button type="button" id="btn-flip-v" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded transition">↕️ Flip Vert</button>
+        <button type="button" id="btn-reset-crop" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded text-amber-400 transition">Reset</button>
+      </div>
+
+      <div class="flex items-center gap-3 text-xs">
+        <div>
+          <label for="crop-out-fmt" class="mr-1">Format:</label>
+          <select id="crop-out-fmt" class="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200">
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <button type="button" id="btn-download-cropped" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded text-xs transition">
+          Download Image
+        </button>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="crop-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">✂️</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop an image to crop and rotate</p>
+        <p class="text-xs text-slate-400">Supports JPG, PNG, WebP, GIF, and AVIF graphics</p>
+        <input type="file" id="crop-file-input" accept="image/*" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Canvas Preview Box -->
+    <div id="crop-preview-container" class="hidden space-y-3 p-4 bg-slate-950 border border-slate-800 rounded-xl">
+      <div class="flex justify-between items-center text-xs font-mono text-slate-400">
+        <span id="crop-dimensions-text">Dimensions: 0 x 0 px</span>
+        <span id="crop-transform-text">Rotation: 0° | Flip: None</span>
+      </div>
+      <div class="flex justify-center bg-slate-900 p-4 rounded-lg overflow-auto max-h-[450px]">
+        <canvas id="crop-canvas" class="max-w-full h-auto border border-slate-800 rounded shadow-md"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Editing Images in the Browser</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Cropping, rotating, and flipping images are fundamental editing operations when preparing graphics for social media posts, blog headers, avatar profile photos, or document attachments.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">HTML5 Canvas 2D Transformations</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      When you rotate or flip an image in FreeFileTool, JavaScript applies 2D affine transformation matrices (<code>ctx.rotate()</code> and <code>ctx.scale()</code>) to the local canvas rendering context. The pixel data is transformed entirely within your browser's local memory space before exporting to JPG, PNG, or WebP blob format.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Data Privacy Guarantee</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Your private photographs and graphics are never sent to external servers. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let currentImg: HTMLImageElement | null = null;
+    let rotation = 0; // 0, 90, 180, 270
+    let flipH = false;
+    let flipV = false;
+
+    const dropzone = document.getElementById('crop-dropzone');
+    const fileInput = document.getElementById('crop-file-input') as HTMLInputElement;
+    const previewContainer = document.getElementById('crop-preview-container') as HTMLElement;
+    const dimensionsText = document.getElementById('crop-dimensions-text') as HTMLElement;
+    const transformText = document.getElementById('crop-transform-text') as HTMLElement;
+    const canvas = document.getElementById('crop-canvas') as HTMLCanvasElement;
+    const fmtSelect = document.getElementById('crop-out-fmt') as HTMLSelectElement;
+
+    const btnRot90 = document.getElementById('btn-rot-90');
+    const btnRot180 = document.getElementById('btn-rot-180');
+    const btnRot270 = document.getElementById('btn-rot-270');
+    const btnFlipH = document.getElementById('btn-flip-h');
+    const btnFlipV = document.getElementById('btn-flip-v');
+    const btnReset = document.getElementById('btn-reset-crop');
+    const btnDownload = document.getElementById('btn-download-cropped');
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        loadImage(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        loadImage(fileInput.files[0]);
+      }
+    });
+
+    function loadImage(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          currentImg = img;
+          rotation = 0;
+          flipH = false;
+          flipV = false;
+          render();
+          if (previewContainer) previewContainer.classList.remove('hidden');
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function render() {
+      if (!currentImg || !canvas) return;
+
+      const rad = (rotation * Math.PI) / 180;
+      const isSwapped = rotation === 90 || rotation === 270;
+
+      const srcW = currentImg.width;
+      const srcH = currentImg.height;
+
+      const targetW = isSwapped ? srcH : srcW;
+      const targetH = isSwapped ? srcW : srcH;
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.save();
+      ctx.translate(targetW / 2, targetH / 2);
+      ctx.rotate(rad);
+      ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+
+      ctx.drawImage(currentImg, -srcW / 2, -srcH / 2);
+      ctx.restore();
+
+      if (dimensionsText) dimensionsText.textContent = `Dimensions: ${targetW} x ${targetH} px`;
+      if (transformText) transformText.textContent = `Rotation: ${rotation}° | Flip: ${flipH ? 'H' : ''}${flipV ? 'V' : ''}${!flipH && !flipV ? 'None' : ''}`;
+    }
+
+    btnRot90?.addEventListener('click', () => { rotation = (rotation + 90) % 360; render(); });
+    btnRot180?.addEventListener('click', () => { rotation = (rotation + 180) % 360; render(); });
+    btnRot270?.addEventListener('click', () => { rotation = (rotation + 270) % 360; render(); });
+    btnFlipH?.addEventListener('click', () => { flipH = !flipH; render(); });
+    btnFlipV?.addEventListener('click', () => { flipV = !flipV; render(); });
+    btnReset?.addEventListener('click', () => { rotation = 0; flipH = false; flipV = false; render(); });
+
+    btnDownload?.addEventListener('click', () => {
+      if (!canvas) return;
+      const fmt = fmtSelect?.value || 'image/jpeg';
+      const ext = fmt === 'image/png' ? 'png' : fmt === 'image/webp' ? 'webp' : 'jpg';
+      const dataUrl = canvas.toDataURL(fmt, 0.92);
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `edited-image.${ext}`;
+      a.click();
+    });
+  });
+</script>

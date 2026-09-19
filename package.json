@@ -13,6 +13,7 @@
     "@astrojs/tailwind": "^5.1.2",
     "@breezystack/lamejs": "^1.2.7",
     "astro": "^4.16.18",
+    "heic2any": "^0.0.4",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.11.174",

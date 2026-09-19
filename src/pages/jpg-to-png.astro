@@ -1,213 +1,157 @@
 ---
-/**
- * jpg-to-png.astro — Dedicated JPG to PNG Converter Landing Page
- * Pre-sets default format to PNG (Lossless) with detailed SEO copy and schema.
- */
-import BaseLayout from '../layouts/BaseLayout.astro';
-import UploadZone from '../components/UploadZone.astro';
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Why convert JPG photos to PNG format?",
+    answer: "Converting JPEG images to PNG is beneficial when you need to edit master assets repeatedly without incurring further lossy JPEG compression artifacts."
+  },
+  {
+    question: "Does converting JPG to PNG improve photo quality?",
+    answer: "Converting a JPEG to PNG prevents further loss of visual detail during subsequent edits, though it cannot restore details already lost during initial JPEG compression."
+  },
+  {
+    question: "Are my files uploaded to an external server?",
+    answer: "No. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "Can I convert multiple JPG files at once?",
+    answer: "Yes, you can select or drag multiple JPG files to convert them in batch mode."
+  }
+];
 ---
 
-<BaseLayout
-  title="JPG to PNG Converter — Convert JPEG to Lossless PNG Online"
-  description="Convert JPG/JPEG images to lossless PNG format in your browser. Preserve image details without compression artifacts. 100% free, fast, and private."
+<ToolPageTemplate
+  toolSlug="jpg-to-png"
+  toolName="JPG to PNG Converter"
+  title="JPG to PNG Converter — Convert JPEG to PNG Online Free"
+  description="Convert JPG and JPEG photos to lossless PNG format 100% locally in your browser with fast batch processing and zero server uploads."
+  badge="Image Studio"
+  faqItems={faqItems}
 >
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "HowTo",
-          "name": "How to Convert JPG to PNG Online",
-          "description": "Step-by-step instructions to convert JPEG images to lossless PNG format directly in your browser.",
-          "step": [
-            {
-              "@type": "HowToStep",
-              "name": "Select JPG Images",
-              "text": "Drag and drop your JPG/JPEG files into the upload box or select them using the file picker."
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Verify Target Format",
-              "text": "PNG is selected by default for 100% lossless output."
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Convert & Download",
-              "text": "Click 'Convert All Files Now' and download the converted PNG images individually or as a single ZIP package."
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Does converting JPG to PNG improve image quality?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Converting a JPG to PNG will not restore lost data from original lossy JPEG compression, but it prevents any further quality degradation during subsequent edits, saves, and graphic layering."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why are PNG files usually larger than JPG files?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "PNG uses the lossless DEFLATE compression algorithm, storing exact pixel data without discarding high-frequency color information. This ensures perfect fidelity at the expense of a larger byte footprint."
-              }
-            }
-          ]
-        }
-      ]
-    }
-  </script>
+  <div class="space-y-6">
+    <!-- Drop Zone -->
+    <div
+      id="j2p-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">🖼️</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop JPG photos here to convert to PNG</p>
+        <p class="text-xs text-slate-400">Batch conversion to lossless PNG graphics</p>
+        <input type="file" id="j2p-file-input" accept="image/jpeg,.jpg,.jpeg" multiple class="hidden" />
+      </div>
+    </div>
 
-  <section class="tool-hero">
-    <div class="tool-hero__badge">JPG to PNG Converter</div>
-    <h1 class="tool-hero__title">Convert JPG to PNG Online</h1>
-    <p class="tool-hero__desc">
-      Convert standard JPEG images to lossless Portable Network Graphics (PNG) format. Eliminate further compression artifacts and prepare assets for graphics editing with zero server uploads.
-    </p>
-  </section>
-
-  <!-- AdSense Slot: Above main tool card -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
-
-  <section class="upload-section">
-    <UploadZone allowedTypes={['jpg']} defaultFormat="png" />
-  </section>
-
-  <!-- Quick Answer Box -->
-  <div class="quick-answer" role="note">
-    <p class="quick-answer__label">✦ Quick Answer</p>
-    <p class="quick-answer__q">When should you convert JPG to PNG?</p>
-    <p class="quick-answer__a">
-      Convert JPG to PNG when you plan to edit an image multiple times, add transparent graphics or logos over it, or need a lossless raster format that will not suffer from generation loss or additional JPEG blocky artifacts.
-    </p>
+    <!-- Results Grid -->
+    <div id="j2p-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
   </div>
 
-  <article class="tool-content">
-    <section class="content-block">
-      <h2>Why Convert JPEG to Lossless PNG?</h2>
-      <p>
-        The Joint Photographic Experts Group (JPEG) format is widely used for photographs because of its high compression efficiency. However, JPEG is inherently <em>lossy</em>—every time a JPEG image is modified and re-saved, subtle color data is discarded, leading to cumulative generation loss and blocky compression artifacts around sharp contrast edges.
-      </p>
-      <p>
-        By converting your JPEG images to the Portable Network Graphics (PNG) format, you transition to a 100% <strong>lossless</strong> storage container. PNG utilizes the DEFLATE compression algorithm (RFC 1951), ensuring that every pixel value remains bit-for-bit identical across multiple saves and graphics editing passes.
-      </p>
-    </section>
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Converting Lossy JPEGs to Lossless PNG Master Assets</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      JPEG is a lossy compression format designed to minimize photographic image sizes by discarding subtle color variations. When saving a JPEG file multiple times in image editors, compression degradation accumulates (generation loss).
+    </p>
 
-    <section class="content-block">
-      <h2>Key Differences Between JPG and PNG</h2>
-      <div class="table-wrapper">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th scope="col">Feature</th>
-              <th scope="col">JPG / JPEG</th>
-              <th scope="col">PNG</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Compression Type</strong></td>
-              <td>Lossy (DCT based)</td>
-              <td>Lossless (DEFLATE / LZ77)</td>
-            </tr>
-            <tr>
-              <td><strong>Transparency Support</strong></td>
-              <td>No (Solid background only)</td>
-              <td>Yes (8-bit alpha channel)</td>
-            </tr>
-            <tr>
-              <td><strong>Best Suited For</strong></td>
-              <td>Real-world photos, camera scans</td>
-              <td>Graphics, icons, screenshots, multi-pass editing</td>
-            </tr>
-            <tr>
-              <td><strong>Generation Loss</strong></td>
-              <td>Degrades with each re-save</td>
-              <td>Zero quality degradation</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Preserving Master Assets with PNG</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Converting JPEG photographs to PNG establishes a stable, lossless baseline for graphic designers, digital artists, and publishers who plan to overlay text elements, apply transparency masks, or perform repeated editing operations.
+    </p>
 
-    <section class="content-block">
-      <h2>How to Convert JPG to PNG Step-by-Step</h2>
-      <ol class="steps-list">
-        <li><strong>Upload JPG images:</strong> Drag and drop your JPG or JPEG files into the converter area above.</li>
-        <li><strong>Confirm settings:</strong> The output format is automatically set to PNG for lossless encoding.</li>
-        <li><strong>Convert:</strong> Click <em>Convert All Files Now</em>. The conversion runs instantly in local browser memory.</li>
-        <li><strong>Download:</strong> Save individual PNG files or download the full batch in a single ZIP archive.</li>
-      </ol>
-    </section>
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Data Privacy Guarantee</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      All canvas decoding and PNG encoding run 100% locally in your browser's RAM memory space. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
 
-    <section class="content-block faq-section">
-      <h2>Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <details class="faq-details">
-          <summary class="faq-summary">Will converting JPG to PNG create transparency?</summary>
-          <div class="faq-answer">
-            <p>No. Standard JPG files do not contain alpha channel transparency information. The converted PNG will preserve the opaque background of the original JPG, but you can now open it in an editor to easily remove or mask backgrounds.</p>
-          </div>
-        </details>
-        <details class="faq-details">
-          <summary class="faq-summary">Are my files kept private?</summary>
-          <div class="faq-answer">
-            <p>Yes. All image processing occurs client-side inside your browser via HTML5 Canvas. No image data is ever transferred to a remote server.</p>
-          </div>
-        </details>
-      </div>
-    </section>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('j2p-dropzone');
+    const fileInput = document.getElementById('j2p-file-input') as HTMLInputElement;
+    const resultsGrid = document.getElementById('j2p-results-grid') as HTMLElement;
 
-    <section class="content-block related-links">
-      <h2>Related Converters &amp; Guides</h2>
-      <ul class="related-list">
-        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between any combination of JPG, PNG, WebP, and AVIF.</li>
-        <li>🖼️ <a href="/png-to-jpg">PNG to JPG Converter</a> — Flatten PNGs to compact JPEGs for email sharing and lightweight web delivery.</li>
-        <li>🚀 <a href="/jpg-to-webp">JPG to WebP Converter</a> — Reduce JPG file size by up to 40% with next-gen WebP compression.</li>
-        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Shrink image file sizes without altering file formats.</li>
-        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — In-depth format breakdown and performance benchmarks.</li>
-      </ul>
-    </section>
-  </article>
+    dropzone?.addEventListener('click', () => fileInput?.click());
 
-  <!-- AdSense Slot: Below article content -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
-</BaseLayout>
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
 
-<style>
-  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
-  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
-  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
-  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
-  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
-  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
-  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
-  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
-  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
-  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
-  .content-block { margin-bottom: var(--space-10); }
-  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
-  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
-  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
-  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
-  .table-wrapper { overflow-x: auto; margin: var(--space-4) 0; }
-  .comparison-table { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); text-align: left; }
-  .comparison-table th, .comparison-table td { padding: var(--space-3) var(--space-4); border: 1px solid var(--border-default); }
-  .comparison-table th { background: var(--surface-2); color: var(--text-primary); font-weight: var(--font-weight-semibold); }
-  .comparison-table td { background: var(--surface-1); color: var(--text-secondary); }
-  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
-  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
-  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
-  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
-  .faq-details[open] .faq-summary::after { content: '\u2212'; }
-  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
-  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
-  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
-  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
-  .related-list a:hover { text-decoration: underline; }
-</style>
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        convertFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        convertFiles(Array.from(fileInput.files));
+      }
+    });
+
+    function convertFiles(files: File[]) {
+      const jpgFiles = files.filter(f => f.type === 'image/jpeg' || f.name.match(/\.(jpg|jpeg)$/i));
+      if (jpgFiles.length === 0) {
+        alert('Please select valid JPG/JPEG image files.');
+        return;
+      }
+
+      if (resultsGrid) resultsGrid.innerHTML = '';
+
+      jpgFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0);
+            }
+
+            const dataUrl = canvas.toDataURL('image/png');
+            const outName = file.name.replace(/\.(jpg|jpeg)$/i, '.png');
+
+            renderResultCard(outName, dataUrl);
+          };
+          img.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderResultCard(name: string, dataUrl: string) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2';
+
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.className = 'w-full h-36 object-cover rounded border border-slate-800';
+
+      const title = document.createElement('div');
+      title.className = 'text-xs font-semibold text-slate-200 truncate';
+      title.textContent = name;
+
+      const btn = document.createElement('a');
+      btn.href = dataUrl;
+      btn.download = name;
+      btn.className = 'block text-center py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-xs font-semibold transition';
+      btn.textContent = 'Download PNG';
+
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(btn);
+      resultsGrid.appendChild(card);
+    }
+  });
+</script>

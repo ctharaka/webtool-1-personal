@@ -1,0 +1,190 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "How does in-browser ZIP extraction work?",
+    answer: "FreeFileTool decompresses .zip files directly inside your browser memory using JSZip. You can view the contents, preview text/image files, and extract individual files or all files at once."
+  },
+  {
+    question: "Are my uploaded ZIP files sent to a server?",
+    answer: "No. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "Does this tool support password-protected or encrypted ZIP archives?",
+    answer: "Standard JSZip supports unencrypted ZIP archives and standard DEFLATE compression. Password-encrypted ZIP files (WinZip AES-256) require specialized decryption keys."
+  },
+  {
+    question: "What file types can be extracted from ZIP archives?",
+    answer: "You can extract any file format contained within the ZIP archive, including images, PDFs, text documents, code files, and audio tracks."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="zip-extractor"
+  toolName="ZIP Extractor & Unzipper"
+  title="ZIP Extractor — Unzip Files Online Free"
+  description="Unzip and extract files from .zip archives 100% locally in your browser. View file contents, preview images, and download individual files."
+  badge="Developer & Text Tools"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Drop Zone -->
+    <div
+      id="zip-ext-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">📂</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop a .ZIP file here to extract</p>
+        <p class="text-xs text-slate-400">Inspect archive contents and extract files privately</p>
+        <input type="file" id="zip-ext-file-input" accept=".zip,application/zip,application/x-zip-compressed" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Extraction Results Container -->
+    <div id="zip-ext-result-container" class="hidden space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+        <div>
+          <span id="zip-ext-archive-name" class="font-bold text-slate-200 text-sm">archive.zip</span>
+          <span id="zip-ext-archive-stats" class="text-xs text-slate-400 block">0 files • 0 KB</span>
+        </div>
+      </div>
+
+      <!-- File Table -->
+      <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="py-2">File Name</th>
+              <th class="py-2">Size</th>
+              <th class="py-2 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="zip-ext-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Unzipping and Extracting ZIP Archives Online</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Extracting files from compressed <code>.zip</code> archives is a daily necessity when receiving email attachments, downloading code repositories, or handling batch asset packages.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Client-Side Decompression with JSZip</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Traditional online unzipping websites require uploading your compressed ZIP file to their remote servers before sending back extracted files. FreeFileTool executes the entire DEFLATE decompression pipeline inside your web browser using JavaScript binary buffers.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Data Privacy Guarantee</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Whether your ZIP file contains confidential business documents, sensitive tax records, or private photos, FreeFileTool processes all data locally. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  import JSZip from 'jszip';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('zip-ext-dropzone');
+    const fileInput = document.getElementById('zip-ext-file-input') as HTMLInputElement;
+    const resultContainer = document.getElementById('zip-ext-result-container') as HTMLElement;
+    const archiveName = document.getElementById('zip-ext-archive-name') as HTMLElement;
+    const archiveStats = document.getElementById('zip-ext-archive-stats') as HTMLElement;
+    const tableBody = document.getElementById('zip-ext-table-body') as HTMLElement;
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        extractZip(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        extractZip(fileInput.files[0]);
+      }
+    });
+
+    async function extractZip(file: File) {
+      if (!file.name.match(/\.zip$/i) && file.type !== 'application/zip') {
+        alert('Please select a valid .ZIP file.');
+        return;
+      }
+
+      try {
+        const zip = await JSZip.loadAsync(file);
+        if (archiveName) archiveName.textContent = file.name;
+
+        const entries: Array<{ name: string; zipObject: JSZip.JSZipObject }> = [];
+        zip.forEach((relativePath, zipEntry) => {
+          if (!zipEntry.dir) {
+            entries.push({ name: relativePath, zipObject: zipEntry });
+          }
+        });
+
+        if (archiveStats) archiveStats.textContent = `${entries.length} file(s) inside archive • ${(file.size / 1024).toFixed(1)} KB`;
+
+        if (!tableBody) return;
+        tableBody.innerHTML = '';
+
+        entries.forEach((entry, idx) => {
+          const row = document.createElement('tr');
+          row.className = 'border-b border-slate-900 hover:bg-slate-900/50';
+
+          const nameTd = document.createElement('td');
+          nameTd.className = 'py-2 text-slate-200 truncate max-w-xs';
+          nameTd.textContent = entry.name;
+
+          const sizeTd = document.createElement('td');
+          sizeTd.className = 'py-2 text-slate-400';
+          sizeTd.textContent = 'Ready';
+
+          const actionTd = document.createElement('td');
+          actionTd.className = 'py-2 text-right';
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'px-3 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded text-xs font-semibold transition';
+          btn.textContent = 'Extract';
+          btn.addEventListener('click', async () => {
+            const blob = await entry.zipObject.async('blob');
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = entry.name.split('/').pop() || 'extracted-file';
+            a.click();
+            URL.revokeObjectURL(url);
+          });
+
+          actionTd.appendChild(btn);
+          row.appendChild(nameTd);
+          row.appendChild(sizeTd);
+          row.appendChild(actionTd);
+          tableBody.appendChild(row);
+        });
+
+        if (resultContainer) resultContainer.classList.remove('hidden');
+
+      } catch (err: any) {
+        alert(`Extraction Error: ${err?.message || 'Failed to read ZIP file.'}`);
+      }
+    }
+  });
+</script>

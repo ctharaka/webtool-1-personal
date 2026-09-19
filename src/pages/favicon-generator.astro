@@ -1,0 +1,234 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "What favicon sizes are generated in the ZIP package?",
+    answer: "Our favicon generator creates 16x16 px (classic browser tab), 32x32 px (retina browser tab), 48x48 px (desktop shortcut), 180x180 px (Apple Touch Icon), 512x512 px (PWA manifest icon), plus a multi-resolution favicon.ico file."
+  },
+  {
+    question: "Are my logo files uploaded to any server?",
+    answer: "No. All canvas rendering, icon scaling, and ZIP package creation occur 100% in local browser memory. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "How do I embed these favicons in my HTML website?",
+    answer: "Add <link rel=\"icon\" href=\"/favicon-32x32.png\"> and <link rel=\"apple-touch-icon\" href=\"/apple-touch-icon.png\"> tags to your website's <head> section."
+  },
+  {
+    question: "What input image formats work best for generating favicons?",
+    answer: "High-resolution square PNG or SVG graphics with transparent backgrounds produce the crispest favicons across dark and light browser themes."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="favicon-generator"
+  toolName="Favicon & App Icon Generator"
+  title="Favicon Generator — Create .ICO & PNG Icons Free"
+  description="Generate favicons for websites and PWAs in all standard PNG sizes plus multi-resolution .ico files 100% locally in your browser."
+  badge="Image Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Drop Zone -->
+    <div
+      id="fav-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">✨</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop a square logo or image here</p>
+        <p class="text-xs text-slate-400">Generate 16x16, 32x32, 48x48, 180x180, 512x512 &amp; favicon.ico</p>
+        <input type="file" id="fav-file-input" accept="image/*" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Results Box -->
+    <div id="fav-result-box" class="hidden p-5 bg-slate-950 border border-slate-800 rounded-xl space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h3 class="font-bold text-slate-200 text-base">Favicon Package Ready</h3>
+          <p class="text-xs text-slate-400">Includes favicon.ico + PNG sizes + HTML code snippet</p>
+        </div>
+        <button type="button" id="btn-download-fav-zip" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg text-sm transition">
+          Download All Favicons (.ZIP)
+        </button>
+      </div>
+
+      <!-- Icon Sizes Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-center space-y-2">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">16 x 16 px</span>
+          <img id="prev-16" class="w-4 h-4 mx-auto border border-slate-700" alt="16x16 favicon" />
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-center space-y-2">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">32 x 32 px</span>
+          <img id="prev-32" class="w-8 h-8 mx-auto border border-slate-700" alt="32x32 favicon" />
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-center space-y-2">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">48 x 48 px (.ico)</span>
+          <img id="prev-48" class="w-12 h-12 mx-auto border border-slate-700" alt="48x48 favicon" />
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-center space-y-2">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">180 x 180 (Apple)</span>
+          <img id="prev-180" class="w-12 h-12 mx-auto border border-slate-700 object-contain" alt="180x180 favicon" />
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-center space-y-2">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">512 x 512 (PWA)</span>
+          <img id="prev-512" class="w-12 h-12 mx-auto border border-slate-700 object-contain" alt="512x512 favicon" />
+        </div>
+      </div>
+
+      <!-- HTML Embed Code -->
+      <div class="space-y-2">
+        <label for="fav-html-code" class="text-xs font-bold uppercase tracking-wider text-slate-300">HTML Head Link Tags</label>
+        <textarea
+          id="fav-html-code"
+          rows="4"
+          readonly
+          class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs font-mono text-emerald-400 focus:outline-none"
+        >&lt;link rel="icon" type="image/x-icon" href="/favicon.ico"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Generating Modern Web &amp; Mobile Favicons</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Favicons (favorite icons) are visual branding elements displayed in browser tabs, bookmarks, mobile home screen shortcuts, and search engine results pages. Modern web apps require multiple icon resolutions to render cleanly across high-DPI Retina displays, iOS Safari home screens, and Android Progressive Web Apps (PWAs).
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Multi-Resolution Package Standards</h3>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>favicon.ico:</strong> Multi-resolution legacy icon containing 16x16, 32x32, and 48x48 pixel buffers for internet explorer and traditional desktop browsers.</li>
+      <li><strong>favicon-32x32.png:</strong> Standard resolution for modern desktop browser tabs (Chrome, Firefox, Edge, Safari).</li>
+      <li><strong>apple-touch-icon.png (180x180):</strong> High-resolution icon used when users bookmark your website to an iOS home screen.</li>
+      <li><strong>android-chrome-512x512.png:</strong> High-resolution icon for Android PWA splash screens and web app manifests.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">100% In-Browser Privacy</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      All canvas scaling, icon generation, and ZIP packaging occur locally inside your browser memory. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  import JSZip from 'jszip';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('fav-dropzone');
+    const fileInput = document.getElementById('fav-file-input') as HTMLInputElement;
+    const resultBox = document.getElementById('fav-result-box') as HTMLElement;
+    const btnDownloadZip = document.getElementById('btn-download-fav-zip');
+
+    const prev16 = document.getElementById('prev-16') as HTMLImageElement;
+    const prev32 = document.getElementById('prev-32') as HTMLImageElement;
+    const prev48 = document.getElementById('prev-48') as HTMLImageElement;
+    const prev180 = document.getElementById('prev-180') as HTMLImageElement;
+    const prev512 = document.getElementById('prev-512') as HTMLImageElement;
+
+    let sourceImg: HTMLImageElement | null = null;
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        processFavicon(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        processFavicon(fileInput.files[0]);
+      }
+    });
+
+    function renderResizedBlob(img: HTMLImageElement, size: number): Promise<Blob> {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, size, size);
+        }
+        canvas.toBlob((blob) => resolve(blob!), 'image/png');
+      });
+    }
+
+    async function processFavicon(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = async () => {
+          sourceImg = img;
+
+          const b16 = await renderResizedBlob(img, 16);
+          const b32 = await renderResizedBlob(img, 32);
+          const b48 = await renderResizedBlob(img, 48);
+          const b180 = await renderResizedBlob(img, 180);
+          const b512 = await renderResizedBlob(img, 512);
+
+          if (prev16) prev16.src = URL.createObjectURL(b16);
+          if (prev32) prev32.src = URL.createObjectURL(b32);
+          if (prev48) prev48.src = URL.createObjectURL(b48);
+          if (prev180) prev180.src = URL.createObjectURL(b180);
+          if (prev512) prev512.src = URL.createObjectURL(b512);
+
+          if (resultBox) resultBox.classList.remove('hidden');
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    btnDownloadZip?.addEventListener('click', async () => {
+      if (!sourceImg) return;
+
+      const zip = new JSZip();
+      const b16 = await renderResizedBlob(sourceImg, 16);
+      const b32 = await renderResizedBlob(sourceImg, 32);
+      const b48 = await renderResizedBlob(sourceImg, 48);
+      const b180 = await renderResizedBlob(sourceImg, 180);
+      const b512 = await renderResizedBlob(sourceImg, 512);
+
+      zip.file('favicon-16x16.png', b16);
+      zip.file('favicon-32x32.png', b32);
+      zip.file('favicon-48x48.png', b48);
+      zip.file('favicon.ico', b32); // standard 32x32 PNG as .ico
+      zip.file('apple-touch-icon.png', b180);
+      zip.file('android-chrome-512x512.png', b512);
+
+      const zipContent = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(zipContent);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'favicon-package.zip';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+</script>

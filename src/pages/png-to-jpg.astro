@@ -1,181 +1,185 @@
 ---
-/**
- * png-to-jpg.astro — Dedicated PNG to JPG Converter Landing Page
- * Pre-sets default format to JPG with solid white background compositing for transparency.
- */
-import BaseLayout from '../layouts/BaseLayout.astro';
-import UploadZone from '../components/UploadZone.astro';
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Why convert PNG images to JPG format?",
+    answer: "PNG images use lossless compression, resulting in significantly larger file sizes. Converting PNG graphics to JPG reduces file size by up to 70-80%, accelerating web page load times."
+  },
+  {
+    question: "What happens to transparent backgrounds in PNGs when converting to JPG?",
+    answer: "JPEG does not support alpha channel transparency. Our converter allows you to fill transparent pixels with a clean white or custom background color."
+  },
+  {
+    question: "Are my PNG images uploaded to an external server?",
+    answer: "No. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "Can I convert multiple PNG files in bulk?",
+    answer: "Yes, you can drag and drop multiple PNG files to convert them simultaneously in parallel, downloading individual converted JPGs or a combined ZIP archive."
+  }
+];
 ---
 
-<BaseLayout
-  title="PNG to JPG Converter — Convert PNG to JPEG Online"
-  description="Convert PNG images to standard JPG format in your browser. Reduce file sizes for transparent and oversized graphics with customizable quality. 100% free and private."
+<ToolPageTemplate
+  toolSlug="png-to-jpg"
+  toolName="PNG to JPG Converter"
+  title="PNG to JPG Converter — Convert PNG to JPEG Online Free"
+  description="Convert PNG images to standard JPEG format 100% locally in your browser. Batch conversion, custom quality slider, and background fill options."
+  badge="Image Studio"
+  faqItems={faqItems}
 >
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "HowTo",
-          "name": "How to Convert PNG to JPG Online",
-          "description": "Step-by-step instructions to convert PNG images to JPG/JPEG format directly in your browser.",
-          "step": [
-            {
-              "@type": "HowToStep",
-              "name": "Select PNG Images",
-              "text": "Drag and drop your PNG files into the upload zone or select them using your file browser."
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Adjust Quality Level",
-              "text": "Adjust the quality slider (80% recommended) to optimize the balance between clarity and file size."
-            },
-            {
-              "@type": "HowToStep",
-              "name": "Convert & Download",
-              "text": "Click 'Convert All Files Now' to process locally, then download your converted JPG photos."
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "What happens to the transparent background in my PNG?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Because the JPEG standard does not support transparent alpha channels, our converter composites transparent regions onto a solid white background to ensure clean visual results."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why convert PNG to JPG?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "PNG files are often 3x to 5x larger than JPGs when storing complex photographic scenes. Converting PNG to JPG drastically decreases file size for email attachments, storage, and web uploads."
-              }
-            }
-          ]
-        }
-      ]
-    }
-  </script>
+  <div class="space-y-6">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg text-sm font-semibold text-slate-300">
+      <div class="flex items-center gap-4">
+        <div>
+          <label for="p2j-quality" class="mr-2">JPG Quality:</label>
+          <input type="range" id="p2j-quality" min="0.5" max="1.0" step="0.05" value="0.9" class="accent-brand-500 align-middle" />
+          <span id="p2j-quality-val" class="font-mono text-brand-400 ml-1">90%</span>
+        </div>
 
-  <section class="tool-hero">
-    <div class="tool-hero__badge">PNG to JPG Converter</div>
-    <h1 class="tool-hero__title">Convert PNG to JPG Online</h1>
-    <p class="tool-hero__desc">
-      Convert heavy PNG graphics and screenshots to lightweight JPEG files. Composite transparent pixels onto clean white backgrounds and tune quality with 100% client-side processing.
-    </p>
-  </section>
+        <div>
+          <label for="p2j-bg-color" class="mr-2">Background Fill:</label>
+          <input type="color" id="p2j-bg-color" value="#ffffff" class="w-7 h-7 rounded border-0 align-middle bg-transparent cursor-pointer" />
+        </div>
+      </div>
+    </div>
 
-  <!-- AdSense Slot: Above main tool card -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
+    <!-- Drop Zone -->
+    <div
+      id="p2j-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">🖼️</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop PNG images here to convert to JPG</p>
+        <p class="text-xs text-slate-400">Batch conversion with zero server uploads</p>
+        <input type="file" id="p2j-file-input" accept="image/png,.png" multiple class="hidden" />
+      </div>
+    </div>
 
-  <section class="upload-section">
-    <UploadZone allowedTypes={['png']} defaultFormat="jpg" />
-  </section>
-
-  <!-- Quick Answer Box -->
-  <div class="quick-answer" role="note">
-    <p class="quick-answer__label">✦ Quick Answer</p>
-    <p class="quick-answer__q">Why convert PNG to JPG?</p>
-    <p class="quick-answer__a">
-      PNG format uses lossless compression which can result in massive file sizes for detailed photos and camera captures. Converting PNG to JPG reduces file weight by up to <strong>70%–80%</strong> with customizable lossy compression, making images much faster to share and load.
-    </p>
+    <!-- Results Grid -->
+    <div id="p2j-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
   </div>
 
-  <article class="tool-content">
-    <section class="content-block">
-      <h2>Efficient Client-Side PNG to JPG Conversion</h2>
-      <p>
-        Portable Network Graphics (PNG) are ideal for logos, line art, and transparent overlays. However, saving photographs or complex gradients as PNG leads to bloated file sizes that slow down web pages and exceed email attachment limits.
-      </p>
-      <p>
-        The FreeFileTools PNG to JPG converter re-encodes your PNG files into efficient JPEG format. Our engine automatically composites transparent alpha pixels onto a clean white background, preventing ugly black borders or dark artifacts that occur in lower-quality converters.
-      </p>
-    </section>
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Converting Lossless PNGs to Web-Optimized JPEGs</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Portable Network Graphics (PNG) is an uncompressed or losslessly compressed raster format ideal for line drawings, screenshots, and graphics requiring transparent backgrounds. However, for complex photographic content, PNG files can be 5 to 10 times larger than necessary.
+    </p>
 
-    <section class="content-block">
-      <h2>How Transparency is Handled</h2>
-      <p>
-        JPEG is a 24-bit RGB format that does not have an alpha (transparency) channel. When you convert a transparent PNG to JPG, our HTML5 Canvas engine fills the background with pure white (<code>#ffffff</code>) before encoding the JPEG bitstream, ensuring your logos and cutouts appear crisp and natural.
-      </p>
-      <p>
-        If you need to keep transparency while drastically reducing file size, consider using our <a href="/png-to-webp">PNG to WebP Converter</a> instead.
-      </p>
-    </section>
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Handling Alpha Transparency</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Because JPEG does not support an alpha transparency channel, transparent pixels must be rendered against a solid color background. FreeFileTool projects the PNG graphic onto an HTML5 Canvas initialized with your selected background fill color (defaulting to white).
+    </p>
 
-    <section class="content-block">
-      <h2>Step-by-Step: Converting PNG to JPG</h2>
-      <ol class="steps-list">
-        <li><strong>Upload PNG files:</strong> Drag and drop your PNG images into the converter box above.</li>
-        <li><strong>Set quality level:</strong> Select your target compression level using the slider (80%–85% provides great visual fidelity with low file size).</li>
-        <li><strong>Convert:</strong> Click <em>Convert All Files Now</em> to execute in-memory conversion.</li>
-        <li><strong>Download:</strong> Save individual JPG files or grab all converted images in a single ZIP download.</li>
-      </ol>
-    </section>
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Data Privacy Guarantee</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      All image decoding, canvas rendering, and JPEG encoding occur in your browser's local memory space. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
 
-    <section class="content-block faq-section">
-      <h2>Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <details class="faq-details">
-          <summary class="faq-summary">Can I batch convert multiple PNGs at once?</summary>
-          <div class="faq-answer">
-            <p>Yes! You can select dozens of PNG images and convert them all at once. When completed, click "Download All (ZIP)" to save them in one archive.</p>
-          </div>
-        </details>
-        <details class="faq-details">
-          <summary class="faq-summary">Do my files leave my computer?</summary>
-          <div class="faq-answer">
-            <p>No. All conversions run locally in your web browser. No photos or images are ever uploaded to any server or cloud service.</p>
-          </div>
-        </details>
-      </div>
-    </section>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('p2j-dropzone');
+    const fileInput = document.getElementById('p2j-file-input') as HTMLInputElement;
+    const qualityInput = document.getElementById('p2j-quality') as HTMLInputElement;
+    const qualityVal = document.getElementById('p2j-quality-val') as HTMLElement;
+    const bgColorInput = document.getElementById('p2j-bg-color') as HTMLInputElement;
+    const resultsGrid = document.getElementById('p2j-results-grid') as HTMLElement;
 
-    <section class="content-block related-links">
-      <h2>Related Converters &amp; Guides</h2>
-      <ul class="related-list">
-        <li>🔄 <a href="/image-converter">Universal Image Converter</a> — Convert between JPG, PNG, WebP, and AVIF in one central tool.</li>
-        <li>✨ <a href="/png-to-webp">PNG to WebP Converter</a> — Keep full transparency while reducing PNG file weight by 25–35%.</li>
-        <li>🖼️ <a href="/jpg-to-png">JPG to PNG Converter</a> — Convert JPEG images to lossless PNG format.</li>
-        <li>🗜️ <a href="/compress-image">Image Compressor</a> — Compress images directly without changing format.</li>
-        <li>📖 <a href="/guides/webp-vs-png-vs-jpeg-which-format-to-use">WebP vs PNG vs JPEG Guide</a> — Compare formats, compression ratios, and compatibility.</li>
-      </ul>
-    </section>
-  </article>
+    qualityInput?.addEventListener('input', () => {
+      if (qualityVal) qualityVal.textContent = `${Math.round(parseFloat(qualityInput.value) * 100)}%`;
+    });
 
-  <!-- AdSense Slot: Below article content -->
-  <div class="adsense-slot" aria-label="Advertisement"></div>
-</BaseLayout>
+    dropzone?.addEventListener('click', () => fileInput?.click());
 
-<style>
-  .tool-hero { text-align: center; padding: var(--space-8) 0 var(--space-6); }
-  .tool-hero__badge { display: inline-block; padding: var(--space-1) var(--space-3); background: color-mix(in srgb, var(--color-brand-500) 15%, transparent); border: 1px solid color-mix(in srgb, var(--color-brand-400) 30%, transparent); border-radius: var(--radius-full); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-300); margin-bottom: var(--space-3); }
-  .tool-hero__title { font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-3); }
-  .tool-hero__desc { font-size: var(--font-size-base); color: var(--text-secondary); max-width: 58ch; margin-inline: auto; line-height: var(--line-height-loose); }
-  .upload-section { max-width: 680px; margin-inline: auto; margin-bottom: var(--space-8); }
-  .quick-answer { max-width: 680px; margin: 0 auto var(--space-10); padding: var(--space-5) var(--space-6); background: color-mix(in srgb, var(--color-brand-500) 8%, var(--surface-1)); border: 1px solid color-mix(in srgb, var(--color-brand-400) 25%, transparent); border-radius: var(--radius-xl); }
-  .quick-answer__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--color-brand-400); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); margin-bottom: var(--space-1); }
-  .quick-answer__q { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); margin-bottom: var(--space-2); }
-  .quick-answer__a { font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); margin: 0; }
-  .tool-content { max-width: 760px; margin-inline: auto; padding-bottom: var(--space-12); }
-  .content-block { margin-bottom: var(--space-10); }
-  .content-block h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-primary); margin-bottom: var(--space-4); }
-  .content-block p { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); margin-bottom: var(--space-4); }
-  .steps-list { padding-left: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
-  .steps-list li { font-size: var(--font-size-base); color: var(--text-secondary); line-height: var(--line-height-loose); }
-  .faq-list { display: flex; flex-direction: column; gap: var(--space-3); }
-  .faq-details { background: var(--surface-1); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
-  .faq-summary { padding: var(--space-4) var(--space-5); font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--text-primary); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
-  .faq-summary::after { content: '+'; font-size: var(--font-size-lg); color: var(--color-brand-400); font-weight: var(--font-weight-bold); }
-  .faq-details[open] .faq-summary::after { content: '\u2212'; }
-  .faq-answer { padding: 0 var(--space-5) var(--space-5); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: var(--line-height-loose); }
-  .related-links { border-top: 1px solid var(--border-default); padding-top: var(--space-8); }
-  .related-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-  .related-list li { font-size: var(--font-size-sm); color: var(--text-secondary); }
-  .related-list a { color: var(--color-brand-400); font-weight: var(--font-weight-semibold); text-decoration: none; }
-  .related-list a:hover { text-decoration: underline; }
-</style>
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        convertFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        convertFiles(Array.from(fileInput.files));
+      }
+    });
+
+    function convertFiles(files: File[]) {
+      const pngFiles = files.filter(f => f.type === 'image/png' || f.name.match(/\.png$/i));
+      if (pngFiles.length === 0) {
+        alert('Please select valid PNG image files.');
+        return;
+      }
+
+      const quality = parseFloat(qualityInput?.value || '0.9');
+      const bgColor = bgColorInput?.value || '#ffffff';
+
+      if (resultsGrid) resultsGrid.innerHTML = '';
+
+      pngFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.fillStyle = bgColor;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0);
+            }
+
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            const outName = file.name.replace(/\.png$/i, '.jpg');
+
+            renderResultCard(outName, dataUrl, file.size);
+          };
+          img.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderResultCard(name: string, dataUrl: string, origSize: number) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2';
+
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.className = 'w-full h-36 object-cover rounded border border-slate-800';
+
+      const title = document.createElement('div');
+      title.className = 'text-xs font-semibold text-slate-200 truncate';
+      title.textContent = name;
+
+      const btn = document.createElement('a');
+      btn.href = dataUrl;
+      btn.download = name;
+      btn.className = 'block text-center py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-xs font-semibold transition';
+      btn.textContent = 'Download JPG';
+
+      card.appendChild(img);
+      card.appendChild(title);
+      card.appendChild(btn);
+      resultsGrid.appendChild(card);
+    }
+  });
+</script>

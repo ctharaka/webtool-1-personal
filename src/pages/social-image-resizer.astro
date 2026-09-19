@@ -1,0 +1,270 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "What social media aspect ratio presets are included?",
+    answer: "Our tool includes exact dimension presets for Instagram Square (1080x1080), Instagram Portrait (1080x1350), Instagram Story/Reels (1080x1920), YouTube Thumbnail (1280x720), LinkedIn Banner (1584x396), and WhatsApp Profile DP (500x500)."
+  },
+  {
+    question: "What is the difference between Cover, Contain, and Stretch fit modes?",
+    answer: "Cover fills the entire preset dimension by scaling and center-cropping the image without distortion. Contain scales the image to fit entirely within the bounds, filling empty space with a solid background color. Stretch stretches the image to fit the exact dimensions."
+  },
+  {
+    question: "Are my social graphics uploaded to any server?",
+    answer: "No. All scaling, cropping, and canvas rendering happen 100% locally inside your web browser memory. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "What output image formats are supported?",
+    answer: "You can export your resized social graphics as WebP (optimized for web speed), JPEG (maximum compatibility), or PNG (crisp text and vector graphics)."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="social-image-resizer"
+  toolName="Social Media Image Resizer"
+  title="Social Media Image Resizer — Instagram, YouTube, LinkedIn Presets"
+  description="Resize and crop images for Instagram, YouTube, LinkedIn, and WhatsApp using exact pixel presets and aspect ratio controls 100% locally."
+  badge="Image Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Presets Grid Buttons -->
+    <div class="space-y-2">
+      <span class="text-xs font-bold text-slate-300 uppercase tracking-wider block">Choose Social Media Preset</span>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <button type="button" class="btn-preset active p-3 bg-brand-600 border border-brand-500 rounded-lg text-center text-xs font-semibold text-white transition" data-w="1080" data-h="1080">
+          <span>Instagram Square</span>
+          <span class="block text-[10px] opacity-80 mt-0.5">1080 x 1080 (1:1)</span>
+        </button>
+        <button type="button" class="btn-preset p-3 bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-lg text-center text-xs font-semibold text-slate-200 transition" data-w="1080" data-h="1350">
+          <span>Instagram Portrait</span>
+          <span class="block text-[10px] opacity-70 mt-0.5">1080 x 1350 (4:5)</span>
+        </button>
+        <button type="button" class="btn-preset p-3 bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-lg text-center text-xs font-semibold text-slate-200 transition" data-w="1080" data-h="1920">
+          <span>Instagram Story</span>
+          <span class="block text-[10px] opacity-70 mt-0.5">1080 x 1920 (9:16)</span>
+        </button>
+        <button type="button" class="btn-preset p-3 bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-lg text-center text-xs font-semibold text-slate-200 transition" data-w="1280" data-h="720">
+          <span>YouTube Thumbnail</span>
+          <span class="block text-[10px] opacity-70 mt-0.5">1280 x 720 (16:9)</span>
+        </button>
+        <button type="button" class="btn-preset p-3 bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-lg text-center text-xs font-semibold text-slate-200 transition" data-w="1584" data-h="396">
+          <span>LinkedIn Banner</span>
+          <span class="block text-[10px] opacity-70 mt-0.5">1584 x 396 (4:1)</span>
+        </button>
+        <button type="button" class="btn-preset p-3 bg-slate-900 border border-slate-700 hover:border-slate-500 rounded-lg text-center text-xs font-semibold text-slate-200 transition" data-w="500" data-h="500">
+          <span>WhatsApp DP</span>
+          <span class="block text-[10px] opacity-70 mt-0.5">500 x 500 (1:1)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Options Controls -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-300 font-medium">
+      <div>
+        <label for="social-fit" class="mr-2">Fit Mode:</label>
+        <select id="social-fit" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+          <option value="cover" selected>Cover (Center Crop)</option>
+          <option value="contain">Contain (Fit inside with background)</option>
+          <option value="stretch">Stretch (Fill exact dimensions)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="social-bg" class="mr-2">Background Color:</label>
+        <input type="color" id="social-bg" value="#0f172a" class="w-8 h-8 rounded border-0 align-middle bg-transparent cursor-pointer" />
+      </div>
+
+      <div>
+        <label for="social-fmt" class="mr-2">Format:</label>
+        <select id="social-fmt" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+          <option value="image/jpeg">JPG / JPEG</option>
+          <option value="image/png">PNG</option>
+          <option value="image/webp">WebP</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="social-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">🖼️</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop an image to resize for social media</p>
+        <p class="text-xs text-slate-400">Supports JPG, PNG, WebP, GIF, and AVIF graphics</p>
+        <input type="file" id="social-file-input" accept="image/*" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Preview Canvas & Download -->
+    <div id="social-result-box" class="hidden space-y-4 p-4 bg-slate-950 border border-slate-800 rounded-xl">
+      <div class="flex justify-between items-center text-sm">
+        <span id="social-res-info" class="font-bold text-slate-200 font-mono">1080 x 1080 px</span>
+        <button type="button" id="btn-download-social" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg text-sm transition">
+          Download Resized Image
+        </button>
+      </div>
+      <div class="flex justify-center bg-slate-900 p-4 rounded-lg overflow-auto max-h-[450px]">
+        <canvas id="social-canvas" class="max-w-full h-auto border border-slate-800 rounded shadow-md"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Optimizing Images for Social Media Platforms</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Every major social media platform (Instagram, YouTube, LinkedIn, X/Twitter, WhatsApp) enforces specific aspect ratio and pixel dimension standards. Uploading images with incorrect dimensions leads to automatic compression artifacts, awkward cropping, or blurred banner headers.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Understanding Fitting Modes</h3>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Cover Mode:</strong> Scales the image to fill 100% of the target canvas area while maintaining aspect ratio, centering the graphic and cropping excess edges.</li>
+      <li><strong>Contain Mode:</strong> Scales the image so the entire graphic is visible within the frame, padding remaining letterbox areas with your selected background color.</li>
+      <li><strong>Stretch Mode:</strong> Forces the image to conform to the exact target dimensions regardless of original aspect ratio.</li>
+    </ul>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Client-Side Canvas Rendering &amp; Privacy</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      All image resizing and canvas operations are executed in real time inside your browser tab using the HTML5 2D Canvas API. Your files are processed on your device and are never uploaded.
+    </p>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let targetW = 1080;
+    let targetH = 1080;
+    let currentImage: HTMLImageElement | null = null;
+
+    const presetBtns = document.querySelectorAll('.btn-preset');
+    const fitSelect = document.getElementById('social-fit') as HTMLSelectElement;
+    const bgInput = document.getElementById('social-bg') as HTMLInputElement;
+    const fmtSelect = document.getElementById('social-fmt') as HTMLSelectElement;
+    const dropzone = document.getElementById('social-dropzone');
+    const fileInput = document.getElementById('social-file-input') as HTMLInputElement;
+    const resultBox = document.getElementById('social-result-box') as HTMLElement;
+    const resInfo = document.getElementById('social-res-info') as HTMLElement;
+    const canvas = document.getElementById('social-canvas') as HTMLCanvasElement;
+    const btnDownload = document.getElementById('btn-download-social');
+
+    presetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        presetBtns.forEach(b => {
+          b.classList.remove('active', 'bg-brand-600', 'border-brand-500', 'text-white');
+          b.classList.add('bg-slate-900', 'border-slate-700', 'text-slate-200');
+        });
+        btn.classList.add('active', 'bg-brand-600', 'border-brand-500', 'text-white');
+        btn.classList.remove('bg-slate-900', 'border-slate-700', 'text-slate-200');
+
+        targetW = parseInt(btn.getAttribute('data-w') || '1080', 10);
+        targetH = parseInt(btn.getAttribute('data-h') || '1080', 10);
+
+        if (currentImage) renderCanvas();
+      });
+    });
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        loadImage(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        loadImage(fileInput.files[0]);
+      }
+    });
+
+    function loadImage(file: File) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          currentImage = img;
+          renderCanvas();
+          if (resultBox) resultBox.classList.remove('hidden');
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderCanvas() {
+      if (!currentImage || !canvas) return;
+
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const fitMode = fitSelect?.value || 'cover';
+      const bgColor = bgInput?.value || '#0f172a';
+
+      // Fill background
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, targetW, targetH);
+
+      const imgW = currentImage.width;
+      const imgH = currentImage.height;
+
+      if (fitMode === 'stretch') {
+        ctx.drawImage(currentImage, 0, 0, targetW, targetH);
+      } else if (fitMode === 'contain') {
+        const scale = Math.min(targetW / imgW, targetH / imgH);
+        const nw = imgW * scale;
+        const nh = imgH * scale;
+        const dx = (targetW - nw) / 2;
+        const dy = (targetH - nh) / 2;
+        ctx.drawImage(currentImage, dx, dy, nw, nh);
+      } else {
+        // Cover (Center crop)
+        const scale = Math.max(targetW / imgW, targetH / imgH);
+        const nw = imgW * scale;
+        const nh = imgH * scale;
+        const dx = (targetW - nw) / 2;
+        const dy = (targetH - nh) / 2;
+        ctx.drawImage(currentImage, dx, dy, nw, nh);
+      }
+
+      if (resInfo) resInfo.textContent = `${targetW} x ${targetH} px (${fitMode.toUpperCase()})`;
+    }
+
+    fitSelect?.addEventListener('change', renderCanvas);
+    bgInput?.addEventListener('input', renderCanvas);
+    fmtSelect?.addEventListener('change', renderCanvas);
+
+    btnDownload?.addEventListener('click', () => {
+      if (!canvas) return;
+      const fmt = fmtSelect?.value || 'image/jpeg';
+      const ext = fmt === 'image/png' ? 'png' : fmt === 'image/webp' ? 'webp' : 'jpg';
+      const dataUrl = canvas.toDataURL(fmt, 0.92);
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `social-resized-${targetW}x${targetH}.${ext}`;
+      a.click();
+    });
+  });
+</script>

@@ -1,0 +1,277 @@
+---
+import ToolPageTemplate from '../components/ToolPageTemplate.astro';
+
+const faqItems = [
+  {
+    question: "Why do iPhones save photos as HEIC files?",
+    answer: "Apple adopted High Efficiency Image Format (HEIC/HEIF) in iOS 11 to achieve up to 50% better compression than JPEG while preserving 16-bit color depth. However, HEIC is unsupported on many Windows PCs, Android devices, and websites."
+  },
+  {
+    question: "Are my HEIC photos uploaded to an external server?",
+    answer: "No. FreeFileTool converts HEIC files locally in your browser tab. Your files are processed on your device and are never uploaded."
+  },
+  {
+    question: "How does lazy-loading the HEIC decoder work?",
+    answer: "To ensure lightning-fast initial page loads, the HEIC decoder library is only loaded into your browser memory when you select a HEIC file for conversion."
+  },
+  {
+    question: "What should I do if a HEIC conversion fails?",
+    answer: "HEIC conversion failures usually occur if the source file is corrupted, encrypted with digital rights management (DRM), or encoded with unsupported Motion Photo extensions. Please try re-exporting the photo on your Apple device."
+  }
+];
+---
+
+<ToolPageTemplate
+  toolSlug="heic-to-jpg"
+  toolName="HEIC to JPG Converter"
+  title="HEIC to JPG Converter — Convert iPhone HEIC Photos Free"
+  description="Convert Apple iPhone HEIC/HEIF photos to standard JPG or PNG format 100% locally in your browser. Fast batch conversion with zero uploads."
+  badge="Image Studio"
+  faqItems={faqItems}
+>
+  <div class="space-y-6">
+    <!-- Controls Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg">
+      <div class="flex items-center gap-4 text-sm font-semibold text-slate-300">
+        <div>
+          <label for="heic-out-fmt" class="mr-2">Output Format:</label>
+          <select id="heic-out-fmt" class="bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-slate-200">
+            <option value="image/jpeg">JPG / JPEG</option>
+            <option value="image/png">PNG (Lossless)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="heic-quality" class="mr-2">Quality:</label>
+          <input type="range" id="heic-quality" min="0.5" max="1.0" step="0.05" value="0.9" class="accent-brand-500 align-middle" />
+          <span id="heic-quality-val" class="font-mono text-brand-400 ml-1">90%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div
+      id="heic-dropzone"
+      class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-8 text-center bg-slate-950/50 cursor-pointer transition"
+    >
+      <div class="space-y-3">
+        <span class="text-4xl block">📱</span>
+        <p class="text-base font-semibold text-slate-200">Drag &amp; Drop HEIC / HEIF photos here</p>
+        <p class="text-xs text-slate-400">or click to select files from your iPhone or Mac</p>
+        <input type="file" id="heic-file-input" accept=".heic,.HEIC,.heif,.HEIF" multiple class="hidden" />
+      </div>
+    </div>
+
+    <!-- Status & Progress -->
+    <div id="heic-status-box" class="hidden p-4 rounded-lg bg-slate-950 border border-slate-800 text-sm font-medium text-slate-300">
+      <span id="heic-status-text">Ready</span>
+    </div>
+
+    <!-- Results Container -->
+    <div id="heic-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+
+  <div slot="guide">
+    <h2 class="text-2xl font-bold text-slate-100 mb-4">Converting HEIC Photos to Universal JPEG Format</h2>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      High Efficiency Image Format (HEIC) is the default image format used by Apple iPhones and iPads since iOS 11. While HEIC offers superior compression efficiency compared to legacy JPEG images, compatibility challenges persist when transferring photos to Windows PCs, Android smart devices, web applications, and older photo editing software.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">100% In-Browser HEIC Decoding</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Unlike cloud conversion sites that force you to upload private family photographs to unknown remote servers, FreeFileTool processes HEIC image bitstreams locally inside your browser sandbox. The HEIC decoding library is lazy-loaded on demand when you select your file, keeping network payload sizes small while preserving absolute data privacy.
+    </p>
+
+    <h3 class="text-xl font-semibold text-slate-200 mt-6 mb-3">Known Browser Limitations &amp; Error Handling</h3>
+    <p class="text-slate-300 leading-relaxed mb-4">
+      Decoding HEIC images in JavaScript involves parsing complex HEVC (H.265) video frames within local browser memory. Please keep the following technical considerations in mind:
+    </p>
+    <ul class="list-disc list-inside text-slate-300 space-y-2 mb-4">
+      <li><strong>Memory Constraints:</strong> Converting multi-gigabyte batches of 48-megapixel ProRAW HEIC photos simultaneously may exhaust browser tab memory on older smartphones. We recommend processing batches of 10-20 images at a time.</li>
+      <li><strong>Burst &amp; Motion Photos:</strong> Apple Live Photos contain embedded video tracks. Our converter extracts the primary high-resolution static frame.</li>
+      <li><strong>Clear Failure Alerts:</strong> If a HEIC file is corrupted or contains unsupported container metadata, our tool alerts you immediately without hanging or displaying misleading progress bars.</li>
+    </ul>
+  </div>
+</ToolPageTemplate>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropzone = document.getElementById('heic-dropzone');
+    const fileInput = document.getElementById('heic-file-input') as HTMLInputElement;
+    const formatSelect = document.getElementById('heic-out-fmt') as HTMLSelectElement;
+    const qualityInput = document.getElementById('heic-quality') as HTMLInputElement;
+    const qualityVal = document.getElementById('heic-quality-val') as HTMLElement;
+    const statusBox = document.getElementById('heic-status-box') as HTMLElement;
+    const statusText = document.getElementById('heic-status-text') as HTMLElement;
+    const resultsGrid = document.getElementById('heic-results-grid') as HTMLElement;
+
+    let isScriptLoaded = false;
+    let isScriptLoading = false;
+
+    qualityInput?.addEventListener('input', () => {
+      if (qualityVal) qualityVal.textContent = `${Math.round(parseFloat(qualityInput.value) * 100)}%`;
+    });
+
+    dropzone?.addEventListener('click', () => fileInput?.click());
+
+    dropzone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('dragleave', () => {
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+    });
+
+    dropzone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('border-brand-500', 'bg-brand-500/10');
+      if (e.dataTransfer?.files?.length) {
+        handleFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+
+    fileInput?.addEventListener('change', () => {
+      if (fileInput.files?.length) {
+        handleFiles(Array.from(fileInput.files));
+      }
+    });
+
+    function loadHeicLibrary(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        if (isScriptLoaded || (window as any).heic2any) {
+          isScriptLoaded = true;
+          return resolve();
+        }
+        if (isScriptLoading) {
+          const check = setInterval(() => {
+            if ((window as any).heic2any) {
+              clearInterval(check);
+              isScriptLoaded = true;
+              resolve();
+            }
+          }, 100);
+          return;
+        }
+
+        isScriptLoading = true;
+        const script = document.createElement('script');
+        script.src = '/vendor/heic2any.min.js';
+        script.onload = () => {
+          isScriptLoaded = true;
+          isScriptLoading = false;
+          resolve();
+        };
+        script.onerror = () => {
+          isScriptLoading = false;
+          reject(new Error('Failed to load self-hosted HEIC decoder library (/vendor/heic2any.min.js)'));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    async function handleFiles(files: File[]) {
+      const heicFiles = files.filter(f => /\.(heic|heif)$/i.test(f.name));
+      if (heicFiles.length === 0) {
+        showStatus('Please select valid .HEIC or .HEIF photo files.', 'text-amber-400');
+        return;
+      }
+
+      showStatus('Loading HEIC decoder engine...', 'text-brand-400');
+
+      try {
+        await loadHeicLibrary();
+      } catch (err: any) {
+        showStatus(`Library Error: ${err?.message || 'Could not load HEIC decoder.'}`, 'text-red-400');
+        return;
+      }
+
+      const targetMime = formatSelect?.value || 'image/jpeg';
+      const quality = parseFloat(qualityInput?.value || '0.9');
+
+      if (resultsGrid) resultsGrid.innerHTML = '';
+
+      for (let i = 0; i < heicFiles.length; i++) {
+        const file = heicFiles[i];
+        showStatus(`Converting (${i + 1}/${heicFiles.length}): ${file.name}...`, 'text-brand-400');
+
+        try {
+          const heic2any = (window as any).heic2any;
+          const blobResult = await heic2any({
+            blob: file,
+            toType: targetMime,
+            quality: quality
+          });
+
+          const blob = Array.isArray(blobResult) ? blobResult[0] : blobResult;
+          const ext = targetMime === 'image/png' ? 'png' : 'jpg';
+          const outName = file.name.replace(/\.(heic|heif)$/i, `.${ext}`);
+          const url = URL.createObjectURL(blob);
+
+          renderCard(outName, url, file.size, blob.size);
+        } catch (err: any) {
+          renderErrorCard(file.name, err?.message || 'Unsupported HEIC encoding or file corruption.');
+        }
+      }
+
+      showStatus(`Completed batch conversion of ${heicFiles.length} file(s).`, 'text-emerald-400');
+    }
+
+    function showStatus(msg: string, colorClass: string) {
+      if (statusBox && statusText) {
+        statusBox.classList.remove('hidden');
+        statusText.textContent = msg;
+        statusText.className = `font-medium ${colorClass}`;
+      }
+    }
+
+    function renderCard(name: string, url: string, origSize: number, newSize: number) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2';
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'w-full h-40 object-cover rounded border border-slate-800';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'text-xs font-semibold text-slate-200 truncate';
+      nameEl.textContent = name;
+
+      const statsEl = document.createElement('div');
+      statsEl.className = 'text-[11px] text-slate-400 flex justify-between';
+      statsEl.innerHTML = `<span>${(origSize/1024).toFixed(0)}KB &rarr; ${(newSize/1024).toFixed(0)}KB</span><span class="text-emerald-400 font-bold">✓ Ready</span>`;
+
+      const downloadBtn = document.createElement('a');
+      downloadBtn.href = url;
+      downloadBtn.download = name;
+      downloadBtn.className = 'block text-center py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded text-xs font-semibold transition';
+      downloadBtn.textContent = 'Download Image';
+
+      card.appendChild(img);
+      card.appendChild(nameEl);
+      card.appendChild(statsEl);
+      card.appendChild(downloadBtn);
+
+      resultsGrid.appendChild(card);
+    }
+
+    function renderErrorCard(name: string, errorMsg: string) {
+      if (!resultsGrid) return;
+      const card = document.createElement('div');
+      card.className = 'bg-red-950/40 border border-red-800/80 rounded-lg p-3 space-y-2';
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'text-xs font-bold text-red-300 truncate';
+      titleEl.textContent = `Failed: ${name}`;
+
+      const msgEl = document.createElement('div');
+      msgEl.className = 'text-xs text-red-400 leading-relaxed';
+      msgEl.textContent = errorMsg;
+
+      card.appendChild(titleEl);
+      card.appendChild(msgEl);
+      resultsGrid.appendChild(card);
+    }
+  });
+</script>
