@@ -58,7 +58,7 @@ import RecentHistory from '../components/RecentHistory.astro';
             <span class="status-dot__ping"></span>
             <span class="status-dot__core"></span>
           </span>
-          <span class="status-pill__label">In-Browser Hardware Acceleration</span>
+          <span class="status-pill__label">Client-Side Processing Engine</span>
           <span class="status-pill__divider"></span>
           <span class="status-pill__highlight">0 KB Uploaded</span>
         </div>
@@ -172,9 +172,9 @@ import RecentHistory from '../components/RecentHistory.astro';
     <!-- ── BENTO SHOWCASE GRID (ASYMMETRIC WIDESCREEN) ───────── -->
     <section class="section-container" id="flagship-bento" aria-labelledby="bento-title">
       <div class="section-title-wrap">
-        <div class="eyebrow-tag">Hardware Accelerated</div>
+        <div class="eyebrow-tag">Browser Native</div>
         <h2 id="bento-title" class="title-primary">Flagship Client-Side Studios</h2>
-        <p class="subtitle-text">High-performance processing engines running natively via WebAssembly and WebAudio.</p>
+        <p class="subtitle-text">Fast, private processing engines running in your browser.</p>
       </div>
 
       <div class="bento-grid">
@@ -185,7 +185,7 @@ import RecentHistory from '../components/RecentHistory.astro';
             <div class="bento-card__top">
               <div class="bento-pill tag-emerald">
                 <span class="bento-pill__dot"></span>
-                Canvas &amp; Wasm Engine
+                Canvas Engine
               </div>
               <span class="bento-badge">Lossless &amp; Lossy</span>
             </div>
@@ -290,7 +290,7 @@ import RecentHistory from '../components/RecentHistory.astro';
             <div class="bento-card__top">
               <div class="bento-pill tag-purple">
                 <span class="bento-pill__dot"></span>
-                Zero Telemetry
+                100% Private
               </div>
               <span class="bento-badge">GPS Sanitizer</span>
             </div>
@@ -749,6 +749,156 @@ import RecentHistory from '../components/RecentHistory.astro';
           </div>
           <span class="tool-tile__arrow">&rarr;</span>
         </a>
+
+        <!-- 25. JWT Decoder -->
+        <a href="/jwt-decoder" class="tool-tile" data-category="text" data-keywords="jwt decoder token auth JSON web token decode parse payload exp">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><key points="1 1"></key><path d="M21 2l-2 2m-2-2l2 2M13 11l-4 4m0 0l-2-2m2 2l2 2"></path></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">JWT Decoder</h3>
+              <span class="tool-tile__tag tag-indigo">Developer</span>
+            </div>
+            <p class="tool-tile__desc">Decode JSON Web Token headers, payload claims, and expiration dates locally.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 26. UUID Generator -->
+        <a href="/uuid-generator" class="tool-tile" data-category="text" data-keywords="uuid generator guid random v4 rfc4122 unique identifier bulk">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">UUID / GUID Generator</h3>
+              <span class="tool-tile__tag tag-indigo">CSPRNG</span>
+            </div>
+            <p class="tool-tile__desc">Generate cryptographically secure v4 UUIDs in bulk with custom options.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 27. Unix Timestamp Converter -->
+        <a href="/unix-timestamp-converter" class="tool-tile" data-category="text" data-keywords="unix timestamp converter epoch time date utc iso seconds milliseconds">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Unix Timestamp Converter</h3>
+              <span class="tool-tile__tag tag-indigo">Epoch Time</span>
+            </div>
+            <p class="tool-tile__desc">Convert epoch seconds and milliseconds to UTC and local human-readable dates.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 28. CSV <-> JSON Converter -->
+        <a href="/csv-to-json" class="tool-tile" data-category="text" data-keywords="csv to json json to csv converter excel table array parse">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">CSV &lt;-&gt; JSON Converter</h3>
+              <span class="tool-tile__tag tag-indigo">Data</span>
+            </div>
+            <p class="tool-tile__desc">Convert CSV spreadsheets to JSON objects and array data back to CSV.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 29. URL Encoder & Decoder -->
+        <a href="/url-encoder-decoder" class="tool-tile" data-category="text" data-keywords="url encoder decoder percent encoding uri component encode decode">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">URL Encoder / Decoder</h3>
+              <span class="tool-tile__tag tag-indigo">RFC 3986</span>
+            </div>
+            <p class="tool-tile__desc">Percent-encode special characters and decode URLs with full UTF-8 support.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 30. Text Diff Tool -->
+        <a href="/text-diff" class="tool-tile" data-category="text" data-keywords="text diff compare comparison lcs git diff changes highlight text code">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Text Diff &amp; Comparison</h3>
+              <span class="tool-tile__tag tag-indigo">Diff Engine</span>
+            </div>
+            <p class="tool-tile__desc">Compare two text files or code blocks line-by-line with visual change highlights.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 31. Secure Password Generator -->
+        <a href="/password-generator" class="tool-tile" data-category="text" data-keywords="password generator secure random csprng entropy strong password">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Secure Password Generator</h3>
+              <span class="tool-tile__tag tag-indigo">CSPRNG</span>
+            </div>
+            <p class="tool-tile__desc">Generate high-entropy random passwords using window.crypto.getRandomValues.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 32. Color Code Converter -->
+        <a href="/color-converter" class="tool-tile" data-category="text" data-keywords="color converter hex rgb hsl hsv css picker swatch">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a7 7 0 1 0 7 7"></path></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Color Code Converter</h3>
+              <span class="tool-tile__tag tag-indigo">Design</span>
+            </div>
+            <p class="tool-tile__desc">Convert between HEX, RGB, HSL, and HSV color values with live visual preview.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 33. Regex Tester & Debugger -->
+        <a href="/regex-tester" class="tool-tile" data-category="text" data-keywords="regex tester regular expression match debug pattern replace flags">
+          <div class="tool-tile__icon icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">Regex Tester &amp; Debugger</h3>
+              <span class="tool-tile__tag tag-indigo">Developer</span>
+            </div>
+            <p class="tool-tile__desc">Test and debug JavaScript regular expressions with instant match highlighting.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
+
+        <!-- 34. File Optimization Hub -->
+        <a href="/optimize-file" class="tool-tile" data-category="image" data-keywords="optimize file hub compression webp avif image pdf inspect">
+          <div class="tool-tile__icon icon-emerald">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <div class="tool-tile__body">
+            <div class="tool-tile__header">
+              <h3 class="tool-tile__name">File Optimization Hub</h3>
+              <span class="tool-tile__tag tag-emerald">Hub</span>
+            </div>
+            <p class="tool-tile__desc">Explore file optimization and compression options with local privacy.</p>
+          </div>
+          <span class="tool-tile__arrow">&rarr;</span>
+        </a>
       </div>
 
       <!-- Empty State Indicator -->
@@ -766,8 +916,8 @@ import RecentHistory from '../components/RecentHistory.astro';
     <section class="section-container" aria-labelledby="architecture-title">
       <div class="section-title-wrap center">
         <div class="eyebrow-tag">Security &amp; Performance</div>
-        <h2 id="architecture-title" class="title-primary">Why Client-Side Processing Is 10x Better</h2>
-        <p class="subtitle-text">Comparing browser RAM execution with traditional cloud converter servers.</p>
+        <h2 id="architecture-title" class="title-primary">Why Client-Side Processing Is Better</h2>
+        <p class="subtitle-text">Comparing browser execution with traditional cloud converter servers.</p>
       </div>
 
       <div class="architecture-comparison-grid">
@@ -797,7 +947,7 @@ import RecentHistory from '../components/RecentHistory.astro';
           </ul>
         </div>
 
-        <!-- Card 2: FreeFileTools (Browser-Native) -->
+        <!-- Card 2: FreeFileTool (Browser-Native) -->
         <div class="arch-card client-side">
           <div class="arch-card__badge badge-success">FreeFileTool In-Browser Engine</div>
           <h3 class="arch-card__title">Instant, Private &amp; Unlimited</h3>
@@ -805,19 +955,19 @@ import RecentHistory from '../components/RecentHistory.astro';
             <li>
               <span class="tick-icon">&#10003;</span>
               <div>
-                <strong>Zero Network Uploads:</strong> Files stay strictly in your device RAM memory. No telemetry or server storage.
+                <strong>Zero Network Uploads:</strong> Your files are processed on your device and are never uploaded.
               </div>
             </li>
             <li>
               <span class="tick-icon">&#10003;</span>
               <div>
-                <strong>Native Hardware Speed:</strong> Direct multi-core WebAssembly execution with instantaneous exports.
+                <strong>In-Browser Processing:</strong> Direct client-side browser execution with fast exports.
               </div>
             </li>
             <li>
               <span class="tick-icon">&#10003;</span>
               <div>
-                <strong>100% Free Forever:</strong> No paywalls, accounts, or rate limits. Works even when disconnected offline.
+                <strong>100% Free Forever:</strong> No paywalls, accounts, or rate limits for local conversions.
               </div>
             </li>
           </ul>
@@ -833,11 +983,11 @@ import RecentHistory from '../components/RecentHistory.astro';
           <span class="stat-text">Uploaded to Cloud</span>
         </div>
         <div class="banner-stat">
-          <span class="stat-num">&lt; 0.1s</span>
-          <span class="stat-text">Local RAM Latency</span>
+          <span class="stat-num">Instant</span>
+          <span class="stat-text">Local Browser Processing</span>
         </div>
         <div class="banner-stat">
-          <span class="stat-num">35+</span>
+          <span class="stat-num">40+</span>
           <span class="stat-text">Native File Tools</span>
         </div>
         <div class="banner-stat">
@@ -887,7 +1037,7 @@ import RecentHistory from '../components/RecentHistory.astro';
       <div class="section-title-wrap center">
         <div class="eyebrow-tag">Help &amp; Trust</div>
         <h2 id="faq-title" class="title-primary">Frequently Asked Questions</h2>
-        <p class="subtitle-text">Common inquiries about our zero-backend browser architecture.</p>
+        <p class="subtitle-text">Common inquiries about our browser file processing engine.</p>
       </div>
 
       <div class="faq-accordion-list">
@@ -897,7 +1047,7 @@ import RecentHistory from '../components/RecentHistory.astro';
             <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </summary>
           <div class="faq-content">
-            <p><strong>Never.</strong> FreeFileTool operates under a 100% zero-backend philosophy. Every conversion, resize, merge, and compression task is computed directly inside your browser using HTML5 Canvas, WebAssembly (Wasm), and the Web Audio API. Your files remain exclusively in your computer or phone's RAM and never transmit across the network.</p>
+            <p><strong>Never.</strong> FreeFileTool processes all files 100% locally in your web browser. Your files are processed on your device and are never uploaded.</p>
           </div>
         </details>
 
@@ -907,7 +1057,7 @@ import RecentHistory from '../components/RecentHistory.astro';
             <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </summary>
           <div class="faq-content">
-            <p>There are zero daily caps, zero subscriptions, and no account requirements. Because processing uses your own device's hardware rather than high-cost cloud computing clusters, FreeFileTool is completely free to use without restrictions.</p>
+            <p>There are zero daily caps, zero subscriptions, and no account requirements. FreeFileTool is completely free to use without restrictions.</p>
           </div>
         </details>
 
@@ -923,11 +1073,11 @@ import RecentHistory from '../components/RecentHistory.astro';
 
         <details class="faq-item">
           <summary class="faq-summary">
-            <span>Can I use these tools while offline or on airplane mode?</span>
+            <span>How does in-browser file processing work?</span>
             <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </summary>
           <div class="faq-content">
-            <p>Yes! Once the tool page is loaded in your browser tab, all necessary JavaScript and WebAssembly runtimes are cached in your local browser memory. You can disconnect your internet and continue processing files with zero interruption.</p>
+            <p>All processing is handled by client-side browser APIs like HTML5 Canvas, Web Audio API, and standard JavaScript APIs running inside your browser tab.</p>
           </div>
         </details>
       </div>
